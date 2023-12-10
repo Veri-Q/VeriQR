@@ -1,0 +1,111 @@
+=============================================
+Starting Robustness Verifier
+---------------------------------------------
+Checking 0.0001-robustness
+----------------------------------------
+Filted by robust bound, 8 states left for SDP method
+===================================
+Starting state robustness verifier
+-----------------------------------
+1/8 states checked: 1 unrobust state
+2/8 states checked: 2 unrobust state
+3/8 states checked: 3 unrobust state
+4/8 states checked: 4 unrobust state
+5/8 states checked: 5 unrobust state
+6/8 states checked: 6 unrobust state
+7/8 states checked: 7 unrobust state
+8/8 states checked: 8 unrobust state
+8/8 states checked: 8 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 99.20%, Verification time: 29.54s
+=============================================
+=============================================
+Starting Robustness Verifier
+---------------------------------------------
+Checking 0.0002-robustness
+----------------------------------------
+Filted by robust bound, 12 states left for SDP method
+===================================
+Starting state robustness verifier
+-----------------------------------
+1/12 states checked: 1 unrobust state
+2/12 states checked: 2 unrobust state
+3/12 states checked: 3 unrobust state
+4/12 states checked: 4 unrobust state
+5/12 states checked: 5 unrobust state
+6/12 states checked: 6 unrobust state
+7/12 states checked: 7 unrobust state
+8/12 states checked: 8 unrobust state
+9/12 states checked: 9 unrobust state
+10/12 states checked: 10 unrobust state
+11/12 states checked: 11 unrobust state
+12/12 states checked: 12 unrobust state
+12/12 states checked: 12 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 98.80%, Verification time: 43.64s
+=============================================
+=============================================
+Starting Robustness Verifier
+---------------------------------------------
+Checking 0.0003-robustness
+----------------------------------------
+Filted by robust bound, 14 states left for SDP method
+===================================
+Starting state robustness verifier
+-----------------------------------
+1/14 states checked: 1 unrobust state
+2/14 states checked: 2 unrobust state
+3/14 states checked: 3 unrobust state
+4/14 states checked: 4 unrobust state
+5/14 states checked: 5 unrobust state
+6/14 states checked: 6 unrobust state
+7/14 states checked: 7 unrobust state
+8/14 states checked: 8 unrobust state
+9/14 states checked: 9 unrobust state
+10/14 states checked: 10 unrobust state
+11/14 states checked: 11 unrobust state
+12/14 states checked: 12 unrobust state
+13/14 states checked: 13 unrobust state
+14/14 states checked: 14 unrobust state
+14/14 states checked: 14 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 98.60%, Verification time: 50.90s
+=============================================
+=============================================
+Starting Robustness Verifier
+---------------------------------------------
+Checking 0.0004-robustness
+----------------------------------------
+Filted by robust bound, 17 states left for SDP method
+===================================
+Starting state robustness verifier
+-----------------------------------
+1/17 states checked: 1 unrobust state
+2/17 states checked: 2 unrobust state
+3/17 states checked: 3 unrobust state
+4/17 states checked: 4 unrobust state
+5/17 states checked: 5 unrobust state
+6/17 states checked: 6 unrobust state
+7/17 states checked: 7 unrobust state
+8/17 states checked: 8 unrobust state
+9/17 states checked: 9 unrobust state
+10/17 states checked: 10 unrobust state
+11/17 states checked: 11 unrobust state
+12/17 states checked: 12 unrobust state
+13/17 states checked: 13 unrobust state
+14/17 states checked: 14 unrobust state
+15/17 states checked: 15 unrobust state
+16/17 states checked: 16 unrobust state
+17/17 states checked: 17 unrobust state
+17/17 states checked: 17 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 98.30%, Verification time: 62.33s
+=============================================

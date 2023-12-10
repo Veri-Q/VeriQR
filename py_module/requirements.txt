@@ -1,0 +1,11 @@
+cvxpy
+prettytable
+matplotlib
+mindquantum==0.9.0
+cirq==0.11.0
+protobuf==3.13.0
+tensorflow==2.4.1
+tensorflow-quantum==0.5.1
+tensornetwork
+dice_ml
+scikit-learn

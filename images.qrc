@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/icons">
+
+    </qresource>
+    <qresource prefix="/gates">
+        <file>images/H.png</file>
+        <file>images/T.png</file>
+        <file>images/S.png</file>
+        <file>images/S_dg.png</file>
+        <file>images/T_dg.png</file>
+        <file>images/X.png</file>
+        <file>images/Y.png</file>
+        <file>images/Z.png</file>
+        <file>images/RX.png</file>
+        <file>images/RY.png</file>
+        <file>images/RZ.png</file>
+        <file>images/P.png</file>
+        <file>images/CNOT.png</file>
+        <file>images/SWAP.png</file>
+        <file>images/barrier.png</file>
+        <file>images/measure.png</file>
+        <file>images/DC.png</file>
+        <file>images/BFC.png</file>
+        <file>images/PFC.png</file>
+    </qresource>
+</RCC>
