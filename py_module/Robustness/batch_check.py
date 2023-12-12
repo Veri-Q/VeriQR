@@ -21,17 +21,14 @@ def qasm2mq(qasm_file):
             val_list.append(float(param))
         pr = dict(zip(circuit.params_name, val_list))  # 获取线路参数
         circuit = circuit.apply_value(pr)
-        # print(pr)
 
-    # 先保存图片, 再移除测量门
     circuit.svg().to_file("./Figures/" + qasm_file[qasm_file.rfind('/')+1:-5] + "_model.svg")  # qasm_file chop '.qasm'
+
     if circuit.has_measure_gate:
         circuit = circuit.remove_measure()
 
     mat = circuit.matrix()
-    # print(circuit)
-    # print(mat.shape)
-    kraus = np.array([mat])  # .reshape((-1, 2, mat.shape[0]))
+    kraus = np.array([mat])
     return kraus
 
 

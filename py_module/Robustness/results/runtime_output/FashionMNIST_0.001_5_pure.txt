@@ -1,0 +1,76 @@
+=============================================
+Starting Pure Robustness Verifier
+---------------------------------------------
+Checking 0.001-robustness
+----------------------------------------
+Filted by robust bound, 20 states left for QCQP method
+===================================
+Starting pure state robustness verifier
+-----------------------------------
+1/20 states checked: 0 unrobust state 2/20 states checked: 1 unrobust state 3/20 states checked: 1 unrobust state 4/20 states checked: 1 unrobust state 5/20 states checked: 1 unrobust state 6/20 states checked: 2 unrobust state 7/20 states checked: 2 unrobust state 8/20 states checked: 3 unrobust state 9/20 states checked: 4 unrobust state 10/20 states checked: 4 unrobust state 11/20 states checked: 4 unrobust state 12/20 states checked: 5 unrobust state 13/20 states checked: 5 unrobust state 14/20 states checked: 5 unrobust state 15/20 states checked: 5 unrobust state 16/20 states checked: 5 unrobust state 17/20 states checked: 5 unrobust state 18/20 states checked: 5 unrobust state 19/20 states checked: 5 unrobust state 20/20 states checked: 5 unrobust state 20/20 states checked: 5 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 97.50%, Verification time: 1.63s
+=============================================
+=============================================
+Starting Pure Robustness Verifier
+---------------------------------------------
+Checking 0.002-robustness
+----------------------------------------
+Filted by robust bound, 33 states left for QCQP method
+===================================
+Starting pure state robustness verifier
+-----------------------------------
+1/33 states checked: 0 unrobust state 2/33 states checked: 0 unrobust state 3/33 states checked: 0 unrobust state 4/33 states checked: 1 unrobust state 5/33 states checked: 2 unrobust state 6/33 states checked: 2 unrobust state 7/33 states checked: 2 unrobust state 8/33 states checked: 3 unrobust state 9/33 states checked: 3 unrobust state 10/33 states checked: 3 unrobust state 11/33 states checked: 4 unrobust state 12/33 states checked: 4 unrobust state 13/33 states checked: 4 unrobust state 14/33 states checked: 5 unrobust state 15/33 states checked: 6 unrobust state 16/33 states checked: 6 unrobust state 17/33 states checked: 6 unrobust state 18/33 states checked: 6 unrobust state 19/33 states checked: 6 unrobust state 20/33 states checked: 7 unrobust state 21/33 states checked: 7 unrobust state 22/33 states checked: 7 unrobust state 23/33 states checked: 7 unrobust state 24/33 states checked: 7 unrobust state 25/33 states checked: 7 unrobust state 26/33 states checked: 7 unrobust state 27/33 states checked: 7 unrobust state 28/33 states checked: 7 unrobust state 29/33 states checked: 7 unrobust state 30/33 states checked: 7 unrobust state 31/33 states checked: 8 unrobust state 32/33 states checked: 8 unrobust state 33/33 states checked: 8 unrobust state 33/33 states checked: 8 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 96.00%, Verification time: 2.70s
+=============================================
+=============================================
+Starting Pure Robustness Verifier
+---------------------------------------------
+Checking 0.003-robustness
+----------------------------------------
+Filted by robust bound, 44 states left for QCQP method
+===================================
+Starting pure state robustness verifier
+-----------------------------------
+1/44 states checked: 0 unrobust state 2/44 states checked: 0 unrobust state 3/44 states checked: 0 unrobust state 4/44 states checked: 0 unrobust state 5/44 states checked: 0 unrobust state 6/44 states checked: 0 unrobust state 7/44 states checked: 1 unrobust state 8/44 states checked: 1 unrobust state 9/44 states checked: 2 unrobust state 10/44 states checked: 2 unrobust state 11/44 states checked: 2 unrobust state 12/44 states checked: 2 unrobust state 13/44 states checked: 2 unrobust state 14/44 states checked: 2 unrobust state 15/44 states checked: 3 unrobust state 16/44 states checked: 3 unrobust state 17/44 states checked: 3 unrobust state 18/44 states checked: 4 unrobust state 19/44 states checked: 4 unrobust state 20/44 states checked: 4 unrobust state 21/44 states checked: 4 unrobust state 22/44 states checked: 5 unrobust state 23/44 states checked: 6 unrobust state 24/44 states checked: 6 unrobust state 25/44 states checked: 6 unrobust state 26/44 states checked: 6 unrobust state 27/44 states checked: 6 unrobust state 28/44 states checked: 7 unrobust state 29/44 states checked: 7 unrobust state 30/44 states checked: 7 unrobust state 31/44 states checked: 7 unrobust state 32/44 states checked: 7 unrobust state 33/44 states checked: 7 unrobust state 34/44 states checked: 7 unrobust state 35/44 states checked: 7 unrobust state 36/44 states checked: 7 unrobust state 37/44 states checked: 7 unrobust state 38/44 states checked: 7 unrobust state 39/44 states checked: 8 unrobust state 40/44 states checked: 8 unrobust state 41/44 states checked: 9 unrobust state 42/44 states checked: 9 unrobust state 43/44 states checked: 9 unrobust state 44/44 states checked: 10 unrobust state 44/44 states checked: 10 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 95.00%, Verification time: 3.62s
+=============================================
+=============================================
+Starting Pure Robustness Verifier
+---------------------------------------------
+Checking 0.004-robustness
+----------------------------------------
+Filted by robust bound, 52 states left for QCQP method
+===================================
+Starting pure state robustness verifier
+-----------------------------------
+1/52 states checked: 0 unrobust state 2/52 states checked: 0 unrobust state 3/52 states checked: 0 unrobust state 4/52 states checked: 0 unrobust state 5/52 states checked: 0 unrobust state 6/52 states checked: 0 unrobust state 7/52 states checked: 1 unrobust state 8/52 states checked: 1 unrobust state 9/52 states checked: 2 unrobust state 10/52 states checked: 2 unrobust state 11/52 states checked: 2 unrobust state 12/52 states checked: 2 unrobust state 13/52 states checked: 2 unrobust state 14/52 states checked: 2 unrobust state 15/52 states checked: 3 unrobust state 16/52 states checked: 3 unrobust state 17/52 states checked: 3 unrobust state 18/52 states checked: 3 unrobust state 19/52 states checked: 4 unrobust state 20/52 states checked: 4 unrobust state 21/52 states checked: 4 unrobust state 22/52 states checked: 4 unrobust state 23/52 states checked: 5 unrobust state 24/52 states checked: 5 unrobust state 25/52 states checked: 5 unrobust state 26/52 states checked: 6 unrobust state 27/52 states checked: 6 unrobust state 28/52 states checked: 6 unrobust state 29/52 states checked: 6 unrobust state 30/52 states checked: 6 unrobust state 31/52 states checked: 6 unrobust state 32/52 states checked: 7 unrobust state 33/52 states checked: 7 unrobust state 34/52 states checked: 7 unrobust state 35/52 states checked: 7 unrobust state 36/52 states checked: 7 unrobust state 37/52 states checked: 7 unrobust state 38/52 states checked: 7 unrobust state 39/52 states checked: 7 unrobust state 40/52 states checked: 7 unrobust state 41/52 states checked: 7 unrobust state 42/52 states checked: 7 unrobust state 43/52 states checked: 7 unrobust state 44/52 states checked: 7 unrobust state 45/52 states checked: 7 unrobust state 46/52 states checked: 8 unrobust state 47/52 states checked: 8 unrobust state 48/52 states checked: 9 unrobust state 49/52 states checked: 9 unrobust state 50/52 states checked: 9 unrobust state 51/52 states checked: 9 unrobust state 52/52 states checked: 10 unrobust state 52/52 states checked: 10 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 95.00%, Verification time: 4.02s
+=============================================
+=============================================
+Starting Pure Robustness Verifier
+---------------------------------------------
+
+Checking 0.005-robustness
+----------------------------------------
+Filted by robust bound, 65 states left for QCQP method
+===================================
+Starting pure state robustness verifier
+-----------------------------------
+1/65 states checked: 0 unrobust state 2/65 states checked: 0 unrobust state 3/65 states checked: 0 unrobust state 4/65 states checked: 0 unrobust state 5/65 states checked: 0 unrobust state 6/65 states checked: 0 unrobust state 7/65 states checked: 0 unrobust state 8/65 states checked: 0 unrobust state 9/65 states checked: 0 unrobust state 10/65 states checked: 1 unrobust state 11/65 states checked: 1 unrobust state 12/65 states checked: 2 unrobust state 13/65 states checked: 2 unrobust state 14/65 states checked: 2 unrobust state 15/65 states checked: 2 unrobust state 16/65 states checked: 2 unrobust state 17/65 states checked: 2 unrobust state 18/65 states checked: 3 unrobust state 19/65 states checked: 3 unrobust state 20/65 states checked: 4 unrobust state 21/65 states checked: 4 unrobust state 22/65 states checked: 4 unrobust state 23/65 states checked: 4 unrobust state 24/65 states checked: 5 unrobust state 25/65 states checked: 5 unrobust state 26/65 states checked: 5 unrobust state 27/65 states checked: 6 unrobust state 28/65 states checked: 6 unrobust state 29/65 states checked: 7 unrobust state 30/65 states checked: 7 unrobust state 31/65 states checked: 7 unrobust state 32/65 states checked: 8 unrobust state 33/65 states checked: 9 unrobust state 34/65 states checked: 9 unrobust state 35/65 states checked: 9 unrobust state 36/65 states checked: 9 unrobust state 37/65 states checked: 9 unrobust state 38/65 states checked: 9 unrobust state 39/65 states checked: 10 unrobust state 40/65 states checked: 10 unrobust state 41/65 states checked: 10 unrobust state 42/65 states checked: 10 unrobust state 43/65 states checked: 10 unrobust state 44/65 states checked: 11 unrobust state 45/65 states checked: 11 unrobust state 46/65 states checked: 11 unrobust state 47/65 states checked: 11 unrobust state 48/65 states checked: 11 unrobust state 49/65 states checked: 11 unrobust state 50/65 states checked: 11 unrobust state 51/65 states checked: 11 unrobust state 52/65 states checked: 11 unrobust state 53/65 states checked: 11 unrobust state 54/65 states checked: 12 unrobust state 55/65 states checked: 12 unrobust state 56/65 states checked: 12 unrobust state 57/65 states checked: 12 unrobust state 58/65 states checked: 12 unrobust state 59/65 states checked: 12 unrobust state 60/65 states checked: 13 unrobust state 61/65 states checked: 13 unrobust state 62/65 states checked: 13 unrobust state 63/65 states checked: 13 unrobust state 64/65 states checked: 13 unrobust state 65/65 states checked: 14 unrobust state 65/65 states checked: 14 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 93.00%, Verification time: 6.02s
+=============================================

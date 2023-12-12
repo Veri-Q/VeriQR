@@ -113,7 +113,7 @@ def PureStateRobustnessVerifier(OO, data, label, e, ADVERSARY_EXAMPLE=False):
                 plt.yticks([])
 
                 #                plt.show()
-                plt.savefig('./adversary_examples/adversary_example_{:d}.png'.format(non_robust_num),
+                plt.savefig('./adversary_examples/adversary_example_fashionMnist_{:d}.png'.format(non_robust_num),
                             bbox_inches='tight')
                 plt.close()
 
@@ -157,12 +157,7 @@ def RobustnessVerifier(E, O, data, label, e, type):
 
         if type == 'qasm':
             ex[i] = logistic(ex[i])
-    #     if ex[i] > 1-ex[i]:
-    #         predict.append(0)
-    #     else:
-    #         predict.append(1)
-    #
-    # print('predict: ', predict)
+
     # print(ex)
 
     non_robust_index = (np.abs(np.sqrt(ex) - np.sqrt(1. - ex)) <= (np.sqrt(2. * e))) & ((ex > 0.5) == label)
@@ -206,6 +201,8 @@ def PureRobustnessVerifier(E, O, data, label, e, type, ADVERSARY_EXAMPLE=False):
     ex = np.zeros((n,))
     for i in range(n):
         ex[i] = np.real(data[:, i].T.conj() @ OO @ data[:, i])
+        if type == 'qasm':
+            ex[i] = logistic(ex[i])
 
     non_robust_index = (np.abs(np.sqrt(ex) - np.sqrt(1. - ex)) <= (np.sqrt(2. * e))) & ((ex > 0.5) == label)
     non_robust_num[0] = np.sum(non_robust_index)

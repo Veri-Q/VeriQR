@@ -61,7 +61,7 @@ public slots:
     void run_robustVeri();
     void stopProcess();
     void on_read_output();
-    void get_table_data(int, QProcess::ExitStatus);
+    void get_table_data();
 
 
 private:

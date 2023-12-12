@@ -6,7 +6,7 @@ PdfView::PdfView(QWidget *parent)
     // this->setZoomMode(QPdfView::ZoomMode::FitInView); // 适合页面宽度
     this->setZoomMode(QPdfView::ZoomMode::FitToWidth); // 适合窗口宽度
     // this->setPageMode(QPdfView::PageMode::MultiPage); // 连续页面显示
-    qDebug() << this->zoomFactor();
+    // qDebug() << this->zoomFactor();
 }
 
 void PdfView::loadDocument(QString filename)

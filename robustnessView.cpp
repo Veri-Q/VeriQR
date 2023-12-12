@@ -12,13 +12,11 @@
 #include <QFontDialog>
 #include <QDebug>
 #include <QtCore5Compat/QTextCodec>
-#include <QSvgRenderer>
 #include <QImage>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QMimeData>
 #include <QDrag>
-#include <QStackedLayout>
 #include <QtConcurrent/QtConcurrent>
 #include <QFuture>
 
@@ -194,7 +192,8 @@ void RobustnessView::openFile(){
 
     show_result_tables();
 
-    get_table_data(1, QProcess::NormalExit);
+    // get_table_data(1, QProcess::NormalExit);
+    get_table_data();
 
     show_circuit_diagram();
 
@@ -464,7 +463,7 @@ void RobustnessView::run_robustVeri()
 
     process = new QProcess(this);
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_read_output()));
-    connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(get_table_data(int, QProcess::ExitStatus)));
+    // connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(get_table_data(int, QProcess::ExitStatus)));
     process->setReadChannel(QProcess::StandardOutput);
     process->setWorkingDirectory(robustDir);
     process->start(cmd, args);
@@ -491,24 +490,26 @@ void RobustnessView::stopProcess()
 
 void RobustnessView::on_read_output()
 {
-    output_line_ = QString::fromLocal8Bit(process->readAllStandardOutput().data());
-    output_.append(output_line_);
-    //    qDebug() << output_line_;
+    while (process->bytesAvailable() > 0){
+        output_line_ = process->readLine();
+        // qDebug() << output_line_;
 
-    if(output_line_.contains("Starting") && !showed_pdf && !showed_svg)
-    {
-        show_circuit_diagram();
-    }
-
-    // Verification over, show adversary examples
-    if(output_line_.contains("Robust Accuracy (in Percent)"))
-    {
-        if(ui->checkBox->isChecked()){
-            show_adversary_examples();
+        if(output_line_.contains("Starting") && !showed_pdf && !showed_svg)
+        {
+            show_circuit_diagram();
         }
-        int index = output_line_.lastIndexOf("==");
-        ui->textBrowser_output->append(output_line_.mid(0, index+2));
+        // Verification over, show adversary examples
+        else if(output_line_.contains("Robust Accuracy (in Percent)"))
+        {
+            if(ui->checkBox->isChecked()){
+                show_adversary_examples();
+            }
+            break;
+        }
+        output_.append(output_line_);
+        ui->textBrowser_output->append(output_line_.simplified());
     }
+    get_table_data();
 }
 
 void RobustnessView::show_adversary_examples()
@@ -631,15 +632,25 @@ void RobustnessView::show_circuit_diagram()
 
 void RobustnessView::show_circuit_diagram_svg(QString filename)
 {
-    svgWidget = new SvgWidget(ui->scrollArea_circ);
+    svgWidget = new SvgWidget(ui->scrollAreaWidgetContents_circ);
     svgWidget->load(filename);
     svgWidget->setObjectName("svgWidget_circ");
+    double container_w = double(ui->scrollAreaWidgetContents_circ->width());
+    double svg_w = double(svgWidget->renderer()->defaultSize().width());
+    double svg_h = double(svgWidget->renderer()->defaultSize().height());
+    double iris_w = 977.0;
+    double iris_h = 260.0;
+    svg_h = container_w / svg_w * svg_h;
+    iris_h = container_w / iris_w * iris_h;
+    // qDebug() << svg_h;
+    // iris.svg: (width, height) = (977, 260)
 
-    QSpacerItem *verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    QSpacerItem *verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Expanding, QSizePolicy::Expanding);
     ui->verticalLayout_circ->addItem(verticalSpacer);
-
-    ui->verticalLayout_circ->insertWidget(0, svgWidget, 2);
-    ui->verticalLayout_circ->setStretch(1, 3);
+    int diff = double(svg_h*2)/double(iris_h) * 1000;
+    // qDebug() << diff;
+    ui->verticalLayout_circ->insertWidget(0, svgWidget, diff);
+    ui->verticalLayout_circ->setStretch(1, 3*1000);
 }
 
 void RobustnessView::show_circuit_diagram_pdf(QString filename)
@@ -729,9 +740,10 @@ void RobustnessView::show_result_tables(){
 }
 
 /* 将文件内容解析到表格 */
-void RobustnessView::get_table_data(int exitCode, QProcess::ExitStatus exitStatus){
+void RobustnessView::get_table_data(){
     // 程序异常结束
-    if(exitStatus != QProcess::NormalExit){
+    qDebug() << process->exitStatus();
+    if(process->exitStatus() != QProcess::NormalExit){
         QMessageBox::warning(this, "Warning", "Program abort.");
         return;
     }
@@ -740,7 +752,7 @@ void RobustnessView::get_table_data(int exitCode, QProcess::ExitStatus exitStatu
     QFile file(csvfile_);
     qDebug() << csvfile_;
 
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         QMessageBox::warning(this, "Warning", "Unable to open the .csv file: " + csvfile_ + "\n" + file.errorString());
         return;
     }
