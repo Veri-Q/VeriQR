@@ -331,12 +331,12 @@ print_model_circuit(noisy_model.layers[1].get_weights()[0], noisy_p, noise_op_mq
 print("===========Printing Model Circuit End============")
 
 tstart = time.time()
-print("\n===========Lipschitz Constant Start============")
+print("\n===========The Lipschitz Constant Calculation Start============")
 a, _ = np.linalg.eig(circuit2M(noisy_p, noisy_model.layers[1].get_weights()[0], noise_op[noise_type], mixed))
 k = np.real(max(a) - min(a))
 if k != -1:
-    print("Lipschitz K = ", k)
+    print("Lipschitz K =", k)
 else:
     print("Lipschitz K = -")
 print(f"Elapsed time = {(time.time() - tstart):.4f}s")
-print("============Lipschitz Constant End=============")
+print("============The Lipschitz Constant Calculation End=============")

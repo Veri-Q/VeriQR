@@ -569,7 +569,7 @@ background-color: rgb(238, 238, 238);
 QTabBar::tab:selected { font-size: 19px; font-weight: bold; }</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_res">
       <attribute name="title">
@@ -823,53 +823,6 @@ background-color: rgb(255, 255, 255);</string>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4"/>
-         </widget>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_drag_circ">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <attribute name="title">
-       <string>Drag Circuit</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_9">
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_7"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_browser_circ">
-      <attribute name="title">
-       <string>Browser Circ</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QScrollArea" name="scrollArea_2">
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents_2">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>98</width>
-            <height>28</height>
-           </rect>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_6"/>
          </widget>
         </widget>
        </item>

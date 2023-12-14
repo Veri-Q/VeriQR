@@ -95,12 +95,12 @@
               </font>
              </property>
              <property name="text">
-              <string>Import Other Dataset</string>
+              <string>Import Other Model</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_filepathname"/>
+            <widget class="QLineEdit" name="lineEdit_modelfile"/>
            </item>
           </layout>
          </item>

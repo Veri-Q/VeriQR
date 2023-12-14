@@ -9,6 +9,8 @@ import qiskit
 # from mitiq.utils import _simplify_circuit_exponents
 import numpy as np
 from mindquantum.io import OpenQASM
+from qiskit import QuantumCircuit
+from qiskit.transpiler.passes import RemoveBarriers
 
 # python3 qasm2npz.py qe.qasm
 # qasm_file = str(argv[1])
@@ -17,7 +19,7 @@ qasm_file = "../model_and_data/test_qasm/pe_10.qasm"
 QASMType = str
 
 
-def to_qasm(circuit: cirq.Circuit) -> QASMType:
+def cirq2qasm(circuit: cirq.Circuit) -> QASMType:
     """Returns a QASM string representing the input Mitiq circuit.
 
     Args:
@@ -42,7 +44,7 @@ def to_qiskit(circuit: cirq.Circuit) -> qiskit.QuantumCircuit:
     Returns:
         Qiskit.QuantumCircuit object equivalent to the input Mitiq circuit.
     """
-    return qiskit.QuantumCircuit.from_qasm_str(to_qasm(circuit))
+    return qiskit.QuantumCircuit.from_qasm_str(cirq2qasm(circuit))
 
 
 def _remove_qasm_barriers(qasm: QASMType) -> QASMType:
@@ -68,7 +70,7 @@ def _remove_qasm_barriers(qasm: QASMType) -> QASMType:
     return "".join(lines)
 
 
-def qasm2cirq(qasm: QASMType) -> cirq.Circuit:
+def qasm2cirq_(qasm: QASMType) -> cirq.Circuit:
     """Returns a Mitiq circuit equivalent to the input QASM string.
 
     Args:
@@ -79,6 +81,32 @@ def qasm2cirq(qasm: QASMType) -> cirq.Circuit:
     """
     qasm = _remove_qasm_barriers(qasm)
     return circuit_from_qasm(qasm)
+
+
+def qasm2cirq(file):
+    with open(file, 'r') as f:
+        qasm_str = f.read()
+
+    # qasm to qiskit
+    circ = QuantumCircuit.from_qasm_str(qasm_str)
+    circ.remove_final_measurements()
+    circ = RemoveBarriers()(circ)
+    # qiskit to qasm
+    qasm_str = circ.inverse().qasm()
+
+    # qasm to cirq
+    circuit = circuit_from_qasm(qasm_str)
+    qubits = sorted(circuit.all_qubits())
+
+    return qubits, circuit
+
+
+def noisy_circuit_from_qasm(file, noise_op, p=0.01):
+    qubits, circuit = qasm2cirq(file)
+
+    if p > 1e-7:
+        circuit += noise_op(p).on_each(*qubits)
+    return qubits, circuit
 
 
 def mq2qasm(circ):
@@ -106,7 +134,8 @@ def qasm2mq(qasm_file):
         # print(pr)
 
     # 先保存图片, 再移除测量门
-    circuit.svg().to_file("./Figures/" + qasm_file[qasm_file.rfind('/')+1:-5] + "_model.svg")  # qasm_file chop '.qasm'
+    circuit.svg().to_file(
+        "./Figures/" + qasm_file[qasm_file.rfind('/') + 1:-5] + "_model.svg")  # qasm_file chop '.qasm'
     if circuit.has_measure_gate:
         circuit = circuit.remove_measure()
 
@@ -123,6 +152,10 @@ def savenpz():
     c = np.arange(5)
     d = np.arange(6)
     np.savez('array_save.npz', kraus=a, O=b, data=c, label=d)
+
+
+def cu1(p_lambda):
+    return cirq.MatrixGate(np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, np.exp(1j * p_lambda)]]))
 
 
 def circ():

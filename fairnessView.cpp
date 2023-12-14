@@ -55,20 +55,13 @@ void FairnessView::resizeEvent(QResizeEvent *)
     {
         show_loss_and_acc_plot();
     }
-    // if(showed_svg)
-    // {
-    //     show_circuit_diagram();
-    // }
 }
 
-bool FairnessView::findModel(QString filename)
+bool FairnessView::findFile(QString filename)
 {
-    QString filePath = fairDir + "/saved_model/" + filename;
-    qDebug() << filePath;
-
     struct stat s;
 
-    if (stat(filePath.toStdString().c_str(), &s) == 0)
+    if (stat(filename.toStdString().c_str(), &s) == 0)
     {
         if (s.st_mode & S_IFDIR || s.st_mode & S_IFREG)
         {
@@ -78,6 +71,7 @@ bool FairnessView::findModel(QString filename)
         {
             qDebug() << "This is not a directory or file.";
         }
+        qDebug() << "has find the file: " << filename;
         return true;
     }
 
@@ -105,67 +99,71 @@ void FairnessView::openFile(){
     QString fileName = QFileDialog::getOpenFileName(this, "Open file", fairDir+"/training_output/");
     QFile file(fileName);
 
-    if (file.open(QIODevice::ReadOnly |QIODevice::Text) && QFileInfo(fileName).suffix() == "txt")
-    {
-        // clear all
-        clear_all_information();
-
-        // 从文件名获取各种参数信息
-        file_name_ = QFileInfo(file).fileName();  // gc_phase_flip_0.0001.txt
-        file_name_.chop(4);
-        qDebug() << file_name_;
-
-        QStringList args = file_name_.split("_");
-        noise_prob_ = args[args.size()-1].toDouble();
-
-        if(args.size() == 4){  // "phase_flip" or "bit_flip"
-            noise_type_ = args[1] + "_" + args[2];
-        }
-        else if(args.size() == 3){
-            noise_type_ = args[1];
-        }
-
-        // UI change
-        model_change_to_ui();
-
-        while (!file.atEnd())
-        {
-            output_line_ = QString(file.readLine());
-            output_.append(output_line_);
-            ui->textBrowser_output->append(output_line_.simplified());
-
-            if(output_line_.contains("Training End"))
-            {
-                show_loss_and_acc_plot();
-            }
-            else if(output_line_.contains("Printing Model Circuit End"))
-            {
-                show_circuit_diagram();
-            }
-            else if(output_line_.startsWith("Lipschitz K"))
-            {
-                lipschitz_ = output_line_.mid(output_line_.indexOf("=  ")+3).toDouble();
-                ui->lineEdit_k->setText(QString::number(lipschitz_));
-                qDebug() << output_line_;
-                qDebug() << lipschitz_;
-            }
-            else if(output_line_.startsWith("Elapsed time"))
-            {
-                int a = output_line_.indexOf("=") + 2;
-                veri_time_ = output_line_.mid(a, output_line_.size()-a-2).toDouble();
-                ui->lineEdit_time->setText(QString::number(veri_time_)+"s");
-                qDebug() << output_line_;
-                qDebug() << veri_time_;
-            }
-            else if(output_.contains("Lipschitz Constant End")){
-                break;
-            }
-        }
-    }
-    else
+    if (!file.open(QIODevice::ReadOnly |QIODevice::Text) || QFileInfo(fileName).suffix() != "txt")
     {
         QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
         return;
+    }
+
+    show_saved_results(fileName);
+}
+
+void FairnessView::show_saved_results(QString fileName)
+{
+    // clear all
+    clear_all_information();
+
+    // 从文件名获取各种参数信息
+    QFile file(fileName);
+    file_name_ = QFileInfo(file).fileName();  // gc_phase_flip_0.0001.txt  or  hf_6_0_5_bit_flip_0.01.txt
+    file_name_.chop(4);
+    qDebug() << file_name_;
+
+    QStringList args = file_name_.split("_");
+    noise_prob_ = args[args.size()-1].toDouble();
+
+    if(args[args.size()-2] == "flip"){  // "phase_flip" or "bit_flip"
+        noise_type_ = args[args.size()-3] + "_" + args[args.size()-2];
+    }
+    else{
+        noise_type_ = args[args.size()-2];
+    }
+
+    // UI change
+    model_change_to_ui();
+
+    while (!file.atEnd())
+    {
+        output_line_ = QString(file.readLine());
+        output_.append(output_line_);
+        ui->textBrowser_output->append(output_line_.simplified());
+
+        if(output_line_.contains("Training End"))
+        {
+            show_loss_and_acc_plot();
+        }
+        else if(output_line_.contains("Printing Model Circuit End"))
+        {
+            show_circuit_diagram();
+        }
+        else if(output_line_.startsWith("Lipschitz K"))
+        {
+            lipschitz_ = output_line_.mid(output_line_.indexOf("= ")+2).toDouble();
+            ui->lineEdit_k->setText(QString::number(lipschitz_));
+            qDebug() << output_line_;
+            qDebug() << lipschitz_;
+        }
+        else if(output_line_.startsWith("Elapsed time"))
+        {
+            int a = output_line_.indexOf("= ") + 2;
+            veri_time_ = output_line_.mid(a, output_line_.size()-a-2).toDouble();
+            ui->lineEdit_time->setText(QString::number(veri_time_)+"s");
+            qDebug() << output_line_;
+            qDebug() << veri_time_;
+        }
+        else if(output_line_.contains("The Lipschitz Constant Calculation End")){
+            break;
+        }
     }
 
     file.close();
@@ -214,10 +212,14 @@ void FairnessView::saveasFile()
 
 void FairnessView::on_radioButton_gc_clicked(){
     pyfile_ = pyfiles[0];
+    model_file_.fileName().clear();
+    ui->lineEdit_modelfile->clear();
 }
 
 void FairnessView::on_radioButton_dice_clicked(){
     pyfile_ = pyfiles[1];
+    model_file_.fileName().clear();
+    ui->lineEdit_modelfile->clear();
 }
 
 void FairnessView::on_radioButton_importfile_clicked(){
@@ -230,20 +232,20 @@ void FairnessView::on_radioButton_importfile_clicked(){
 /* 导入.npz数据文件 */
 void FairnessView::importModel()
 {
-    //    QString fileName = QFileDialog::getOpenFileName(this, "Open file", fairDir);
-    //    QFile file(fileName);
-    //    current_fileinfo_ = QFileInfo(fileName);
+   QString fileName = QFileDialog::getOpenFileName(this, "Open file", fairDir);
+   QFile file(fileName);
+   model_file_ = QFileInfo(fileName);
 
-    //    if (!file.open(QIODevice::ReadOnly)) {
-    //        QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
-    //        return;
-    //    }else if(current_fileinfo_.suffix() != "npz"){
-    //        QMessageBox::warning(this, "Warning", "VeriQFair only supports .npz data files.");
-    //        return;
-    //    }
-    //    ui->lineEdit_filepathname->setText(current_fileinfo_.filePath());
+   if (!file.open(QIODevice::ReadOnly)) {
+       QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
+       return;
+   }else if(model_file_.suffix() != "qasm"){
+       QMessageBox::warning(this, "Warning", "VeriQR only supports .qasm model files.");
+       return;
+   }
+   ui->lineEdit_modelfile->setText(model_file_.filePath());
 
-    //    file.close();
+   file.close();
 }
 
 void FairnessView::on_radioButton_phaseflip_clicked()
@@ -301,21 +303,20 @@ void FairnessView::model_change_to_ui(){
 
 void FairnessView::run_fairnessVeri()
 {
-    QString choice = "train";
+    clear_all_information();
 
     noise_prob_ = ui->doubleSpinBox_prob->value();
 
-    clear_all_information();
-
     if (!pyfile_.isEmpty()){  // has selected a existing model file
         QString model_name = pyfile_.mid(pyfile_.lastIndexOf("_") + 1); // 去掉evaluate_finance_model_前缀
+        QString choice = "train";
 
         QStringList list;
         list << model_name << noise_type_ << QString::number(noise_prob_);
         file_name_ = list.join("_");   // csv和txt结果文件的默认命名
         qDebug() << file_name_;
 
-        if(findModel(file_name_))  // the current model has been trained and saved before
+        if(findFile(fairDir + "/saved_model/" + file_name_))  // the current model has been trained and saved before
         {
             QString dlgTitle = "Select an option";
             QString strInfo = "The model has been trained and saved before. "
@@ -369,9 +370,75 @@ void FairnessView::run_fairnessVeri()
             qDebug()<< "Error executing script: " << error; // 打印出错提示
         }
 
-    }else{
-        // TODO
+    }
+    else  // has selected another .qasm file
+    {
+        QString model_name = model_file_.fileName();  // like: hf_6_0_5.qasm
+        model_name.chop(5);   // 去掉.qasm
+        qDebug() << "model_name: " << model_name;
 
+        QStringList list;
+        list << model_name << noise_type_ << QString::number(noise_prob_);
+        file_name_ = list.join("_");   // csv和txt结果文件的默认命名
+        qDebug() << "file_name_: " << file_name_;
+
+        QString file = fairDir + "/training_output/" + file_name_ + ".txt";
+        if(findFile(file))  // the current model has been trained and saved before
+        {
+            QString dlgTitle = "Select an option";
+            QString strInfo = "The results of this model have been saved before. "
+                              "Do you want to see the previous results or recalculate it?";
+            QMessageBox msgBox;
+            msgBox.setWindowTitle(dlgTitle);
+            msgBox.setText(strInfo);
+            QPushButton *showButton = msgBox.addButton(tr("Show the previous results"), QMessageBox::ActionRole);
+            QPushButton *calcButton = msgBox.addButton(tr("Recalculate"),QMessageBox::ActionRole);
+            msgBox.addButton(QMessageBox::No);
+            msgBox.button(QMessageBox::No)->setHidden(true);
+            msgBox.setDefaultButton(QMessageBox::NoButton);
+            msgBox.exec();
+
+            if (msgBox.clickedButton() == showButton)
+            {
+                show_saved_results(file);
+            }
+            else
+            {
+                // python qlipschitz.py qasmfile phase_flip 0.0001
+                QString cmd = "python";
+                QStringList args;
+                args << "qlipschitz.py" << model_file_.filePath() << noise_type_ << QString::number(noise_prob_);
+
+                QString paramsList = "python qlipschitz.py " + model_file_.filePath() + " "
+                                     + noise_type_ + " " + QString::number(noise_prob_);
+                qDebug() << paramsList;
+
+                process = new QProcess(this);
+                process->setReadChannel(QProcess::StandardOutput);
+                connect(process, SIGNAL(stateChanged(QProcess::ProcessState)), SLOT(stateChanged(QProcess::ProcessState)));
+                connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_read_from_terminal()));
+                //        connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(show_results(int, QProcess::ExitStatus)));
+
+                process->setWorkingDirectory(fairDir);
+                process->start(cmd, args);
+                if(!process->waitForStarted()){
+                    qDebug() << "Process failure! Error: " << process->errorString();
+                }
+                else{
+                    qDebug() << "Process succeed! ";
+                }
+
+                if (!process->waitForFinished()) {
+                    qDebug() << "wait";
+                    QCoreApplication::processEvents(QEventLoop::AllEvents, 2000);
+                }
+
+                QString error = process->readAllStandardError(); // 命令行执行出错的提示
+                if(!error.isEmpty()){
+                    qDebug()<< "Error executing script: " << error; // 打印出错提示
+                }
+            }
+        }
     }
 }
 
@@ -395,6 +462,7 @@ void FairnessView::stateChanged(QProcess::ProcessState state)
     }
 }
 
+
 void FairnessView::on_read_from_terminal()
 {
     while (process->bytesAvailable() > 0){
@@ -413,7 +481,7 @@ void FairnessView::on_read_from_terminal()
         }
         else if(output_line_.startsWith("Lipschitz K"))
         {
-            lipschitz_ = output_line_.mid(output_line_.indexOf("K =  ")+5).toDouble();
+            lipschitz_ = output_line_.mid(output_line_.indexOf("= ")+2).toDouble();
             ui->lineEdit_k->setText(QString::number(lipschitz_));
             qDebug() << output_line_;
             qDebug() << lipschitz_;
@@ -426,7 +494,7 @@ void FairnessView::on_read_from_terminal()
             qDebug() << output_line_;
             qDebug() << veri_time_;
         }
-        else if(output_.contains("Lipschitz Constant End")){
+        else if(output_line_.contains("The Lipschitz Constant Calculation End")){
             break;
         }
     }
@@ -455,18 +523,6 @@ void FairnessView::show_circuit_diagram()
 
     ui->verticalLayout_circ->insertWidget(0, svgWidget, 1);
     ui->verticalLayout_circ->setStretch(1, 3);
-
-    // svgRender = new QSvgRenderer();
-    // svgRender->load(img_file);
-    // QSize size = svgRender->defaultSize(); // 获取svg的大小
-    // QPixmap pixmap(size * 1.8);            // 在这给绘图设备重新设置大小
-    // //        QPixmap pixmap = QPixmap(1024,1024);
-    // pixmap.fill(Qt::transparent); // 设置背景透明, 像素清空, 这一步必须有, 否则背景有黑框
-    // QPainter painter(&pixmap);
-    // painter.setRenderHints(QPainter::Antialiasing|QPainter::TextAntialiasing| QPainter::SmoothPixmapTransform);  // 反锯齿绘制
-    // svgRender->render(&painter);
-    // ui->imageLabel_circ->setPixmap(pixmap.scaledToHeight(ui->scrollAreaWidgetContents->height()*0.8,
-    //                                                      Qt::SmoothTransformation));
     showed_svg = true;
 }
 

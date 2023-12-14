@@ -23,7 +23,8 @@ public:
     void openFile();
     void saveFile();
     void saveasFile();
-    bool findModel(QString filename);
+    bool findFile(QString filename);
+    void show_saved_results(QString fileName);
     void show_loss_and_acc_plot();
     void show_circuit_diagram();
     void delete_circuit_diagram();
@@ -62,9 +63,8 @@ private:
         "evaluate_qcnn_model"
     };
 
-    QFileInfo current_fileinfo_;
-    QString file_name_;  // txt和csv结果文件命名: dice_phase_flip_0.0001
-    //    QString csvfile_;
+    QFileInfo model_file_; // 当前选择的qasm模型文件
+    QString file_name_;   // txt结果文件命名: dice_phase_flip_0.0001
 
     QString noise_type_ = noise_types[3];
     double noise_prob_ = 0.0;

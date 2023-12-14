@@ -11,7 +11,7 @@ Starting pure state robustness verifier
 ===================================
 Verification over
 ----------------------------------------
-Robust accuracy: 98.80%, Verification time: 3.96s
+Robust accuracy: 98.80%, Verification time: 3.09s
 =============================================
 =============================================
 Starting Pure Robustness Verifier
@@ -22,13 +22,11 @@ Filted by robust bound, 26 states left for QCQP method
 ===================================
 Starting pure state robustness verifier
 -----------------------------------
-/home/pp/QtProjects/RobustnessVerifier/py_module/Robustness/VeriQ.py:86: RuntimeWarning: More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`). Consider using `matplotlib.pyplot.close()`.
-  plt.figure()
 26/26 states checked: 18 unrobust state
 ===================================
 Verification over
 ----------------------------------------
-Robust accuracy: 98.20%, Verification time: 6.16s
+Robust accuracy: 98.20%, Verification time: 5.66s
 =============================================
 =============================================
 Starting Pure Robustness Verifier
@@ -43,5 +41,5 @@ Starting pure state robustness verifier
 ===================================
 Verification over
 ----------------------------------------
-Robust accuracy: 97.20%, Verification time: 9.79s
+Robust accuracy: 97.20%, Verification time: 31.54s
 =============================================

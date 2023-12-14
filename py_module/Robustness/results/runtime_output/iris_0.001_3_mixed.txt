@@ -11,7 +11,7 @@ Starting state robustness verifier
 ===================================
 Verification over
 ----------------------------------------
-Robust accuracy: 100.00%, Verification time: 0.16s
+Robust accuracy: 100.00%, Verification time: 0.15s
 =============================================
 =============================================
 Starting Robustness Verifier
@@ -26,7 +26,7 @@ Starting state robustness verifier
 ===================================
 Verification over
 ----------------------------------------
-Robust accuracy: 100.00%, Verification time: 0.14s
+Robust accuracy: 100.00%, Verification time: 0.15s
 =============================================
 =============================================
 Starting Robustness Verifier

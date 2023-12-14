@@ -61,18 +61,18 @@ public slots:
     void run_robustVeri();
     void stopProcess();
     void on_read_output();
-    void get_table_data();
+    void get_table_data(QString op);
+    void stateChanged(QProcess::ProcessState state);
 
 
 private:
     PdfView *pdfView;
 
     SvgWidget *svgWidget;
-    QSvgRenderer *svgRender;
-    QLabel *imageLabel_circ;
+    // QSvgRenderer *svgRender;
 
-    DragCircuit *dragCircuit;
-    QWebEngineView *webView;
+    // DragCircuit *dragCircuit;
+    // QWebEngineView *webView;
 
     QProcess *process;
 

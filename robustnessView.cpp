@@ -70,20 +70,20 @@ void RobustnessView::init()
     palette.setBrush(QPalette::Window, Qt::transparent);
     ui->groupBox_runtime->setPalette(palette);
 
-    dragCircuit = new DragCircuit(ui->tab_drag_circ);
-    dragCircuit->setObjectName(QString::fromUtf8("dragCircuit"));
-    ui->verticalLayout_7->addWidget(dragCircuit);
+    // dragCircuit = new DragCircuit(ui->tab_drag_circ);
+    // dragCircuit->setObjectName(QString::fromUtf8("dragCircuit"));
+    // ui->verticalLayout_7->addWidget(dragCircuit);
 
-    webView = new QWebEngineView(ui->scrollAreaWidgetContents_2);
-    palette = webView->palette();
-    palette.setBrush(QPalette::Base, Qt::transparent);  // 设置背景颜色为透明
-    webView->setPalette(palette);
-    setAttribute(Qt::WA_OpaquePaintEvent,false);
+    // webView = new QWebEngineView(ui->scrollAreaWidgetContents_2);
+    // palette = webView->palette();
+    // palette.setBrush(QPalette::Base, Qt::transparent);  // 设置背景颜色为透明
+    // webView->setPalette(palette);
+    // setAttribute(Qt::WA_OpaquePaintEvent,false);
 
-    webView->load(QUrl("https://hiq.huaweicloud.com/portal/programming/hiq-composer?id=UntitledCircuit&type=circuit"));
-    webView->show();
+    // webView->load(QUrl("https://hiq.huaweicloud.com/portal/programming/hiq-composer?id=UntitledCircuit&type=circuit"));
+    // webView->show();
 
-    ui->horizontalLayout_6->addWidget(webView);
+    // ui->horizontalLayout_6->addWidget(webView);
 }
 
 void RobustnessView::resizeEvent(QResizeEvent *)
@@ -193,7 +193,7 @@ void RobustnessView::openFile(){
     show_result_tables();
 
     // get_table_data(1, QProcess::NormalExit);
-    get_table_data();
+    get_table_data("openfile");
 
     show_circuit_diagram();
 
@@ -462,9 +462,10 @@ void RobustnessView::run_robustVeri()
     QString cmd = "python3";
 
     process = new QProcess(this);
+    process->setReadChannel(QProcess::StandardOutput);
+    connect(process, SIGNAL(stateChanged(QProcess::ProcessState)), SLOT(stateChanged(QProcess::ProcessState)));
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_read_output()));
     // connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(get_table_data(int, QProcess::ExitStatus)));
-    process->setReadChannel(QProcess::StandardOutput);
     process->setWorkingDirectory(robustDir);
     process->start(cmd, args);
     if(!process->waitForStarted())
@@ -475,9 +476,34 @@ void RobustnessView::run_robustVeri()
         qDebug() << "Process succeed! ";
     }
 
+    if (!process->waitForFinished()) {
+        qDebug() << "wait";
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 2000);
+    }
+
     QString error =  process->readAllStandardError(); //命令行执行出错的提示
     if(!error.isEmpty()){
         qDebug()<< "Error executing script： " << error; //打印出错提示
+    }
+}
+
+void RobustnessView::stateChanged(QProcess::ProcessState state)
+{
+    qDebug()<<"show state:";
+    switch(state)
+    {
+    case QProcess::NotRunning:
+        qDebug()<<"Not Running";
+        break;
+    case QProcess::Starting:
+        qDebug()<<"Starting";
+        break;
+    case QProcess::Running:
+        qDebug()<<"Running";
+        break;
+    default:
+        qDebug()<<"otherState";
+        break;
     }
 }
 
@@ -509,7 +535,7 @@ void RobustnessView::on_read_output()
         output_.append(output_line_);
         ui->textBrowser_output->append(output_line_.simplified());
     }
-    get_table_data();
+    get_table_data("run");
 }
 
 void RobustnessView::show_adversary_examples()
@@ -740,12 +766,15 @@ void RobustnessView::show_result_tables(){
 }
 
 /* 将文件内容解析到表格 */
-void RobustnessView::get_table_data(){
+void RobustnessView::get_table_data(QString op){
     // 程序异常结束
-    qDebug() << process->exitStatus();
-    if(process->exitStatus() != QProcess::NormalExit){
-        QMessageBox::warning(this, "Warning", "Program abort.");
-        return;
+    if(op == "run")
+    {
+        qDebug() << process->exitStatus();
+        if(process->exitStatus() != QProcess::NormalExit){
+            QMessageBox::warning(this, "Warning", "Program abort.");
+            return;
+        }
     }
 
     // 程序正常结束

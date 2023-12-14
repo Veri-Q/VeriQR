@@ -3,5 +3,5 @@ Robust Bound,98.75,98.75,98.75
 Robustness Algorithm,100.00,100.00,100.00
 
 epsilon,1.000000e-03,2.000000e-03,3.000000e-03
-Robust Bound,0.0006,0.0006,0.0006
-Robustness Algorithm,0.1550,0.1444,0.1471
+Robust Bound,0.0007,0.0006,0.0006
+Robustness Algorithm,0.1517,0.1501,0.1512

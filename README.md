@@ -73,16 +73,16 @@ sudo ln -s /usr/bin/qmake6 /usr/bin/qmake
 ```bash
 sudo apt install -y libblas-dev liblapack-dev cmake python3-pip
 
-cd RobustnessVerifier/py_module
-conda create -n RobustV python=3.8
-conda activate RobustV
+cd VeriQR/py_module
+conda create -n VeriQR python=3.9.0
+conda activate VeriQR
 chmod +x install.sh
 ./install.sh
 ```
 
 ###### Notice: In order to use the mindquantum.io.qasm module, we need to fix some bugs in source codes.
 
-1. Replace  the code in the `extra_params` method in the `/yourPathTo/miniconda3/envs/RobustV/lib/python3.8/site-packages/mindquantum/io/qasm/openqasm.py` file 
+1. Replace  the code in the `extra_params` method in the `/yourPathTo/miniconda3/envs/VeriQR/lib/python3.9/site-packages/mindquantum/io/qasm/openqasm.py` file 
 
     ```python
     out.append(float(pr))
@@ -97,7 +97,7 @@ chmod +x install.sh
         out.append(float(pr))
     ```
 
-2. Replace the code in `__init__` method in `class Power(NoneParamNonHermMat)` in the `/yourPathTo/miniconda3/envs/RobustV/lib/python3.8/site-packages/mindquantum/core/gates/basicgate.py` file: 
+2. Replace the code in `__init__` method in `class Power(NoneParamNonHermMat)` in the `/yourPathTo/miniconda3/envs/VeriQR/lib/python3.9/site-packages/mindquantum/core/gates/basicgate.py` file: 
 
    ```python
    name = f'{gate}^{exponent}'
@@ -111,6 +111,7 @@ chmod +x install.sh
 
 ## Compile VeriQR
 ```bash
+# If the 'VeriQR' env has been deactivated, then you need to run "conda activate VeriQR" again now. 
 cd VeriQR
 mkdir build 
 cd build
@@ -119,7 +120,7 @@ make -j8
 ./VeriQR
 ```
 
-## User Guide
+## User Manual
 
 See [veriqr_manual.pdf](https://github.com/Veri-Q/VeriQR/blob/main/veriqr_manual.pdf)
 

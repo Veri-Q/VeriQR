@@ -38,6 +38,6 @@ void PdfView::wheelEvent(QWheelEvent *e)
         this->setZoomMode(QPdfView::ZoomMode::Custom);
         this->setZoomFactor(this->zoomFactor()* (1-diff));
     }
-    qDebug() << this->zoomFactor();
+    // qDebug() << this->zoomFactor();
 
 }
