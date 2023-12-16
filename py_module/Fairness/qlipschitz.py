@@ -8,23 +8,49 @@ import numpy as np
 import gc
 import os
 import sys
+import csv
+import signal
+from contextlib import contextmanager
 
 from qiskit import QuantumCircuit
 from qiskit.transpiler.passes import RemoveBarriers
 from cirq.contrib.qasm_import import circuit_from_qasm
 from mindquantum.io.qasm.openqasm import OpenQASM
+from mindquantum.core.gates import BitFlipChannel, DepolarizingChannel, PhaseFlipChannel
+from mindquantum.core.circuit import Circuit
+
+
 jax.config.update('jax_platform_name', 'cpu')
 tn.set_default_backend("jax")
+os.environ["XLA_PYTHON_CLIENT_PREALLOCATE"] = "false"
+os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"] = ".XX"
+os.environ["XLA_PYTHON_CLIENT_ALLOCATOR"] = "platform"
 
 
-def qasm2mq(qasm_file):
-    f = open(qasm_file)
-    qasm = f.read()
-    f.close()
-    circuit = OpenQASM().from_string(qasm)
+class TimeoutException(Exception): pass
+
+
+@contextmanager
+def time_limit(seconds=3600):
+    def signal_handler(signum, frame):
+        raise TimeoutException("Timed out!")
+
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+
+
+def qasm2mq(qasm_str):
+    circuit = OpenQASM().from_string(qasm_str)
     if circuit.parameterized:
         val_list = []
         for param in circuit.params_name:
+            # print(param)
+            param = param.replace('pi', str(np.pi)).replace('π', str(np.pi))
+            # print("param = {}, num = {}".format(param, float(param)))
             val_list.append(float(param))
         pr = dict(zip(circuit.params_name, val_list))  # 获取线路参数
         circuit = circuit.apply_value(pr)
@@ -47,15 +73,7 @@ def qasm2cirq_by_qiskit(file):
     circuit = circuit_from_qasm(qasm_str)
     qubits = sorted(circuit.all_qubits())
 
-    return qubits, circuit
-
-
-def noisy_circuit_from_qasm(file, noise_op, p=0.01):
-    qubits, circuit = qasm2cirq_by_qiskit(file)
-
-    if p > 1e-7:
-        circuit += noise_op(p).on_each(*qubits)
-    return qubits, circuit
+    return qubits, circuit, qasm_str
 
 
 def circuit_to_tensor(circuit, all_qubits, measurement):
@@ -185,22 +203,17 @@ def largest_eigenvalue(nqs, mv, N):
     v = jax.random.uniform(key, [2 ** nqs])
     v = v / norm_jit(v)
     e0 = 1.
-    v0 = None
     start0 = time.time()
     for j in range(N):
         start = time.time()
         v, e = mv(v)
-        # print('v1: ', v)
-        # print('e1: ', e)
-        print('iter %d/%d, %.8f' % (j, N, e))
-        # print('iter %d/%d, %.8f, elapsed time: %.4fs' % (j, N, e, time.time() - start), end='\r')
+        print('iter %d/%d, %.8f, elapsed time: %.4fs' % (j, N, e, time.time() - start))
         if (time.time() - start0) / 60 / 60 > 5:
             print("\n!!Time Out!!")
             return -1
         if jnp.abs(e - e0) < 1e-6:
             break
 
-        v0 = v
         e0 = e
 
     print("===============================================")
@@ -213,13 +226,11 @@ def smallest_eigenvalue(nqs, mv, N):
     v = jax.random.uniform(key, [2 ** nqs])
     v = v / norm_jit(v)
     e0 = 1.
-    v0 = None
     start0 = time.time()
     for j in range(N):
         start = time.time()
         v, e = mv(v)
-        print('iter %d/%d, %.8f' % (j, N, 1 - e))
-        # print('iter %d/%d, %.8f, elapsed time: %.4fs' % (j, N, 1 - e, time.time() - start), end='\r')
+        print('iter %d/%d, %.8f, elapsed time: %.4fs' % (j, N, 1 - e, time.time() - start))
         if (time.time() - start0) / 60 / 60 > 5:
             print("\n!!Time Out!!")
             return -1
@@ -228,7 +239,6 @@ def smallest_eigenvalue(nqs, mv, N):
             # e0 = e
             break
 
-        v0 = v
         e0 = e
 
     print("===============================================")
@@ -250,60 +260,170 @@ def lipschitz(model_circuit, qubits, measurement):
     return k, (phi, psi)
 
 
-def calculate_lipschitz(file, noise_op=cirq.depolarize, p=0.01):
-    qubits, model_circuit = noisy_circuit_from_qasm(file, noise_op, p)
-    measurement = np.array([[1., 0.], [0., 0.]])
-    start_time = time.time()
-    try:
-        # print("no noise")
-        model_circuit.unitary()
-        model_circuit = cirq.Circuit()
-        k, bias_kernel = lipschitz(model_circuit, qubits, measurement)
-
-    except:
-        # print("noisy circuit")
-        k, bias_kernel = lipschitz(model_circuit, qubits, measurement)
-
-    total_time = time.time() - start_time
-
-    a = file.rfind("/")
-    b = file.index(".qasm")
-    file_name = file[a+1:b] + "_" + noise_type + "_" + str(noisy_p)
-    print("file_name: {}".format(file_name))
-    print("===========Printing Model Circuit Start==========")
-    circuit = qasm2mq(file)
-    circuit.svg().to_file("./model_circuits/circuit_{}.svg".format(file_name))
-    print("===========Printing Model Circuit End============")
-
-    print('Circuit: %s' % file)
-    print('Noise configuration: %s, %f' % (noise_op, p))
-    print('Elapsed time = %.4fs' % total_time)
-    print('Lipschitz K =', k)
-    print('The bias kernel is: (\n{},\n {})'.format(bias_kernel[0], bias_kernel[1]))
-
-
-def testFolder(path, noise_op=cirq.depolarize, p=0.01):
-    files = os.listdir(path)
-    for f in files:
-        calculate_lipschitz(path + f, noise_op, p)
-        gc.collect()
-
-
 noise_op = {
     "phase_flip": cirq.phase_flip,
-    "depolarize": cirq.depolarize,
+    "depolarizing": cirq.depolarize,
     "bit_flip": cirq.bit_flip,
     "mixed": cirq.depolarize
 }
 
-# python qlipschitz.py qasmfile phase_flip 0.0001
+noise_op_mq = {
+    "phase_flip": PhaseFlipChannel,
+    "depolarizing": DepolarizingChannel,
+    "bit_flip": BitFlipChannel,
+    "mixed": DepolarizingChannel
+}
+
+
+def noisy_circuit_from_qasm(file, noise_type, p):
+    qubits, circuit_cirq, qasm_str = qasm2cirq_by_qiskit(file)
+
+    circuit_mq = qasm2mq(qasm_str)
+
+    mixed = True if noise_type == "mixed" else False
+    noise_op_ = noise_op[noise_type]
+    noise_op_mq_ = noise_op_mq[noise_type]
+    if p > 1e-7:
+        if mixed:
+            circuit_cirq += cirq.bit_flip(p).on_each(*qubits[::3])
+            circuit_cirq += cirq.depolarize(p).on_each(*qubits[1::3])
+            circuit_cirq += cirq.phase_flip(p).on_each(*qubits[2::3])
+            n_qubits = range(circuit_mq.n_qubits)
+            for q in n_qubits[::3]:
+                circuit_mq += BitFlipChannel(p).on(q)
+            for q in n_qubits[1::3]:
+                circuit_mq += DepolarizingChannel(p).on(q)
+            for q in n_qubits[2::3]:
+                circuit_mq += PhaseFlipChannel(p).on(q)
+        else:
+            circuit_cirq += noise_op_(p).on_each(*qubits)
+            for q in range(circuit_mq.n_qubits):
+                circuit_mq += noise_op_mq_(p).on(q)
+    return qubits, circuit_cirq, circuit_mq
+
+
+def calculate_lipschitz(file, noise_type, p=0.01):
+    qubits, model_circuit, circuit_mq = noisy_circuit_from_qasm(file, noise_type, p)
+
+    file_name = file[file.rfind("/") + 1: file.index(".qasm")] + "_" + noise_type + "_" + str(p)
+    # print("file_name: {}".format(file_name))
+    circuit_mq.svg().to_file("./model_circuits/circuit_{}.svg".format(file_name))
+    print("===========Printing Model Circuit End============\n")
+
+    measurement = np.array([[1., 0.], [0., 0.]])
+
+    print("===========The Lipschitz Constant Calculation Start============")
+    start_time = time.time()
+    k, bias_kernel = lipschitz(model_circuit, qubits, measurement)
+    total_time = time.time() - start_time
+
+    print('Circuit: %s' % file)
+    print('Noise configuration: {}, {}'.format(noise_type, p))
+    print('Lipschitz K =', k)
+    print('Elapsed time = %.4fs' % total_time)
+    print('The bias kernel is: (\n{},\n {})'.format(bias_kernel[0], bias_kernel[1]))
+    print("============The Lipschitz Constant Calculation End=============")
+
+
+# def testFolder(path, noise_type, p=0.01):
+#     files = os.listdir(path)
+#     for f in files:
+#         calculate_lipschitz(path + f, noise_type, p)
+#         gc.collect()
+
+
+def calculate_lipschitz_(model_circuit, qubits):
+    measurement = np.array([[1., 0.], [0., 0.]])
+
+    print("===========The Lipschitz Constant Calculation Start============")
+    start_time = time.time()
+    k, bias_kernel = lipschitz(model_circuit, qubits, measurement)
+    total_time = time.time() - start_time
+
+    print('Lipschitz K =', k)
+    print('Elapsed time = %.4fs' % total_time)
+    # print('The bias kernel is: (\n{},\n {})'.format(bias_kernel[0], bias_kernel[1]))
+    print("============The Lipschitz Constant Calculation End=============")
+    return k, total_time
+
+
+def batchTest(path):
+    files = os.listdir(path)
+
+    # 先写入columns_name
+    # w.writerow(["Model", "Noise type", "Noise probability", "${K^*}$", "Time"])
+
+    for file in files:
+        fileTest(path + file)
+
+
+def fileTest(file):
+    qubits, circuit_cirq, qasm_str = qasm2cirq_by_qiskit(file)
+    circuit_mq = qasm2mq(qasm_str)
+
+    model_name = file[file.rfind("/") + 1: file.index(".qasm")]
+
+    with open("./results/{}.csv".format(model_name), "a+") as csvfile:
+        w = csv.writer(csvfile)
+        # for noise_type in ["phase_flip", "depolarizing", "bit_flip", "mixed"]:
+        for noise_type in ["bit_flip"]:
+            noise_op_ = noise_op[noise_type]
+            noise_op_mq_ = noise_op_mq[noise_type]
+            mixed = True if noise_type == "mixed" else False
+            for p in [1e-2]:
+                circuit_cirq_ = cirq.circuits.Circuit()
+                circuit_cirq_ += circuit_cirq
+                circuit_mq_ = Circuit()
+                circuit_mq_ += circuit_mq
+                # add noise
+                if p > 1e-7:
+                    if mixed:
+                        circuit_cirq_ += cirq.bit_flip(p).on_each(*qubits[::3])
+                        circuit_cirq_ += cirq.depolarize(p).on_each(*qubits[1::3])
+                        circuit_cirq_ += cirq.phase_flip(p).on_each(*qubits[2::3])
+                        n_qubits = range(circuit_mq_.n_qubits)
+                        for q in n_qubits[::3]:
+                            circuit_mq_ += BitFlipChannel(p).on(q)
+                        for q in n_qubits[1::3]:
+                            circuit_mq_ += DepolarizingChannel(p).on(q)
+                        for q in n_qubits[2::3]:
+                            circuit_mq_ += PhaseFlipChannel(p).on(q)
+                    else:
+                        circuit_cirq_ += noise_op_(p).on_each(*qubits)
+                        for q in range(circuit_mq_.n_qubits):
+                            circuit_mq_ += noise_op_mq_(p).on(q)
+
+                file_name = model_name + "_" + noise_type + "_" + str(p)
+                # print("file_name: {}".format(file_name))
+                circuit_mq_.svg().to_file("./model_circuits/circuit_{}.svg".format(file_name))
+                print("===========Printing Model Circuit End============")
+
+                k, total_time = calculate_lipschitz_(circuit_cirq_, qubits)
+                print('Circuit: %s' % file)
+                print('Noise configuration: {}, {}\n'.format(noise_type, p))
+
+                # 逐行写入数据 (写入多行用writerows)
+                w.writerow([model_name, noise_type, p, np.round(k, 5), np.round(total_time, 2)])
+
+                gc.collect()
+
+
+# batchTest('./qasm_models/HFVQE/')
+# fileTest('./qasm_models/HFVQE/hf_6_0_5.qasm')
+# fileTest('./qasm_models/HFVQE/hf_8_0_5.qasm')
+# fileTest('./qasm_models/HFVQE/hf_10_0_5.qasm')
+# fileTest('./qasm_models/HFVQE/hf_12_0_5.qasm')
+# fileTest('./qasm_models/QAOA/qaoa_10.qasm')
+# fileTest('./qasm_models/inst/inst_4x4_10_0.qasm')
+
+# python qlipschitz.py ./qasm_models/HFVQE/hf_6_0_5.qasm phase_flip 0.0001
 qasm_file = str(sys.argv[1])
 noise_type = str(sys.argv[2])
 noisy_p = float(sys.argv[3])
 
-# testFolder('./HFVQE/', cirq.bit_flip, p=0.01)
+calculate_lipschitz(qasm_file, noise_type, p=noisy_p)
 
-calculate_lipschitz(qasm_file, noise_op=noise_op[noise_type], p=noisy_p)
+# testFolder('./qasm_models/HFVQE/', cirq.bit_flip, p=0.01)
 
 # qubits = cirq.GridQubit.rect(1, 1)
 # model_circuit = cirq.Circuit(cirq.X(qubits[0]) ** 0.5, cirq.depolarize(0.01)(qubits[0]))

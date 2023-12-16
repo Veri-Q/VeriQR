@@ -1,0 +1,27 @@
+===========Printing Model Circuit End============
+
+===========The Lipschitz Constant Calculation Start============
+==========Evaluate largest eigenvalue==========
+iter 0/200, 0.69267005
+iter 1/200, 0.97999710
+iter 2/200, 0.98019743
+iter 3/200, 0.98019761
+===============================================
+=========Evaluate smallest eigenvalue==========
+iter 0/200, 0.30651689
+iter 1/200, 0.02000201
+iter 2/200, 0.01980245
+iter 3/200, 0.01980233
+===============================================
+Circuit: ./qasm_models/inst/inst_4x4_10_0.qasm
+Noise configuration: <function bit_flip at 0x7f1dca3e0550>, 0.010000
+Lipschitz K = 0.9603953
+Elapsed time = 190.1649s
+The bias kernel is: (
+[ 0.00645949-1.2117964e-09j  0.00267561-3.6882777e-10j
+  0.0016507 +1.4034013e-09j ... -0.00156429+1.7896265e-10j
+  0.00342922-1.6915045e-09j  0.00827888-2.5943208e-09j],
+ [-0.00232606-4.4689200e-10j  0.00561561+1.0752838e-09j
+  0.001001  -7.1508954e-10j ...  0.00286281-2.3753438e-10j
+  0.00268482+2.3753438e-10j -0.00111209-5.9383595e-11j])
+============The Lipschitz Constant Calculation End=============

@@ -39,7 +39,7 @@ else:
     mixed = False
 
 file_name = "gc_" + noise_type + "_" + str(sys.argv[2])
-model_path = "./saved_model/" + file_name
+model_path = "./saved_models/" + file_name
 
 NUM_QUBITS = 9
 WORKING_QUBITS = cirq.GridQubit.rect(1, NUM_QUBITS)
@@ -91,7 +91,7 @@ class LossHistory(Callback):  # 继承自Callback类
         plt.ylabel('acc-loss')
         plt.legend(loc="upper right")
         plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True))
-        plt.savefig("./result_figures/" + file_name + ".png")
+        plt.savefig("./loss_figures/" + file_name + ".png")
         # plt.show()
 
 
@@ -155,10 +155,8 @@ def print_model_circuit(variables, p=0., noise_op=cirq.depolarize, mixed=False):
         if mixed:
             for q in qubits[::3]:
                 circuit += BitFlipChannel(p).on(q)
-
             for q in qubits[1::3]:
                 circuit += DepolarizingChannel(p).on(q)
-
             for q in qubits[2::3]:
                 circuit += PhaseFlipChannel(p).on(q)
         else:

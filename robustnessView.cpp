@@ -151,13 +151,15 @@ void RobustnessView::openFile(){
 
     // 此时需要从文件名获取各种参数信息
     QStringList args = file_name_.split("_");
-    model_name_ = args[0];
-    robustness_unit_ = args[1].toDouble();
-    experiment_number_ = args[2].toInt();
-    state_type_ = args[3];
+    QString unit = args[args.size()-3];
+    robustness_unit_ = unit.toDouble();
+    experiment_number_ = args[args.size()-2].toInt();
+    state_type_ = args[args.size()-1];
+    model_name_ = file_name_.mid(0, file_name_.indexOf(unit)-1);
+    qDebug() << "model_name_: " << model_name_;
 
-    ui->slider_unit->setValue(args[1].length() - 2);
-    ui->spinBox_unit->setValue(args[1].length() - 2);
+    ui->slider_unit->setValue(unit.length() - 2);
+    ui->spinBox_unit->setValue(unit.length() - 2);
 
     ui->slider_exptnum->setValue(experiment_number_);
     ui->spinBox_exptnum->setValue(experiment_number_);
@@ -414,6 +416,7 @@ void RobustnessView::run_robustVeri()
     robustness_unit_ = pow(0.1, ui->slider_unit->value());
     experiment_number_ = ui->slider_exptnum->value();
 
+    QString cmd = "python";
     QString excuteFile = "batch_check.py";
     QString unit = QString::number(robustness_unit_);
     QString exptnum = QString::number(experiment_number_);
@@ -424,48 +427,44 @@ void RobustnessView::run_robustVeri()
     if(model_file_.fileName().isEmpty() || data_file_.fileName().isEmpty())
     {
         QString npzfile = "./model_and_data/" + npzfile_; // npzfile is complete path
-        paramsList = excuteFile + " " + npzfile + " " + unit + " " + exptnum + " " + state_type_;
         args << excuteFile << npzfile << unit << exptnum << state_type_;
     }
     else    // has imported a file
     {
         QString qasmfile = model_file_.filePath();
         QString datafile = data_file_.filePath();
-        paramsList = excuteFile + " " + qasmfile + " " + datafile + " " + unit + " " + exptnum + " " + state_type_;
         args << excuteFile << qasmfile << datafile << unit << exptnum << state_type_;
     }
 
-    // model_name is fileName without "_cav.npz" suffix like "binary"
+    // model_name be like: "binary"
     if(model_name_ == "mnist")
     {
         if(state_type_ == "pure"){
             ui->checkBox->setChecked(1);
-            paramsList += " true";
             args << "true";
-        }else{
+        }
+        else{
             ui->checkBox->setChecked(0);
-            paramsList += " false";
             args << "false";
         }
     }
+    paramsList = cmd + " " + args.join(" ");
     qDebug() << paramsList;
 
     QStringList list;
     list << model_name_ << unit << exptnum << state_type_;
-    file_name_ = list.join("_");   // csv和txt结果文件的默认命名
+    file_name_ = list.join("_");   // like: binary_0.001_3_mixed
     qDebug() << file_name_;
 
     csvfile_ = robustDir + "/results/result_tables/" + file_name_ + ".csv";
 
     show_result_tables();
 
-    QString cmd = "python3";
-
     process = new QProcess(this);
     process->setReadChannel(QProcess::StandardOutput);
     connect(process, SIGNAL(stateChanged(QProcess::ProcessState)), SLOT(stateChanged(QProcess::ProcessState)));
     connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_read_output()));
-    // connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(get_table_data(int, QProcess::ExitStatus)));
+
     process->setWorkingDirectory(robustDir);
     process->start(cmd, args);
     if(!process->waitForStarted())
@@ -768,13 +767,11 @@ void RobustnessView::show_result_tables(){
 /* 将文件内容解析到表格 */
 void RobustnessView::get_table_data(QString op){
     // 程序异常结束
-    if(op == "run")
+    if(op == "run" && process->exitStatus() != QProcess::NormalExit)
     {
         qDebug() << process->exitStatus();
-        if(process->exitStatus() != QProcess::NormalExit){
-            QMessageBox::warning(this, "Warning", "Program abort.");
-            return;
-        }
+        QMessageBox::warning(this, "Warning", "Program abort.");
+        return;
     }
 
     // 程序正常结束
@@ -782,7 +779,7 @@ void RobustnessView::get_table_data(QString op){
     qDebug() << csvfile_;
 
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        QMessageBox::warning(this, "Warning", "Unable to open the .csv file: " + csvfile_ + "\n" + file.errorString());
+        // QMessageBox::warning(this, "Warning", "Unable to open the .csv file: " + csvfile_ + "\n" + file.errorString());
         return;
     }
 

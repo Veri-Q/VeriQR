@@ -299,11 +299,11 @@ class Main():
 
             ansatz_ += Measure('Z{}'.format(QUBIT_NUM - 2)).on(QUBIT_NUM - 2)
             ansatz_ += Measure('Z{}'.format(QUBIT_NUM - 1)).on(QUBIT_NUM - 1)
-            ansatz_.svg().to_file("../../Figures/FashionMNIST_model.svg")
+            ansatz_.svg().to_file("../../Figures/FashionMNIST_{}_model.svg".format(self.Ent))
 
             # print(ansatz_)
             ansatz_str = OpenQASM().to_string(ansatz_)
-            f = open('../../model_and_data/FashionMNIST.qasm', 'w')
+            f = open('../../model_and_data/FashionMNIST_{}.qasm'.format(self.Ent), 'w')
             f.write(ansatz_str)
             f.close()
             return ansatz_, U
@@ -316,12 +316,13 @@ class Main():
             predict_by_measure = []
             predict_by_prob = []
             predict_by_expectation = []
-            X_test = [data[0] for data in self.test_loader]
-            y_test = [data[1] for data in self.test_loader]
-            for i in range(int(TEST_SET_NUM / BATCH_SIZE)):
-                X_test_ = X_test[i]  # 一个batch, 即100个样本点
-                y_test_ = y_test[i]
-                for sample in X_test_:
+            X_train = [data[0] for data in self.train_loader]
+            y_train = [data[1] for data in self.train_loader]
+            count_error = 0
+            for i in range(int(TRAIN_SET_NUM / BATCH_SIZE)):
+                X_train_ = X_train[i]  # 一个batch, 即100个样本点
+                y_train_ = y_train[i]
+                for sample in X_train_:
                     pr_encoder = dict(zip(encoder.params_name, sample.tolist()))  # 获取线路参数
                     # print('pr_encoder = ', pr_encoder)
 
@@ -353,28 +354,30 @@ class Main():
                     else:
                         predict_by_prob.append(1)
 
-                for j in range(len(y_test_)):
-                    if predict_by_measure[j + i * 100] != y_test_[j]:
+                for j in range(len(y_train_)):
+                    if predict_by_measure[j + i * 100] != y_train_[j]:
                         print("the {}th sample prediction error".format(j + 1 + i * 100))
                         print('(measure) predict: ', predict_by_measure[j + i * 100])
-                        print('actual: ', y_test_[j])
-                    if predict_by_prob[j + i * 100] != y_test_[j]:
+                        print('actual: ', y_train_[j])
+                        count_error += 1
+                    if predict_by_prob[j + i * 100] != y_train_[j]:
                         print("the {}th sample prediction error".format(j + 1 + i * 100))
                         print('(prob) predict: ', predict_by_prob[j + i * 100])
-                        print('actual: ', y_test_[j])
+                        print('actual: ', y_train_[j])
                         print()
 
                 # print('predict_by_expectation: ', predict_by_measure)
                 # print('actual y_train: ', y_test_)
 
             data = np.array(data).T
-            label = np.array(predict_by_measure)
-            label = [1 - i for i in label]
+            label = [1 - i for i in predict_by_measure]
+            label = np.array(label)
+            print('count_error:', count_error)
             print(U.shape)
             print(M.shape)
             print(data.shape)
             print(label.shape)
-            np.savez('../../model_and_data/FashionMNIST_data.npz', O=M, data=data, label=label)
+            np.savez('../../model_and_data/FashionMNIST_{}_data.npz'.format(self.Ent), O=M, data=data, label=label)
 
         veri()
 

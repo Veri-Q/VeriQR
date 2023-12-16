@@ -496,28 +496,8 @@
 QTabBar::tab:selected { font-size: 17px; font-weight: bold; }</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
-     <widget class="QWidget" name="tab_loss">
-      <attribute name="title">
-       <string>Result Line Chart</string>
-      </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QLabel" name="imageLabel_plot">
-         <property name="styleSheet">
-          <string notr="true">QLabel{background-color:rgb(255,255,255);}</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="tab_circ">
       <property name="accessibleName">
        <string/>
@@ -573,22 +553,28 @@ QTabBar::tab:selected { font-size: 17px; font-weight: bold; }</string>
           <property name="styleSheet">
            <string notr="true">BackgroudColoe::rgb(255, 255, 255)</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_circ">
-           <item>
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
+          <layout class="QVBoxLayout" name="verticalLayout_circ"/>
          </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_loss">
+      <attribute name="title">
+       <string>Result Line Chart</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="imageLabel_plot">
+         <property name="styleSheet">
+          <string notr="true">QLabel{background-color:rgb(255,255,255);}</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
         </widget>
        </item>
       </layout>

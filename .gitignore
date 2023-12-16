@@ -3,11 +3,13 @@ py_module/Robustness/.idea/
 py_module/Robustness/.DS_Store
 py_module/Robustness/printdata.py
 py_module/Robustness/other/FashionMNIST_training/.ipynb_checkpoints
-build/
-test/
-VeriQR.pro.user
 py_module/Fairness/__pycache__/
 py_module/Fairness/.idea/
 py_module/Fairness/adult.zip
 py_module/Fairness/test.py
-RobustnessVerifier.pro.user
+dragCircuit.cpp
+dragCircuit.h
+dragcircuit.ui
+build/
+test/
+VeriQR.pro.user

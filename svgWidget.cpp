@@ -8,7 +8,7 @@ SvgWidget::SvgWidget(QWidget *parent)
 
 void SvgWidget::wheelEvent(QWheelEvent *e)
 {
-    const double diff = 0.1; // 表示每次滚轮滚动一定的值, 图片大小改变的比例
+    const double diff = 0.2; // 表示每次滚轮滚动一定的值, 图片大小改变的比例
 
     QSize size = svgRender->defaultSize();  //用于获取图片显示区的尺寸
     int width = size.width();
@@ -43,8 +43,8 @@ void SvgWidget::mouseMoveEvent(QMouseEvent *event)
 {
     if (isDragging)
     {
-        int dx = event->x() - lastPos.x();
-        int dy = event->y() - lastPos.y();
+        int dx = event->position().x() - lastPos.x();
+        int dy = event->position().y() - lastPos.y();
         lastPos = event->pos();
         svgRender->setViewBox(svgRender->viewBox().translated(-dx, -dy));
         update();

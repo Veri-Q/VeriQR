@@ -31,6 +31,7 @@ public:
     void model_change_to_ui();
     void clear_all_information();
     void resizeEvent(QResizeEvent *) override;
+    void exec_process(QString cmd, QStringList args);
 
 public slots:
     void on_radioButton_importfile_clicked();

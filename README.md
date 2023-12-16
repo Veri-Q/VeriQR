@@ -85,16 +85,71 @@ chmod +x install.sh
 1. Replace  the code in the `extra_params` method in the `/yourPathTo/miniconda3/envs/VeriQR/lib/python3.9/site-packages/mindquantum/io/qasm/openqasm.py` file 
 
     ```python
-    out.append(float(pr))
+    def extra_params(cmd, dtype=float):
+        """Get gate parameters."""
+        matches = re.findall(r'\((.*)\)', cmd)
+        out = []
+        for i in matches:
+            for j in i.split(','):
+                pr = j.strip()
+                if dtype == str:
+                    out.append(pr)
+                else:
+                    if '*' in pr:
+                        pr = pr.replace('pi', str(np.pi)).replace('π', str(np.pi))
+                        pr = [float(i.strip()) for i in pr.split('*')]
+                        out.append(pr[0] * pr[1])
+                    elif '/' in pr:
+                        pr = pr.replace('pi', str(np.pi)).replace('π', str(np.pi))
+                        pr = [float(i.strip()) for i in pr.split('/')]
+                        out.append(pr[0] / pr[1])
+                    else:
+                        out.append(float(pr))
+        return out
     ```
 
     with the following code: 
 
     ```python
-    if dtype == float:
-        out.append(pr)
-    else:
-        out.append(float(pr))
+    def extra_params(cmd, dtype=float):
+        """Get gate parameters."""
+        matches = re.findall(r'\((.*)\)', cmd)
+        out = []
+        for i in matches:
+            for j in i.split(','):
+                pr = j.strip()
+                if dtype == str:
+                    out.append(pr)
+                else:
+                    flag_1 = '*' in pr
+                    flag_2 = '/' in pr
+                    if flag_1:
+                        pr = pr.replace('pi', str(np.pi)).replace('π', str(np.pi))
+                        pr = [i.strip() for i in pr.split('*')]
+                    if flag_2:
+                        result = 1
+                        if not flag_1:
+                            pr = pr.replace('pi', str(np.pi)).replace('π', str(np.pi))
+                            pr = [k.strip() for k in pr.split('/')]
+                            r = float(pr[0])
+                            for k in range(len(pr) - 1):
+                                r = r / float(pr[k + 1])
+                            result *= r
+                        else:
+                            for item in pr:
+                                items = [k.strip() for k in item.split('/')]
+                                r = float(items[0])
+                                for k in range(len(items) - 1):
+                                    r = r / float(items[k + 1])
+                                result *= r
+    
+                        out.append(result)
+                    else:
+                        if dtype == float:
+                            out.append(pr)
+                        else:
+                            out.append(float(pr))
+        return out
     ```
 
 2. Replace the code in `__init__` method in `class Power(NoneParamNonHermMat)` in the `/yourPathTo/miniconda3/envs/VeriQR/lib/python3.9/site-packages/mindquantum/core/gates/basicgate.py` file: 
@@ -110,11 +165,13 @@ chmod +x install.sh
    ```
 
 ## Compile VeriQR
+
 ```bash
-# If the 'VeriQR' env has been deactivated, then you need to run "conda activate VeriQR" again now. 
 cd VeriQR
 mkdir build 
 cd build
+# If the 'VeriQR' env has been deactivated, you need to activate it again now: 
+conda activate VeriQR
 qmake ..
 make -j8
 ./VeriQR

@@ -1,0 +1,25 @@
+===========Printing Model Circuit End============
+
+===========The Lipschitz Constant Calculation Start============
+==========Evaluate largest eigenvalue==========
+iter 0/200, 0.70941526, elapsed time: 4.0558s
+iter 1/200, 0.99992168, elapsed time: 5.4522s
+iter 2/200, 0.99992174, elapsed time: 2.6466s
+===============================================
+=========Evaluate smallest eigenvalue==========
+iter 0/200, 0.28832448, elapsed time: 3.7561s
+iter 1/200, 0.00008053, elapsed time: 3.6159s
+iter 2/200, 0.00008047, elapsed time: 0.3562s
+===============================================
+Circuit: ./qasm_models/HFVQE/hf_12_0_5.qasm
+Noise configuration: mixed, 0.001
+Lipschitz K = 0.9998413
+Elapsed time = 20.0955s
+The bias kernel is: (
+[ 0.02500602+1.3111652e-09j -0.00183027-1.0918723e-10j
+  0.01500274+1.6845400e-09j ...  0.0007415 +2.1066680e-10j
+  0.00926649+5.1300353e-10j -0.0003194 -2.6290922e-10j],
+ [-2.8206460e-04-7.4001791e-11j  3.4953285e-02+1.2047983e-09j
+  4.3708740e-05+4.5062917e-10j ...  8.0887759e-03-2.4434750e-09j
+ -3.8608576e-03+1.5517498e-10j  4.8074573e-03-1.3007092e-09j])
+============The Lipschitz Constant Calculation End=============

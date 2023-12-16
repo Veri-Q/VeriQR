@@ -31,7 +31,6 @@ HEADERS += \
     svgWidget.h
 
 FORMS += \
-    dragcircuit.ui \
     fairnessview.ui \
     mainwindow.ui \
     robustnessview.ui \

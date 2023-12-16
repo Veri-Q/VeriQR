@@ -96,14 +96,7 @@ void FairnessView::clear_all_information()
 
 /* 打开一个运行时输出信息txt文件 */
 void FairnessView::openFile(){
-    QString fileName = QFileDialog::getOpenFileName(this, "Open file", fairDir+"/training_output/");
-    QFile file(fileName);
-
-    if (!file.open(QIODevice::ReadOnly |QIODevice::Text) || QFileInfo(fileName).suffix() != "txt")
-    {
-        QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
-        return;
-    }
+    QString fileName = QFileDialog::getOpenFileName(this, "Open file", fairDir+"/output/");
 
     show_saved_results(fileName);
 }
@@ -115,9 +108,16 @@ void FairnessView::show_saved_results(QString fileName)
 
     // 从文件名获取各种参数信息
     QFile file(fileName);
+    qDebug() << QFileInfo(file).filePath();
+    if (!file.open(QIODevice::ReadOnly |QIODevice::Text) || QFileInfo(fileName).suffix() != "txt")
+    {
+        QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
+        return;
+    }
+
     file_name_ = QFileInfo(file).fileName();  // gc_phase_flip_0.0001.txt  or  hf_6_0_5_bit_flip_0.01.txt
     file_name_.chop(4);
-    qDebug() << file_name_;
+    qDebug() << "file_name_: " << file_name_;
 
     QStringList args = file_name_.split("_");
     noise_prob_ = args[args.size()-1].toDouble();
@@ -128,6 +128,8 @@ void FairnessView::show_saved_results(QString fileName)
     else{
         noise_type_ = args[args.size()-2];
     }
+    qDebug() << noise_prob_;
+    qDebug() << noise_type_;
 
     // UI change
     model_change_to_ui();
@@ -137,6 +139,7 @@ void FairnessView::show_saved_results(QString fileName)
         output_line_ = QString(file.readLine());
         output_.append(output_line_);
         ui->textBrowser_output->append(output_line_.simplified());
+        // qDebug() << output_line_;
 
         if(output_line_.contains("Training End"))
         {
@@ -179,7 +182,7 @@ void FairnessView::saveFile()
 
     output_ = ui->textBrowser_output->toPlainText();
 
-    QString runtime_path = fairDir + "/training_output/" + file_name_ + ".txt";
+    QString runtime_path = fairDir + "/output/" + file_name_ + ".txt";
     qDebug() << runtime_path;
 
     QFile file(runtime_path);
@@ -195,7 +198,7 @@ void FairnessView::saveFile()
 
 void FairnessView::saveasFile()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, "Save as", fairDir + "/training_output/");
+    QString fileName = QFileDialog::getSaveFileName(this, "Save as", fairDir + "/output/");
     QFile file(fileName);
 
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
@@ -232,7 +235,7 @@ void FairnessView::on_radioButton_importfile_clicked(){
 /* 导入.npz数据文件 */
 void FairnessView::importModel()
 {
-   QString fileName = QFileDialog::getOpenFileName(this, "Open file", fairDir);
+   QString fileName = QFileDialog::getOpenFileName(this, "Open file", fairDir+"/qasm_models");
    QFile file(fileName);
    model_file_ = QFileInfo(fileName);
 
@@ -307,26 +310,26 @@ void FairnessView::run_fairnessVeri()
 
     noise_prob_ = ui->doubleSpinBox_prob->value();
 
-    if (!pyfile_.isEmpty()){  // has selected a existing model file
+    if (!pyfile_.isEmpty())  // has selected a existing model file
+    {
         QString model_name = pyfile_.mid(pyfile_.lastIndexOf("_") + 1); // 去掉evaluate_finance_model_前缀
         QString choice = "train";
 
         QStringList list;
         list << model_name << noise_type_ << QString::number(noise_prob_);
-        file_name_ = list.join("_");   // csv和txt结果文件的默认命名
-        qDebug() << file_name_;
+        file_name_ = list.join("_");   // like: gc_phase_flip_0.0001
+        qDebug() << "file_name_: " << file_name_;
 
-        if(findFile(fairDir + "/saved_model/" + file_name_))  // the current model has been trained and saved before
+        if(findFile(fairDir + "/saved_models/" + file_name_))  // the current model has been trained and saved before
         {
             QString dlgTitle = "Select an option";
             QString strInfo = "The model has been trained and saved before. "
-                              "Do you want to review the existing model or retrain it?";
+                              "Do you want to review the previous model or retrain it?";
             QMessageBox msgBox;
             msgBox.setWindowTitle(dlgTitle);
             msgBox.setText(strInfo);
-            QPushButton *showButton = msgBox.addButton(tr("Show the existing model"), QMessageBox::ActionRole);
+            QPushButton *showButton = msgBox.addButton(tr("Show the previous model"), QMessageBox::ActionRole);
             QPushButton *trainButton = msgBox.addButton(tr("Retrain"),QMessageBox::ActionRole);
-            //            QPushButton *cancelButton = msgBox.addButton(QMessageBox::Cancel);
             msgBox.addButton(QMessageBox::No);
             msgBox.button(QMessageBox::No)->setHidden(true);
             msgBox.setDefaultButton(QMessageBox::NoButton);
@@ -338,38 +341,14 @@ void FairnessView::run_fairnessVeri()
             }
         }
 
-        QString cmd = "python3";
+        QString cmd = "python";
         QStringList args;
         args << pyfile_+".py" << noise_type_ << QString::number(noise_prob_) << choice;
 
-        QString paramsList = pyfile_ + ".py " + noise_type_ + " " + QString::number(noise_prob_) + " " + choice;
+        QString paramsList = cmd + " " + args.join(" ");
         qDebug() << paramsList;
 
-        process = new QProcess(this);
-        process->setReadChannel(QProcess::StandardOutput);
-        connect(process, SIGNAL(stateChanged(QProcess::ProcessState)), SLOT(stateChanged(QProcess::ProcessState)));
-        connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_read_from_terminal()));
-        //        connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(show_results(int, QProcess::ExitStatus)));
-
-        process->setWorkingDirectory(fairDir);
-        process->start(cmd, args);
-        if(!process->waitForStarted()){
-            qDebug() << "Process failure! Error: " << process->errorString();
-        }
-        else{
-            qDebug() << "Process succeed! ";
-        }
-
-        if (!process->waitForFinished()) {
-            qDebug() << "wait";
-            QCoreApplication::processEvents(QEventLoop::AllEvents, 2000);
-        }
-
-        QString error = process->readAllStandardError(); // 命令行执行出错的提示
-        if(!error.isEmpty()){
-            qDebug()<< "Error executing script: " << error; // 打印出错提示
-        }
-
+        exec_process(cmd, args);
     }
     else  // has selected another .qasm file
     {
@@ -379,66 +358,79 @@ void FairnessView::run_fairnessVeri()
 
         QStringList list;
         list << model_name << noise_type_ << QString::number(noise_prob_);
-        file_name_ = list.join("_");   // csv和txt结果文件的默认命名
+        file_name_ = list.join("_");   // like: hf_6_0_5_bit_flip_0.01
         qDebug() << "file_name_: " << file_name_;
 
-        QString file = fairDir + "/training_output/" + file_name_ + ".txt";
+        // python qlipschitz.py qasmfile phase_flip 0.0001
+        QString cmd = "python";
+        QStringList args;
+        args << "qlipschitz.py" << model_file_.filePath() << noise_type_ << QString::number(noise_prob_);
+        QString paramsList = cmd + " " + args.join(" ");
+        qDebug() << paramsList;
+
+        QString strInfo = "The results of this model have been saved before. "
+                          "Do you want to see the previous results or recalculate it?";
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Select an option");
+        msgBox.setText(strInfo);
+        QPushButton *showButton = msgBox.addButton(tr("Show the previous results"), QMessageBox::ActionRole);
+        QPushButton *calcButton = msgBox.addButton(tr("Recalculate"),QMessageBox::ActionRole);
+        msgBox.addButton(QMessageBox::No);
+        msgBox.button(QMessageBox::No)->setHidden(true);
+        msgBox.setDefaultButton(QMessageBox::NoButton);
+
+        QString file = fairDir + "/output/" + file_name_ + ".txt";
+
+        // if(findFile(file) && (msgBox.exec() && msgBox.clickedButton() == showButton))  // the current model has been trained and saved before
+        // {
+
+        //     show_saved_results(file);
+        // }
+        // else
+        // {
+        //     exec_process(cmd, args);
+        // }
+
         if(findFile(file))  // the current model has been trained and saved before
         {
-            QString dlgTitle = "Select an option";
-            QString strInfo = "The results of this model have been saved before. "
-                              "Do you want to see the previous results or recalculate it?";
-            QMessageBox msgBox;
-            msgBox.setWindowTitle(dlgTitle);
-            msgBox.setText(strInfo);
-            QPushButton *showButton = msgBox.addButton(tr("Show the previous results"), QMessageBox::ActionRole);
-            QPushButton *calcButton = msgBox.addButton(tr("Recalculate"),QMessageBox::ActionRole);
-            msgBox.addButton(QMessageBox::No);
-            msgBox.button(QMessageBox::No)->setHidden(true);
-            msgBox.setDefaultButton(QMessageBox::NoButton);
             msgBox.exec();
-
-            if (msgBox.clickedButton() == showButton)
-            {
+            if(msgBox.clickedButton() == showButton){
                 show_saved_results(file);
             }
-            else
-            {
-                // python qlipschitz.py qasmfile phase_flip 0.0001
-                QString cmd = "python";
-                QStringList args;
-                args << "qlipschitz.py" << model_file_.filePath() << noise_type_ << QString::number(noise_prob_);
-
-                QString paramsList = "python qlipschitz.py " + model_file_.filePath() + " "
-                                     + noise_type_ + " " + QString::number(noise_prob_);
-                qDebug() << paramsList;
-
-                process = new QProcess(this);
-                process->setReadChannel(QProcess::StandardOutput);
-                connect(process, SIGNAL(stateChanged(QProcess::ProcessState)), SLOT(stateChanged(QProcess::ProcessState)));
-                connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_read_from_terminal()));
-                //        connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(show_results(int, QProcess::ExitStatus)));
-
-                process->setWorkingDirectory(fairDir);
-                process->start(cmd, args);
-                if(!process->waitForStarted()){
-                    qDebug() << "Process failure! Error: " << process->errorString();
-                }
-                else{
-                    qDebug() << "Process succeed! ";
-                }
-
-                if (!process->waitForFinished()) {
-                    qDebug() << "wait";
-                    QCoreApplication::processEvents(QEventLoop::AllEvents, 2000);
-                }
-
-                QString error = process->readAllStandardError(); // 命令行执行出错的提示
-                if(!error.isEmpty()){
-                    qDebug()<< "Error executing script: " << error; // 打印出错提示
-                }
+            else{
+                exec_process(cmd, args);
             }
         }
+        else{
+            exec_process(cmd, args);
+        }
+    }
+}
+
+void FairnessView::exec_process(QString cmd, QStringList args)
+{
+    process = new QProcess(this);
+    process->setReadChannel(QProcess::StandardOutput);
+    connect(process, SIGNAL(stateChanged(QProcess::ProcessState)), SLOT(stateChanged(QProcess::ProcessState)));
+    connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_read_from_terminal()));
+
+    process->setWorkingDirectory(fairDir);
+    process->start(cmd, args);
+    if(!process->waitForStarted()){
+        qDebug() << "Process failure! Error: " << process->errorString();
+    }
+    else{
+        qDebug() << "Process succeed! ";
+    }
+
+    if (!process->waitForFinished()) {
+        qDebug() << "wait";
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 2000);
+    }
+
+    QString error = process->readAllStandardError(); // 命令行执行出错的提示
+    if(!error.isEmpty()){
+        qDebug()<< "Error executing script: " << error; // 打印出错提示
     }
 }
 
@@ -502,7 +494,7 @@ void FairnessView::on_read_from_terminal()
 
 void FairnessView::show_loss_and_acc_plot()
 {
-    QString img_file = fairDir + "/result_figures/" + file_name_ + ".png";
+    QString img_file = fairDir + "/loss_figures/" + file_name_ + ".png";
     qDebug() << img_file;
 
     QImage image(img_file);
@@ -517,12 +509,27 @@ void FairnessView::show_circuit_diagram()
     QString img_file = fairDir + "/model_circuits/circuit_" + file_name_ + ".svg";
     qDebug() << "img_file: " << img_file;
 
-    svgWidget = new SvgWidget(ui->scrollArea_circ);
+    svgWidget = new SvgWidget(ui->scrollAreaWidgetContents_circ);
     svgWidget->load(img_file);
     svgWidget->setObjectName("svgWidget_circ");
 
-    ui->verticalLayout_circ->insertWidget(0, svgWidget, 1);
-    ui->verticalLayout_circ->setStretch(1, 3);
+    double container_w = double(ui->scrollAreaWidgetContents_circ->width());
+    double svg_w = double(svgWidget->renderer()->defaultSize().width());
+    double svg_h = double(svgWidget->renderer()->defaultSize().height());
+    double iris_w = 977.0;
+    double iris_h = 260.0;
+    svg_h = container_w / svg_w * svg_h;
+    iris_h = container_w / iris_w * iris_h;
+    // qDebug() << svg_h;
+    // iris.svg: (width, height) = (977, 260)
+
+    QSpacerItem *verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->verticalLayout_circ->addItem(verticalSpacer);
+    int diff = double(svg_h*2)/double(iris_h) * 1000;
+    // qDebug() << diff;
+    ui->verticalLayout_circ->insertWidget(0, svgWidget, diff);
+    ui->verticalLayout_circ->setStretch(1, 3*1000);
+
     showed_svg = true;
 }
 
