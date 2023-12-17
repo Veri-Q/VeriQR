@@ -15,7 +15,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,2">
    <property name="spacing">
-    <number>12</number>
+    <number>30</number>
    </property>
    <item>
     <widget class="QWidget" name="widget_set" native="true">
@@ -27,7 +27,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,1,2,5">
       <property name="spacing">
-       <number>18</number>
+       <number>20</number>
       </property>
       <item>
        <widget class="QGroupBox" name="groupBox_dataset">
@@ -177,7 +177,7 @@
                </font>
               </property>
               <property name="text">
-               <string>depolarize</string>
+               <string>depolarizing</string>
               </property>
              </widget>
             </item>
@@ -462,7 +462,7 @@
               <x>0</x>
               <y>0</y>
               <width>528</width>
-              <height>235</height>
+              <height>228</height>
              </rect>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -534,7 +534,7 @@ QTabBar::tab:selected { font-size: 17px; font-weight: bold; }</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1095</width>
+            <width>1077</width>
             <height>756</height>
            </rect>
           </property>
@@ -561,7 +561,7 @@ QTabBar::tab:selected { font-size: 17px; font-weight: bold; }</string>
      </widget>
      <widget class="QWidget" name="tab_loss">
       <attribute name="title">
-       <string>Result Line Chart</string>
+       <string>Loss and Acc Plot</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>

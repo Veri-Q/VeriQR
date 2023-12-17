@@ -15,19 +15,19 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,2">
    <property name="spacing">
-    <number>12</number>
+    <number>30</number>
    </property>
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_12" stretch="3,2">
       <property name="spacing">
-       <number>18</number>
+       <number>30</number>
       </property>
       <item>
        <widget class="QWidget" name="widget_setting" native="true">
         <layout class="QVBoxLayout" name="verticalLayout">
          <property name="spacing">
-          <number>18</number>
+          <number>24</number>
          </property>
          <property name="leftMargin">
           <number>0</number>
@@ -529,7 +529,7 @@ background-color: rgb(238, 238, 238);
               <x>0</x>
               <y>0</y>
               <width>598</width>
-              <height>162</height>
+              <height>126</height>
              </rect>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -569,7 +569,7 @@ background-color: rgb(238, 238, 238);
 QTabBar::tab:selected { font-size: 19px; font-weight: bold; }</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_res">
       <attribute name="title">
@@ -787,7 +787,7 @@ background-color: rgb(255, 255, 255);</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>980</width>
+            <width>962</width>
             <height>780</height>
            </rect>
           </property>
@@ -818,7 +818,7 @@ background-color: rgb(255, 255, 255);</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>980</width>
+            <width>962</width>
             <height>780</height>
            </rect>
           </property>

@@ -1,3 +1,5 @@
+add BitFlipChannel with probability 0.13462
+iris_with_0.13462_BitFlip_model.svg saved successfully!
 =============================================
 Starting Robustness Verifier
 ---------------------------------------------
@@ -11,7 +13,7 @@ Starting state robustness verifier
 ===================================
 Verification over
 ----------------------------------------
-Robust accuracy: 100.00%, Verification time: 0.15s
+Robust accuracy: 100.00%, Verification time: 0.30s
 =============================================
 =============================================
 Starting Robustness Verifier
@@ -26,20 +28,21 @@ Starting state robustness verifier
 ===================================
 Verification over
 ----------------------------------------
-Robust accuracy: 100.00%, Verification time: 0.15s
+Robust accuracy: 100.00%, Verification time: 0.31s
 =============================================
 =============================================
 Starting Robustness Verifier
 ---------------------------------------------
 Checking 0.003-robustness
 ----------------------------------------
-Filted by robust bound, 1 states left for SDP method
+Filted by robust bound, 2 states left for SDP method
 ===================================
 Starting state robustness verifier
 -----------------------------------
-1/1 states checked: 0 unrobust state 1/1 states checked: 0 unrobust state
+1/2 states checked: 0 unrobust state 2/2 states checked: 0 unrobust state 2/2 states checked: 0 unrobust state
 ===================================
 Verification over
 ----------------------------------------
-Robust accuracy: 100.00%, Verification time: 0.15s
+Robust accuracy: 100.00%, Verification time: 0.55s
 =============================================
+iris_0.001_3_mixed_0.13462_BitFlip.csv saved successfully!

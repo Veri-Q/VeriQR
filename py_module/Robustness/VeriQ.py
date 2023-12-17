@@ -112,8 +112,8 @@ def PureStateRobustnessVerifier(OO, data, label, e, ADVERSARY_EXAMPLE=False):
                 plt.xticks([])
                 plt.yticks([])
 
-                #                plt.show()
-                plt.savefig('./adversary_examples/adversary_example_fashionMnist_{:d}.png'.format(non_robust_num),
+                # plt.show()
+                plt.savefig('./adversary_examples/adversary_example_{:d}.png'.format(non_robust_num),
                             bbox_inches='tight')
                 plt.close()
 
@@ -137,24 +137,16 @@ def RobustnessVerifier(E, O, data, label, e, type):
     non_robust_num = np.zeros([2, ], dtype=int)
     check_time = np.zeros([2, ])
 
-    sum_E = np.zeros([dim, dim], dtype=complex)
+    # sum_E = np.zeros([dim, dim], dtype=complex)
 
-    if type == 'qasm':
-        for i in range(NKraus):
-            OO += E[i, :, :].conj().T @ O @ E[i, :, :]
-            sum_E += E[i, :, :].conj().T @ E[i, :, :]
-    else:
-        for i in range(NKraus):
-            # print(E[i, :, :].shape)
-            # print(E[i, :, :].conj().T @ O @ E[i, :, :])
-            OO += E[i, :, :].conj().T @ O @ E[i, :, :]
-            sum_E += E[i, :, :].conj().T @ E[i, :, :]
+    for i in range(NKraus):
+        OO += E[i, :, :].conj().T @ O @ E[i, :, :]
+        # sum_E += E[i, :, :].conj().T @ E[i, :, :]
 
     ex = np.zeros((n,))
     # predict = []
     for i in range(n):
         ex[i] = np.real(np.trace(OO @ data[i, :, :]))
-
         if type == 'qasm':
             ex[i] = logistic(ex[i])
 

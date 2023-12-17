@@ -36,7 +36,6 @@ public:
     void show_result_tables();
     void show_adversary_examples();
     void delete_all_adversary_examples();
-    void show_circuit_diagram();
     void show_circuit_diagram_svg(QString filename);
     void show_circuit_diagram_pdf(QString filename);
     void close_circuit_diagram();

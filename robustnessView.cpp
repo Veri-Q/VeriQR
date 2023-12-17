@@ -88,10 +88,10 @@ void RobustnessView::init()
 
 void RobustnessView::resizeEvent(QResizeEvent *)
 {
-    if(showed_svg)
-    {
-        svgWidget->load(robustDir + "/Figures/"+ model_name_ + "_model.svg");
-    }
+    // if(showed_svg)
+    // {
+    //     svgWidget->load(robustDir + "/Figures/"+ model_name_ + "_model.svg");
+    // }
 
     if(showed_adexample)
     {
@@ -144,18 +144,32 @@ void RobustnessView::openFile(){
 
     file_name_ = QFileInfo(file).fileName();
     file_name_.chop(4);
-    qDebug() << file_name_;  // "binary_0.001_2_mixed"
+    qDebug() << file_name_;
+    // "binary_0.001_2_mixed" or "FashionMNIST_Ent1_0.001_3_mixed_0.1_PhaseFlip"
 
     csvfile_ = robustDir + "/results/result_tables/" + file_name_ + ".csv";
-    // "../RobustnessVerifier/py_module/Robustness/results/result_tables/binary_0.001_2_mixed.csv"
 
-    // 此时需要从文件名获取各种参数信息
+    // 从文件名获取各种参数信息
     QStringList args = file_name_.split("_");
-    QString unit = args[args.size()-3];
-    robustness_unit_ = unit.toDouble();
-    experiment_number_ = args[args.size()-2].toInt();
-    state_type_ = args[args.size()-1];
-    model_name_ = file_name_.mid(0, file_name_.indexOf(unit)-1);
+    QString unit, img_file;
+    if(args.size() == 4){
+        model_name_ = args[0];
+        unit = args[1];
+        robustness_unit_ = unit.toDouble();
+        experiment_number_ = args[2].toInt();
+        state_type_ = args[3];
+        img_file = model_name_;
+        show_circuit_diagram_pdf(robustDir+"/Figures/"+img_file+"_model.pdf");
+    }
+    else{
+        state_type_ = args[args.size()-3];
+        experiment_number_ = args[args.size()-4].toInt();
+        unit = args[args.size()-5];
+        robustness_unit_ = unit.toDouble();
+        model_name_ = file_name_.mid(0, file_name_.indexOf(unit)-1);
+        img_file = model_name_ + "_with_" + args[args.size()-2] + "_" + args[args.size()-1];
+        show_circuit_diagram_svg(robustDir+"/Figures/"+img_file+"_model.svg");
+    }
     qDebug() << "model_name_: " << model_name_;
 
     ui->slider_unit->setValue(unit.length() - 2);
@@ -194,10 +208,7 @@ void RobustnessView::openFile(){
 
     show_result_tables();
 
-    // get_table_data(1, QProcess::NormalExit);
     get_table_data("openfile");
-
-    show_circuit_diagram();
 
     file.close();
 }
@@ -409,6 +420,7 @@ void RobustnessView::run_robustVeri()
     output_ = "";
     output_line_ = "";
     ui->textBrowser_output->setText("");
+    update();
 
     close_circuit_diagram();
     delete_all_adversary_examples();
@@ -451,13 +463,6 @@ void RobustnessView::run_robustVeri()
     paramsList = cmd + " " + args.join(" ");
     qDebug() << paramsList;
 
-    QStringList list;
-    list << model_name_ << unit << exptnum << state_type_;
-    file_name_ = list.join("_");   // like: binary_0.001_3_mixed
-    qDebug() << file_name_;
-
-    csvfile_ = robustDir + "/results/result_tables/" + file_name_ + ".csv";
-
     show_result_tables();
 
     process = new QProcess(this);
@@ -475,7 +480,7 @@ void RobustnessView::run_robustVeri()
         qDebug() << "Process succeed! ";
     }
 
-    if (!process->waitForFinished()) {
+    if (!process->waitForFinished()){
         qDebug() << "wait";
         QCoreApplication::processEvents(QEventLoop::AllEvents, 2000);
     }
@@ -515,26 +520,36 @@ void RobustnessView::stopProcess()
 
 void RobustnessView::on_read_output()
 {
+    bool is_case = circuit_diagram_map.find(model_name_) != circuit_diagram_map.end();
     while (process->bytesAvailable() > 0){
         output_line_ = process->readLine();
         // qDebug() << output_line_;
+        output_.append(output_line_);
+        ui->textBrowser_output->append(output_line_.simplified());
 
-        if(output_line_.contains("Starting") && !showed_pdf && !showed_svg)
+        if(is_case && output_line_.contains("Starting") && !showed_pdf)
         {
-            show_circuit_diagram();
+            show_circuit_diagram_pdf(robustDir+"/Figures/"+circuit_diagram_map[model_name_]);
         }
-        // Verification over, show adversary examples
-        else if(output_line_.contains("Robust Accuracy (in Percent)"))
+        else if(!is_case && output_line_.contains(".svg saved successfully!") && !showed_pdf)
         {
+            show_circuit_diagram_svg(robustDir+"/Figures/"+output_line_.mid(0, output_line_.indexOf(" saved")));
+        }
+        // Verification over, show results and adversary examples.
+        else if(output_line_.contains(".csv saved successfully!"))
+        {
+            csvfile_ = output_line_.mid(0, output_line_.indexOf(" saved"));
+            file_name_ = csvfile_.mid(0, csvfile_.indexOf(".csv"));
+            csvfile_ = robustDir + "/results/result_tables/" + csvfile_;
+
+            get_table_data("run");
+
             if(ui->checkBox->isChecked()){
                 show_adversary_examples();
             }
             break;
         }
-        output_.append(output_line_);
-        ui->textBrowser_output->append(output_line_.simplified());
     }
-    get_table_data("run");
 }
 
 void RobustnessView::show_adversary_examples()
@@ -633,30 +648,9 @@ void RobustnessView::close_circuit_diagram_pdf()
     }
 }
 
-void RobustnessView::show_circuit_diagram()
-{
-    QString img_file = robustDir + "/Figures/";
-
-    if(circuit_diagram_map.find(model_name_) != circuit_diagram_map.end())
-    {
-        img_file += circuit_diagram_map[model_name_];
-        qDebug() << "img_file: " << img_file;
-
-        show_circuit_diagram_pdf(img_file);
-        showed_pdf = true;
-    }
-    else
-    {
-        img_file += model_name_ + "_model.svg";
-        qDebug() << "img_file: " << img_file;
-
-        show_circuit_diagram_svg(img_file);
-        showed_svg = true;
-    }
-}
-
 void RobustnessView::show_circuit_diagram_svg(QString filename)
 {
+    qDebug() << "img_file: " << filename;
     svgWidget = new SvgWidget(ui->scrollAreaWidgetContents_circ);
     svgWidget->load(filename);
     svgWidget->setObjectName("svgWidget_circ");
@@ -676,14 +670,17 @@ void RobustnessView::show_circuit_diagram_svg(QString filename)
     // qDebug() << diff;
     ui->verticalLayout_circ->insertWidget(0, svgWidget, diff);
     ui->verticalLayout_circ->setStretch(1, 3*1000);
+    showed_svg = true;
 }
 
 void RobustnessView::show_circuit_diagram_pdf(QString filename)
 {
+    qDebug() << "img_file: " << filename;
     pdfView = new PdfView(ui->scrollArea_circ);
     pdfView->loadDocument(filename);
     pdfView->setObjectName("pdfView_circ");
     ui->verticalLayout_circ->addWidget(pdfView);
+    showed_pdf = true;
 }
 
 void RobustnessView::show_result_tables(){
@@ -776,7 +773,7 @@ void RobustnessView::get_table_data(QString op){
 
     // 程序正常结束
     QFile file(csvfile_);
-    qDebug() << csvfile_;
+    qDebug() << "csvfile: " << csvfile_;
 
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         // QMessageBox::warning(this, "Warning", "Unable to open the .csv file: " + csvfile_ + "\n" + file.errorString());
