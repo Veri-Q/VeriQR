@@ -62,6 +62,7 @@ public slots:
     void on_read_output();
     void get_table_data(QString op);
     void stateChanged(QProcess::ProcessState state);
+    void on_comboBox_currentTextChanged(const QString &arg1);
 
 
 private:
@@ -97,6 +98,7 @@ private:
     bool showed_svg = false;
     bool showed_pdf = false;
     bool showed_adexample = false;
+    QStringList adv_examples;
 
     std::map<QString, QString> circuit_diagram_map = {
         {"binary", "binary_model.pdf"},

@@ -44,6 +44,7 @@ RobustnessView::RobustnessView(QWidget *parent):
     connect(ui->spinBox_exptnum, SIGNAL(valueChanged(int)), this, SLOT(on_spinBox_exptnum_valueChanged(int)));
     connect(ui->pushButton_run, SIGNAL(pressed()), this, SLOT(run_robustVeri()));
     connect(ui->pushButton_stop, SIGNAL(pressed()), this, SLOT(stopProcess()));
+    connect(ui->comboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(on_comboBox_currentTextChanged(QString)));
 }
 
 void RobustnessView::init()
@@ -70,6 +71,11 @@ void RobustnessView::init()
     palette.setBrush(QPalette::Window, Qt::transparent);
     ui->groupBox_runtime->setPalette(palette);
 
+    ui->comboBox->clear();
+    QStringList strList;
+    strList << "1 & 7" << "3 & 6" << "3 & 8" << "3 & 9" << "4 & 9" << "5 & 6" << "6 & 8";
+    ui->comboBox->addItems(strList);
+
     // dragCircuit = new DragCircuit(ui->tab_drag_circ);
     // dragCircuit->setObjectName(QString::fromUtf8("dragCircuit"));
     // ui->verticalLayout_7->addWidget(dragCircuit);
@@ -95,15 +101,7 @@ void RobustnessView::resizeEvent(QResizeEvent *)
 
     if(showed_adexample)
     {
-        QString img_file = robustDir + "/adversary_examples";
-        QDir dir(img_file);
-        QStringList mImgNames;
-
-        if (!dir.exists()) mImgNames = QStringList("");
-
-        dir.setFilter(QDir::Files);
-        dir.setSorting(QDir::Name);
-        mImgNames = dir.entryList();
+        QString img_file = robustDir + "/adversary_examples/";
 
         int i = 0;
         QObjectList list = ui->scrollAreaWidgetContents_ad->children();
@@ -112,7 +110,7 @@ void RobustnessView::resizeEvent(QResizeEvent *)
             if(obj->inherits("QLabel"))
             {
                 QLabel *imageLabel = qobject_cast<QLabel*>(obj);
-                QImage image(img_file + "/" + mImgNames[i]);
+                QImage image(img_file + adv_examples[i]);
                 QPixmap pixmap = QPixmap::fromImage(image);
                 imageLabel->setPixmap(pixmap.scaledToHeight(
                     ui->tab_ad->height()*0.32, Qt::SmoothTransformation));
@@ -159,7 +157,12 @@ void RobustnessView::openFile(){
         experiment_number_ = args[2].toInt();
         state_type_ = args[3];
         img_file = model_name_;
-        show_circuit_diagram_pdf(robustDir+"/Figures/"+img_file+"_model.pdf");
+        if(model_name_.startsWith("mnist") && model_name_.size() > 5){
+            show_circuit_diagram_svg(robustDir+"/Figures/"+img_file+"_model.svg");
+        }
+        else{
+            show_circuit_diagram_pdf(robustDir+"/Figures/"+img_file+"_model.pdf");
+        }
     }
     else{
         state_type_ = args[args.size()-3];
@@ -187,8 +190,18 @@ void RobustnessView::openFile(){
     else if(model_name_ == "excitation"){
         ui->radioButton_excitation->setChecked(1);
     }
-    else if(model_name_ == "mnist"){
+    else if(model_name_.contains("mnist")){
         ui->radioButton_mnist->setChecked(1);
+        if(model_name_.size() == 5)
+        {
+            ui->comboBox->setCurrentIndex(1);
+        }
+        else
+        {
+            QString text = QString(model_name_[5]) + " & " +QString(model_name_[6]);
+            ui->comboBox->setCurrentIndex(ui->comboBox->findText(text));
+        }
+        qDebug() << ui->comboBox->currentText();
     }
     else{
         ui->radioButton_importfile->setChecked(1);
@@ -201,7 +214,7 @@ void RobustnessView::openFile(){
         ui->radioButton_mixed->setChecked(1);
     }
 
-    if(model_name_ == "mnist" && state_type_ == "pure"){
+    if(model_name_.contains("mnist") && state_type_ == "pure"){
         ui->checkBox->setChecked(1);
         show_adversary_examples();
     }
@@ -566,19 +579,26 @@ void RobustnessView::show_adversary_examples()
     dir.setSorting(QDir::Name);
 
     mImgNames = dir.entryList();
-    qDebug() << dir.entryList();
+    // qDebug() << dir.entryList();
+    QString digits = ui->comboBox->currentText();
+    digits = "advExample_" + QString(digits[0]) + QString(digits[4]);
+    qDebug() << "The selected numbers are: " << digits;
     for (int i = 0; i < mImgNames.size(); ++i)
     {
-        QLabel *imageLabel_ad;
-        imageLabel_ad= new QLabel(ui->scrollAreaWidgetContents_ad);
-        imageLabel_ad->setObjectName(QString::fromUtf8("imageLabel_ad_")+QString::number(i));
-        imageLabel_ad->setAlignment(Qt::AlignCenter);
+        if(mImgNames[i].startsWith(digits))
+        {
+            QLabel *imageLabel_ad;
+            imageLabel_ad= new QLabel(ui->scrollAreaWidgetContents_ad);
+            imageLabel_ad->setObjectName(QString::fromUtf8("imageLabel_ad_")+QString::number(i));
+            imageLabel_ad->setAlignment(Qt::AlignCenter);
 
-        QImage image(img_file + "/" + mImgNames[i]);
-        QPixmap pixmap = QPixmap::fromImage(image);
-        imageLabel_ad->setPixmap(pixmap);
+            QImage image(img_file + "/" + mImgNames[i]);
+            QPixmap pixmap = QPixmap::fromImage(image);
+            imageLabel_ad->setPixmap(pixmap);
 
-        ui->verticalLayout_4->addWidget(imageLabel_ad);
+            ui->verticalLayout_4->addWidget(imageLabel_ad);
+            adv_examples.append(mImgNames[i]);
+        }
     }
     showed_adexample = true;
 }
@@ -601,6 +621,7 @@ void RobustnessView::delete_all_adversary_examples()
         }
     }
     showed_adexample = false;
+    adv_examples.clear();
     qDebug() << "delete all adversary examples!";
 }
 
@@ -826,7 +847,7 @@ void RobustnessView::get_table_data(QString op){
 void RobustnessView::on_checkBox_clicked(int state)
 {
     if(state == Qt::Checked || state == Qt::PartiallyChecked){
-        if(model_name_ == "mnist" && state_type_ == "pure"){
+        if(model_name_.contains("mnist") && state_type_ == "pure"){
             ui->checkBox->setChecked(1);
         }
         else
@@ -842,3 +863,9 @@ RobustnessView::~RobustnessView()
 {
     delete ui;
 }
+
+void RobustnessView::on_comboBox_currentTextChanged(const QString &op)
+{
+    qDebug() << op;
+}
+

@@ -1,0 +1,6 @@
+ipykernel
+numpy
+pandas
+pillow
+scikit-learn
+typing

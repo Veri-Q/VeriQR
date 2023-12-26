@@ -47,7 +47,7 @@ def StateRobustnessVerifier(OO, data, label, e):
     return non_robust_num
 
 
-def PureStateRobustnessVerifier(OO, data, label, e, ADVERSARY_EXAMPLE=False):
+def PureStateRobustnessVerifier(OO, data, label, e, ADVERSARY_EXAMPLE=False, digits='36'):
     dim, n = data.shape[0], data.shape[1]
     non_robust_num = 0
     C = lambda x: x.reshape((-1, 1))
@@ -87,12 +87,13 @@ def PureStateRobustnessVerifier(OO, data, label, e, ADVERSARY_EXAMPLE=False):
                 original = psi.reshape((16, 16), order='F')
                 adv_example = res.x.reshape((16, 16), order='F')
                 maximum = np.maximum(original.max(), adv_example.max())
+                # digits = '36'
 
                 plt.figure()
                 plt.subplot(1, 3, 1)
                 plt.imshow(original, cmap='gray', vmin=0, vmax=maximum)
                 plt.colorbar(fraction=0.045, orientation='horizontal', pad=0.05)
-                plt.title('label ' + '63'[label[i]])
+                plt.title('label ' + digits[1-label[i]])
                 plt.xticks([])
                 plt.yticks([])
 
@@ -108,12 +109,12 @@ def PureStateRobustnessVerifier(OO, data, label, e, ADVERSARY_EXAMPLE=False):
                 plt.subplot(1, 3, 3)
                 plt.imshow(adv_example, cmap='gray', vmin=0, vmax=maximum)
                 plt.colorbar(fraction=0.045, orientation='horizontal', pad=0.05)
-                plt.title('label ' + '36'[label[i]])
+                plt.title('label ' + digits[label[i]])
                 plt.xticks([])
                 plt.yticks([])
 
                 # plt.show()
-                plt.savefig('./adversary_examples/adversary_example_{:d}.png'.format(non_robust_num),
+                plt.savefig('./adversary_examples/advExample_{}_{:d}.png'.format(digits, non_robust_num),
                             bbox_inches='tight')
                 plt.close()
 
@@ -178,7 +179,7 @@ def RobustnessVerifier(E, O, data, label, e, type):
     return robust_ac, check_time
 
 
-def PureRobustnessVerifier(E, O, data, label, e, type, ADVERSARY_EXAMPLE=False):
+def PureRobustnessVerifier(E, O, data, label, e, type, ADVERSARY_EXAMPLE=False, digits='36', filename=''):
     time_start = time.time()
     print('=' * 45 + '\nStarting Pure Robustness Verifier\n' + '-' * 45)
     print('Checking {:g}-robustness\n'.format(e) + '-' * 40)
@@ -193,7 +194,7 @@ def PureRobustnessVerifier(E, O, data, label, e, type, ADVERSARY_EXAMPLE=False):
     ex = np.zeros((n,))
     for i in range(n):
         ex[i] = np.real(data[:, i].T.conj() @ OO @ data[:, i])
-        if type == 'qasm':
+        if type == 'qasm' and filename != 'mnist':
             ex[i] = logistic(ex[i])
 
     non_robust_index = (np.abs(np.sqrt(ex) - np.sqrt(1. - ex)) <= (np.sqrt(2. * e))) & ((ex > 0.5) == label)
@@ -207,7 +208,8 @@ def PureRobustnessVerifier(E, O, data, label, e, type, ADVERSARY_EXAMPLE=False):
                                                         data[:, non_robust_index],
                                                         label[non_robust_index],
                                                         e,
-                                                        ADVERSARY_EXAMPLE)
+                                                        ADVERSARY_EXAMPLE,
+                                                        digits)
     else:
         print('Filted by robust bound, all states are robust')
 

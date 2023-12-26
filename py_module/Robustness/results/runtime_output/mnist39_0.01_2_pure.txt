@@ -1,0 +1,31 @@
+=============================================
+Starting Pure Robustness Verifier
+---------------------------------------------
+Checking 0.01-robustness
+----------------------------------------
+Filted by robust bound, 12 states left for QCQP method
+===================================
+Starting pure state robustness verifier
+-----------------------------------
+12/12 states checked: 0 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 100.00%, Verification time: 0.94s
+=============================================
+=============================================
+Starting Pure Robustness Verifier
+---------------------------------------------
+Checking 0.02-robustness
+----------------------------------------
+Filted by robust bound, 188 states left for QCQP method
+===================================
+Starting pure state robustness verifier
+-----------------------------------
+188/188 states checked: 2 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 99.80%, Verification time: 23.63s
+=============================================
+mnist_39_0.01_2_pure.csv saved successfully! 
