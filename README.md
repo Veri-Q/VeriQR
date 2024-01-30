@@ -195,19 +195,7 @@ VeriQR provides several labeled datasets, all of which are encoded into quantum 
 
 For each of these models, we perform noisy quantum simulation by adding a noise on each qubit at the end of the circuit with a specified probability $0 \leq p \leq 1$, which can be any one of the four supported noises, namely *depolarizing*, *phase flip*, *bit flip*, and *mixed* (a mixture of the first three) introduced in ~\cite{nielsen2001quantum}. Then we set different adversarial disturbance parameters $\varepsilon$, each of which indicates the $\varepsilon-robustness$ to be verified. We demonstrate *VeriQR* with the **50** models and the full verification results are shown in the following table, where $RA$ indicates the robust accuracy of classifiers, and $VT$ is the verification time: 
 
-<style type="text/css">
-.tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-pb0m{border-color:inherit;text-align:center;vertical-align:bottom}
-.tg .tg-9wq8{border-color:inherit;text-align:center;vertical-align:middle}
-.tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
-.tg .tg-7btt{border-color:inherit;font-weight:bold;text-align:center;vertical-align:top}
-.tg .tg-nrix{text-align:center;vertical-align:middle}
-.tg .tg-8d8j{text-align:center;vertical-align:bottom}
-</style>
+
 <table class="tg">
 <thead>
   <tr>
@@ -969,14 +957,6 @@ For *global-robustness*, we also add different levels of noise to each quantum m
 
 The full experimental results are shown in the following table: 
 
-<style type="text/css">
-.tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
-</style>
 <table class="tg">
 <thead>
   <tr>
@@ -1333,4 +1313,3 @@ The full experimental results are shown in the following table:
   </tr>
 </tbody>
 </table>
-
