@@ -193,7 +193,7 @@ VeriQR provides several labeled datasets, all of which are encoded into quantum 
 - The model $fashion$, trained on the well-known Fashion MNIST dataset that is encoded into pure states of 8 qubits via amplitude encoding, is used to classify images of two fashion products, T-shirts and ankle boots. 
 -  The models $tfi$, trained on the data points of 4 qubits and of 8 qubits in the [TFI\_chain dataset](https://tensorflow.google.cn/quantum/api_docs/python/tfq/datasets/tfi_chain) respectively using the approach in [the paper](https://www.scipost.org/SciPostPhysLectNotes.61), are used for identifying the wavefunction at different phases in a quantum many-body system. 
 
-For each of these models, we perform noisy quantum simulation by adding a noise on each qubit at the end of the circuit with a specified probability $0 \leq p \leq 1$, which can be any one of the four supported noises, namely *depolarizing*, *phase flip*, *bit flip*, and *mixed* (a mixture of the first three) introduced in ~\cite{nielsen2001quantum}. Then we set different adversarial disturbance parameters $\varepsilon$, each of which indicates the $\varepsilon-robustness$ to be verified. We demonstrate *VeriQR* with the **50** models and the full verification results are shown in the following table, where $RA$ indicates the robust accuracy of classifiers, and $VT$ is the verification time: 
+For each of these models, we perform noisy quantum simulation by adding a noise on each qubit at the end of the circuit with a specified probability $0 \leq p \leq 1$, which can be any one of the four supported noises, namely *depolarizing*, *phase flip*, *bit flip*, and *mixed* (a mixture of the first three) introduced in ~\cite{nielsen2001quantum}. Then we set different adversarial disturbance parameters $\varepsilon$, each of which indicates the $\varepsilon-robustness$ to be verified. We demonstrate *VeriQR* with the 50 models and the full verification results are shown in the following table, where $RA$ indicates the robust accuracy of classifiers, and $VT$ is the verification time: 
 
 
 <table class="tg">
@@ -946,7 +946,7 @@ For each of these models, we perform noisy quantum simulation by adding a noise 
 
 ## Global Robustness Verification
 
-For *global-robustness*, we also add different levels of noise to each quantum model. We tested **49** quantum models on *VeriQR*, covering QCNN, Quantum Approximate Optimization Algorithms (QAOA), Variational Quantum Eigensolver (VQE) and other algorithms models, including: 
+For *global-robustness*, we also add different levels of noise to each quantum model. We tested 10 quantum models on *VeriQR*, covering QCNN, Quantum Approximate Optimization Algorithms (QAOA), Variational Quantum Eigensolver (VQE) and other algorithms models, including: 
 
 - The model $aci$, trained on the [Adult-Income dataset](https://archive.ics.uci.edu/dataset/2/adult) for income prediction. 
 - The model $fct$, trained on a [dataset](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud) that contains credit transactions made by European cardholders, used to detect fraudulent credit card transactions.  
