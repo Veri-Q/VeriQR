@@ -84,8 +84,10 @@ def PureStateRobustnessVerifier(OO, data, label, e, ADVERSARY_EXAMPLE=False, dig
         if delta < e:
             non_robust_num += 1
             if ADVERSARY_EXAMPLE:
-                original = psi.reshape((16, 16), order='F')
-                adv_example = res.x.reshape((16, 16), order='F')
+                # original = psi.reshape((16, 16), order='F')
+                # adv_example = res.x.reshape((16, 16), order='F')
+                original = psi.reshape((16, 16))
+                adv_example = res.x.reshape((16, 16))
                 maximum = np.maximum(original.max(), adv_example.max())
                 # digits = '36'
 

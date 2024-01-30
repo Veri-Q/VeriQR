@@ -1,5 +1,5 @@
 import numpy as np
-from mindquantum.core.gates import H, X, RZ, RY, I, Z
+from mindquantum.core.gates import H, X, RZ, RY, I, Z, DepolarizingChannel
 
 # import mindquantum.core.gates as gate
 
@@ -70,11 +70,30 @@ from mindquantum.core.gates import H, X, RZ, RY, I, Z
 #
 # return M_0 - M_1
 
-DATA = np.load("../model_and_data/iris_data.npz")
-# O = DATA['O']
-# data = DATA['data']
+data_file = "../model_and_data/binary_cav.npz"  # 6 qubit
+DATA = np.load(data_file)
+kraus = DATA['kraus']
+O = DATA['O']
+data = DATA['data']
 label = DATA['label']
-print(label)
+
+p = 0.001
+kraus_ = []
+E = DepolarizingChannel(p).matrix()
+print(E)
+for e in E:
+    kraus_.append(e @ kraus[0])
+
+kraus_ = np.array(kraus_)
+print(kraus_.shape)
+
+np.savez('../model_and_data/binary{}_cav.npz'.format(p), O=O, data=data, label=label, kraus = kraus_)
+
+
+# print(data.shape)
+# print(data)
+# for rho in data:
+#     print(np.real(np.trace(rho @ rho)))
 
 
 # label = [1-i for i in label]
@@ -91,8 +110,8 @@ def mat_m(qubit_num):
     return M_0 - M_1
 
 
-M = mat_m(8)
-print(M.shape)
+# M = mat_m(8)
+# print(M.shape)
 
 
 # def lossfunc():
@@ -165,19 +184,22 @@ def printdata():
     # data_file = "binary_cav.npz"         # 1 qubit
     # data_file = "mnist_cav.npz"          # 8 qubit
     # data_file = "excitation_cav.npz"     # 6 qubit
-    data_file = "../phaseRecog_cav.npz"  # 6 qubit
+    data_file = "../model_and_data/TFIchain8_data.npz"  # 6 qubit
     DATA = np.load(data_file)
-    print("kraus")
-    print(DATA['kraus'].shape)
-    print(DATA['kraus'])
-    print()
-    print("O")
-    print(DATA['O'])
-    print()
-    print("data")
-    print(DATA['data'].shape)
-    print(DATA['data'])
-    print()
-    print("label")
-    print(len(DATA['label']))
-    print(DATA['label'])
+    data = DATA['data']
+    for rho in data:
+        print(np.real(np.trace(rho @ rho)))
+    # print("kraus")
+    # print(DATA['kraus'].shape)
+    # print(DATA['kraus'])
+    # print()
+    # print("O")
+    # print(DATA['O'])
+    # print()
+    # print("data")
+    # print(DATA['data'].shape)
+    # print(DATA['data'])
+    # print()
+    # print("label")
+    # print(len(DATA['label']))
+    # print(DATA['label'])

@@ -19,6 +19,7 @@ SOURCES += \
     fairnessView.cpp \
     main.cpp \
     mainwindow.cpp \
+    multiSelectComboBox.cpp \
     pdfView.cpp \
     robustnessView.cpp \
     svgWidget.cpp
@@ -26,6 +27,7 @@ SOURCES += \
 HEADERS += \
     fairnessView.h \
     mainwindow.h \
+    multiSelectComboBox.h \
     pdfView.h \
     robustnessView.h \
     svgWidget.h
@@ -34,6 +36,7 @@ FORMS += \
     fairnessview.ui \
     mainwindow.ui \
     robustnessview.ui \
+    robustnessview1.ui \
 
 RESOURCES += \
     resources.qrc

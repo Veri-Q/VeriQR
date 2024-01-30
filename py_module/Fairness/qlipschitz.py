@@ -11,14 +11,14 @@ import sys
 import csv
 import signal
 from contextlib import contextmanager
+from random import choice
 
 from qiskit import QuantumCircuit
 from qiskit.transpiler.passes import RemoveBarriers
 from cirq.contrib.qasm_import import circuit_from_qasm
 from mindquantum.io.qasm.openqasm import OpenQASM
-from mindquantum.core.gates import BitFlipChannel, DepolarizingChannel, PhaseFlipChannel
+from mindquantum.core.gates import BitFlipChannel, DepolarizingChannel, PhaseFlipChannel, Measure
 from mindquantum.core.circuit import Circuit
-
 
 jax.config.update('jax_platform_name', 'cpu')
 tn.set_default_backend("jax")
@@ -280,11 +280,19 @@ def noisy_circuit_from_qasm(file, noise_type, p):
 
     circuit_mq = qasm2mq(qasm_str)
 
-    mixed = True if noise_type == "mixed" else False
+    all_measures = []
+    for gate in circuit_mq:
+        # print(type(gate))
+        if type(gate) is Measure:
+            all_measures.append(gate)
+
+    if circuit_mq.has_measure_gate:
+        circuit_mq = circuit_mq.remove_measure()
+
     noise_op_ = noise_op[noise_type]
     noise_op_mq_ = noise_op_mq[noise_type]
     if p > 1e-7:
-        if mixed:
+        if noise_type == "mixed":
             circuit_cirq += cirq.bit_flip(p).on_each(*qubits[::3])
             circuit_cirq += cirq.depolarize(p).on_each(*qubits[1::3])
             circuit_cirq += cirq.phase_flip(p).on_each(*qubits[2::3])
@@ -299,6 +307,9 @@ def noisy_circuit_from_qasm(file, noise_type, p):
             circuit_cirq += noise_op_(p).on_each(*qubits)
             for q in range(circuit_mq.n_qubits):
                 circuit_mq += noise_op_mq_(p).on(q)
+
+    for m in all_measures:
+        circuit_mq += m
     return qubits, circuit_cirq, circuit_mq
 
 
@@ -321,109 +332,46 @@ def calculate_lipschitz(file, noise_type, p=0.01):
     print('Noise configuration: {}, {}'.format(noise_type, p))
     print('Lipschitz K =', k)
     print('Elapsed time = %.4fs' % total_time)
-    print('The bias kernel is: (\n{},\n {})'.format(bias_kernel[0], bias_kernel[1]))
-    print("============The Lipschitz Constant Calculation End=============")
-
-
-# def testFolder(path, noise_type, p=0.01):
-#     files = os.listdir(path)
-#     for f in files:
-#         calculate_lipschitz(path + f, noise_type, p)
-#         gc.collect()
-
-
-def calculate_lipschitz_(model_circuit, qubits):
-    measurement = np.array([[1., 0.], [0., 0.]])
-
-    print("===========The Lipschitz Constant Calculation Start============")
-    start_time = time.time()
-    k, bias_kernel = lipschitz(model_circuit, qubits, measurement)
-    total_time = time.time() - start_time
-
-    print('Lipschitz K =', k)
-    print('Elapsed time = %.4fs' % total_time)
     # print('The bias kernel is: (\n{},\n {})'.format(bias_kernel[0], bias_kernel[1]))
     print("============The Lipschitz Constant Calculation End=============")
-    return k, total_time
+    return k, total_time, bias_kernel
 
 
-def batchTest(path):
-    files = os.listdir(path)
-
-    # 先写入columns_name
-    # w.writerow(["Model", "Noise type", "Noise probability", "${K^*}$", "Time"])
-
-    for file in files:
-        fileTest(path + file)
+# def verification(file, noise_type, p, epsilon, delta):
+#     k, total_time, bias_kernel = calculate_lipschitz(file, noise_type, p)
+#     start = time.time()
+#     if delta >= k * epsilon:
+#         return True, total_time + time.time() - start, []
+#     return False, total_time + time.time() - start, bias_kernel
 
 
-def fileTest(file):
-    qubits, circuit_cirq, qasm_str = qasm2cirq_by_qiskit(file)
-    circuit_mq = qasm2mq(qasm_str)
+def verification(epsilon, delta):
+    if delta >= k * epsilon:
+        print('This model is ({}, {})-robust.'.format(epsilon, delta))
+        # print('YES')
+        return True
 
-    model_name = file[file.rfind("/") + 1: file.index(".qasm")]
-
-    with open("./results/{}.csv".format(model_name), "a+") as csvfile:
-        w = csv.writer(csvfile)
-        # for noise_type in ["phase_flip", "depolarizing", "bit_flip", "mixed"]:
-        for noise_type in ["bit_flip"]:
-            noise_op_ = noise_op[noise_type]
-            noise_op_mq_ = noise_op_mq[noise_type]
-            mixed = True if noise_type == "mixed" else False
-            for p in [1e-2]:
-                circuit_cirq_ = cirq.circuits.Circuit()
-                circuit_cirq_ += circuit_cirq
-                circuit_mq_ = Circuit()
-                circuit_mq_ += circuit_mq
-                # add noise
-                if p > 1e-7:
-                    if mixed:
-                        circuit_cirq_ += cirq.bit_flip(p).on_each(*qubits[::3])
-                        circuit_cirq_ += cirq.depolarize(p).on_each(*qubits[1::3])
-                        circuit_cirq_ += cirq.phase_flip(p).on_each(*qubits[2::3])
-                        n_qubits = range(circuit_mq_.n_qubits)
-                        for q in n_qubits[::3]:
-                            circuit_mq_ += BitFlipChannel(p).on(q)
-                        for q in n_qubits[1::3]:
-                            circuit_mq_ += DepolarizingChannel(p).on(q)
-                        for q in n_qubits[2::3]:
-                            circuit_mq_ += PhaseFlipChannel(p).on(q)
-                    else:
-                        circuit_cirq_ += noise_op_(p).on_each(*qubits)
-                        for q in range(circuit_mq_.n_qubits):
-                            circuit_mq_ += noise_op_mq_(p).on(q)
-
-                file_name = model_name + "_" + noise_type + "_" + str(p)
-                # print("file_name: {}".format(file_name))
-                circuit_mq_.svg().to_file("./model_circuits/circuit_{}.svg".format(file_name))
-                print("===========Printing Model Circuit End============")
-
-                k, total_time = calculate_lipschitz_(circuit_cirq_, qubits)
-                print('Circuit: %s' % file)
-                print('Noise configuration: {}, {}\n'.format(noise_type, p))
-
-                # 逐行写入数据 (写入多行用writerows)
-                w.writerow([model_name, noise_type, p, np.round(k, 5), np.round(total_time, 2)])
-
-                gc.collect()
+    print('This model is not ({}, {})-robust.'.format(epsilon, delta))
+    # print('NO')
+    return False
 
 
-# batchTest('./qasm_models/HFVQE/')
-# fileTest('./qasm_models/HFVQE/hf_6_0_5.qasm')
-# fileTest('./qasm_models/HFVQE/hf_8_0_5.qasm')
-# fileTest('./qasm_models/HFVQE/hf_10_0_5.qasm')
-# fileTest('./qasm_models/HFVQE/hf_12_0_5.qasm')
-# fileTest('./qasm_models/QAOA/qaoa_10.qasm')
-# fileTest('./qasm_models/inst/inst_4x4_10_0.qasm')
+# if str(sys.argv[1]) != "verify":
+#     # python qlipschitz.py ./qasm_models/HFVQE/hf_6_0_5.qasm phase_flip 0.0001
+#     qasm_file = str(sys.argv[1])
+#     noise_type = str(sys.argv[2])
+#     noisy_p = float(sys.argv[3])
+#     k, total_time, bias_kernel = calculate_lipschitz(qasm_file, noise_type, p=noisy_p)
+# else:
+#     # python qlipschitz.py verify k epsilon delta
+#     k = float(sys.argv[2])
+#     epsilon = float(sys.argv[3])
+#     delta = float(sys.argv[4])
+#     # flag, k, bias_kernel, total_time = verification(epsilon, delta)
+#     print("===========The Global Verification Start============")
+#     flag = verification(epsilon, delta)
+#     print("===========The Global Verification End============")
 
-# python qlipschitz.py ./qasm_models/HFVQE/hf_6_0_5.qasm phase_flip 0.0001
-qasm_file = str(sys.argv[1])
-noise_type = str(sys.argv[2])
-noisy_p = float(sys.argv[3])
-
-calculate_lipschitz(qasm_file, noise_type, p=noisy_p)
-
-# testFolder('./qasm_models/HFVQE/', cirq.bit_flip, p=0.01)
 
 # qubits = cirq.GridQubit.rect(1, 1)
 # model_circuit = cirq.Circuit(cirq.X(qubits[0]) ** 0.5, cirq.depolarize(0.01)(qubits[0]))

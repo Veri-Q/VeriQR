@@ -13,3 +13,4 @@ dragcircuit.ui
 build/
 test/
 VeriQR.pro.user
+py_module/Robustness/other/qcnn/__pycache__/

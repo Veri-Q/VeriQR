@@ -7,11 +7,12 @@
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QWebEngineView>
+// #include "dragCircuit.h"
 
 #include "ui_robustnessview.h"
-// #include "dragCircuit.h"
 #include "svgWidget.h"
 #include "pdfView.h"
+#include "multiSelectComboBox.h"
 
 
 namespace Ui {
@@ -31,6 +32,7 @@ public:
     void init();
     void resizeEvent(QResizeEvent *) override;
     void openFile();
+    void model_change_to_ui();
     void saveFile();
     void saveasFile();
     void show_result_tables();
@@ -63,16 +65,16 @@ public slots:
     void get_table_data(QString op);
     void stateChanged(QProcess::ProcessState state);
     void on_comboBox_currentTextChanged(const QString &arg1);
+    // void dights_checkbox_stateChange();
 
 
 private:
     PdfView *pdfView;
 
     SvgWidget *svgWidget;
-    // QSvgRenderer *svgRender;
 
-    // DragCircuit *dragCircuit;
-    // QWebEngineView *webView;
+    MultiSelectComboBox *comboBox_digits;
+    MultiSelectComboBox *comboBox_mixednoise;
 
     QProcess *process;
 
@@ -94,6 +96,8 @@ private:
     bool need_adversary_examples_ = false;
     QString output_;
     QString output_line_;
+    QString noise_type_ = "mixed";
+    double noise_prob_ = 0.0;
 
     bool showed_svg = false;
     bool showed_pdf = false;

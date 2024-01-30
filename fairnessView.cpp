@@ -27,13 +27,18 @@ FairnessView::FairnessView(QWidget *parent):
     connect(ui->radioButton_dice, SIGNAL(pressed()), this, SLOT(on_radioButton_dice_clicked()));
     connect(ui->radioButton_phaseflip, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_phaseflip_clicked()));
     connect(ui->radioButton_bitflip, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_bitflip_clicked()));
-    connect(ui->radioButton_depolarize, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_depolarize_clicked()));
-    connect(ui->radioButton_mixed, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_mixed_clicked()));
+    connect(ui->radioButton_depolarizing, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_depolarize_clicked()));
+    connect(ui->radioButton_mixednoise, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_mixed_clicked()));
     connect(ui->slider_prob, SIGNAL(valueChanged(int)), this, SLOT(on_slider_prob_sliderMoved(int)));
     connect(ui->doubleSpinBox_prob, SIGNAL(valueChanged(double)), this, SLOT(on_doubleSpinBox_prob_valueChanged(double)));
-    connect(ui->pushButton_run, SIGNAL(pressed()), this, SLOT(run_fairnessVeri()));
+    connect(ui->pushButton_run, SIGNAL(pressed()), this, SLOT(run_calculate_k()));
     connect(ui->pushButton_stop, SIGNAL(pressed()), this, SLOT(stopProcess()));
- }
+    connect(ui->slider_threshold_1, SIGNAL(valueChanged(int)), this, SLOT(on_slider_epsilon_sliderMoved(int)));
+    connect(ui->doubleSpinBox_threshold_1, SIGNAL(valueChanged(double)), this, SLOT(on_doubleSpinBox_epsilon_valueChanged(double)));
+    connect(ui->slider_threshold_2, SIGNAL(valueChanged(int)), this, SLOT(on_slider_delta_sliderMoved(int)));
+    connect(ui->doubleSpinBox_threshold_2, SIGNAL(valueChanged(double)), this, SLOT(on_doubleSpinBox_delta_valueChanged(double)));
+    connect(ui->pushButton_veri, SIGNAL(pressed()), this, SLOT(run_fairnessVeri()));
+}
 
 void FairnessView::init()
 {
@@ -47,6 +52,18 @@ void FairnessView::init()
         fairDir = path.mid(0, path.indexOf("/build")) + "/py_module/Fairness";
     }
     qDebug() << "fairDir: " << fairDir;
+
+    comboBox_mixednoise = new MultiSelectComboBox(ui->groupBox_noisetype);
+    QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    sizePolicy1.setHorizontalStretch(0);
+    sizePolicy1.setVerticalStretch(0);
+    sizePolicy1.setHeightForWidth(comboBox_mixednoise->sizePolicy().hasHeightForWidth());
+    comboBox_mixednoise->setSizePolicy(sizePolicy1);
+    ui->gridLayout->addWidget(comboBox_mixednoise, 0, 5, 1, 1);
+    QStringList noiseList;
+    noiseList << "bit flip" << "depolarizing" << "phase flip";
+    comboBox_mixednoise->addItems_for_mnist(noiseList);
+    comboBox_mixednoise->setMaxSelectNum(3);
 }
 
 void FairnessView::resizeEvent(QResizeEvent *)
@@ -130,6 +147,8 @@ void FairnessView::show_saved_results(QString fileName)
     }
     qDebug() << noise_prob_;
     qDebug() << noise_type_;
+
+    model_name_ = file_name_.mid(0, file_name_.indexOf(noise_type_)-1);
 
     // UI change
     model_change_to_ui();
@@ -283,6 +302,7 @@ void FairnessView::model_change_to_ui(){
         ui->radioButton_dice->setChecked(1);
     }else{
         ui->radioButton_importfile->setChecked(1);
+        ui->lineEdit_modelfile->setText(fairDir+"/qasm_models/"+model_name_+".qasm");
     }
 
     // noise type change
@@ -292,11 +312,11 @@ void FairnessView::model_change_to_ui(){
     else if(noise_type_ == "bit_flip"){
         ui->radioButton_bitflip->setChecked(1);
     }
-    else if(noise_type_ == "depolarize"){
-        ui->radioButton_depolarize->setChecked(1);
+    else if(noise_type_ == "depolarizing"){
+        ui->radioButton_depolarizing->setChecked(1);
     }
     else if(noise_type_ == "mixed"){
-        ui->radioButton_mixed->setChecked(1);
+        ui->radioButton_mixednoise->setChecked(1);
     }
 
     // noise probability change
@@ -304,7 +324,7 @@ void FairnessView::model_change_to_ui(){
     qDebug() << ui->slider_prob->value();
 }
 
-void FairnessView::run_fairnessVeri()
+void FairnessView::run_calculate_k()
 {
     clear_all_information();
 
@@ -348,7 +368,7 @@ void FairnessView::run_fairnessVeri()
         QString paramsList = cmd + " " + args.join(" ");
         qDebug() << paramsList;
 
-        exec_process(cmd, args);
+        exec_calculation(cmd, args);
     }
     else  // has selected another .qasm file
     {
@@ -398,37 +418,37 @@ void FairnessView::run_fairnessVeri()
                 show_saved_results(file);
             }
             else{
-                exec_process(cmd, args);
+                exec_calculation(cmd, args);
             }
         }
         else{
-            exec_process(cmd, args);
+            exec_calculation(cmd, args);
         }
     }
 }
 
-void FairnessView::exec_process(QString cmd, QStringList args)
+void FairnessView::exec_calculation(QString cmd, QStringList args)
 {
-    process = new QProcess(this);
-    process->setReadChannel(QProcess::StandardOutput);
-    connect(process, SIGNAL(stateChanged(QProcess::ProcessState)), SLOT(stateChanged(QProcess::ProcessState)));
-    connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(on_read_from_terminal()));
+    process_cal = new QProcess(this);
+    process_cal->setReadChannel(QProcess::StandardOutput);
+    connect(process_cal, SIGNAL(stateChanged(QProcess::ProcessState)), SLOT(stateChanged(QProcess::ProcessState)));
+    connect(process_cal, SIGNAL(readyReadStandardOutput()), this, SLOT(on_read_from_terminal_cal()));
 
-    process->setWorkingDirectory(fairDir);
-    process->start(cmd, args);
-    if(!process->waitForStarted()){
-        qDebug() << "Process failure! Error: " << process->errorString();
+    process_cal->setWorkingDirectory(fairDir);
+    process_cal->start(cmd, args);
+    if(!process_cal->waitForStarted()){
+        qDebug() << "Process failure! Error: " << process_cal->errorString();
     }
     else{
         qDebug() << "Process succeed! ";
     }
 
-    if (!process->waitForFinished()) {
+    if (!process_cal->waitForFinished()) {
         qDebug() << "wait";
         QCoreApplication::processEvents(QEventLoop::AllEvents, 2000);
     }
 
-    QString error = process->readAllStandardError(); // 命令行执行出错的提示
+    QString error = process_cal->readAllStandardError(); // 命令行执行出错的提示
     if(!error.isEmpty()){
         qDebug()<< "Error executing script: " << error; // 打印出错提示
     }
@@ -454,11 +474,10 @@ void FairnessView::stateChanged(QProcess::ProcessState state)
     }
 }
 
-
-void FairnessView::on_read_from_terminal()
+void FairnessView::on_read_from_terminal_cal()
 {
-    while (process->bytesAvailable() > 0){
-        output_line_ = process->readLine();
+    while (process_cal->bytesAvailable() > 0){
+        output_line_ = process_cal->readLine();
         output_.append(output_line_);
         ui->textBrowser_output->append(output_line_.simplified());
         //        qDebug() << output_line_;
@@ -547,11 +566,64 @@ void FairnessView::delete_circuit_diagram()
 
 void FairnessView::stopProcess()
 {
-    this->process->terminate();
-    this->process->waitForFinished();
+    this->process_cal->terminate();
+    this->process_cal->waitForFinished();
 
     QMessageBox::information(this, "Notice", "The program was terminated.");
     qDebug() << "Process terminate!";
+}
+
+void FairnessView::run_fairnessVeri()
+{
+    if(epsilon_==0 || delta_==0 || lipschitz_==0){
+        return;
+    }
+
+    // python qlipschitz.py verify k epsilon delta
+    QString cmd = "python";
+    QStringList args;
+    args << "qlipschitz.py" << "verify"
+         << QString::number(lipschitz_) << QString::number(epsilon_) << QString::number(delta_);
+    QString paramsList = cmd + " " + args.join(" ");
+    qDebug() << paramsList;
+
+    process_veri = new QProcess(this);
+    process_veri->setReadChannel(QProcess::StandardOutput);
+    connect(process_veri, SIGNAL(stateChanged(QProcess::ProcessState)), SLOT(stateChanged(QProcess::ProcessState)));
+    connect(process_veri, SIGNAL(readyReadStandardOutput()), this, SLOT(on_read_from_terminal_veri()));
+
+    process_veri->setWorkingDirectory(fairDir);
+    process_veri->start(cmd, args);
+    if(!process_veri->waitForStarted()){
+        qDebug() << "Process failure! Error: " << process_veri->errorString();
+    }
+    else{
+        qDebug() << "Process succeed! ";
+    }
+
+    if (!process_veri->waitForFinished()) {
+        qDebug() << "wait";
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 2000);
+    }
+
+    QString error = process_veri->readAllStandardError(); // 命令行执行出错的提示
+    if(!error.isEmpty()){
+        qDebug()<< "Error executing script: " << error; // 打印出错提示
+    }
+}
+
+void FairnessView::on_read_from_terminal_veri()
+{
+    while (process_veri->bytesAvailable() > 0){
+        output_line_ = process_veri->readLine();
+        output_.append(output_line_);
+        ui->textBrowser_output->append(output_line_.simplified());
+        // qDebug() << output_line_;
+
+        if(output_line_.contains("The Global Verification End")){
+            break;
+        }
+    }
 }
 
 FairnessView::~FairnessView()
@@ -563,12 +635,37 @@ void FairnessView::on_slider_prob_sliderMoved(int pos)
 {
     ui->doubleSpinBox_prob->setValue(ui->slider_prob->value()* 0.001);
     noise_prob_ = ui->doubleSpinBox_prob->value();
-    qDebug() << noise_prob_;
+    qDebug() << "noise_prob: " << noise_prob_;
 }
 
 void FairnessView::on_doubleSpinBox_prob_valueChanged(double pos)
 {
     ui->slider_prob->setValue(ui->doubleSpinBox_prob->value()/ 0.001);
     noise_prob_ = ui->doubleSpinBox_prob->value();
-    qDebug() << noise_prob_;
+}
+
+void FairnessView::on_slider_epsilon_sliderMoved(int pos)
+{
+    ui->doubleSpinBox_threshold_1->setValue(ui->slider_threshold_1->value()* 0.001);
+    epsilon_ = ui->doubleSpinBox_threshold_1->value();
+    qDebug() << "epsilon: " << epsilon_;
+}
+
+void FairnessView::on_doubleSpinBox_epsilon_valueChanged(double pos)
+{
+    ui->slider_threshold_1->setValue(ui->doubleSpinBox_threshold_1->value()/ 0.001);
+    epsilon_ = ui->doubleSpinBox_threshold_1->value();
+}
+
+void FairnessView::on_slider_delta_sliderMoved(int pos)
+{
+    ui->doubleSpinBox_threshold_2->setValue(ui->slider_threshold_2->value()* 0.001);
+    delta_ = ui->doubleSpinBox_threshold_2->value();
+    qDebug() << "delta: " << delta_;
+}
+
+void FairnessView::on_doubleSpinBox_delta_valueChanged(double pos)
+{
+    ui->slider_threshold_2->setValue(ui->doubleSpinBox_threshold_2->value()/ 0.001);
+    delta_ = ui->doubleSpinBox_threshold_2->value();
 }

@@ -44,7 +44,7 @@ RobustnessView::RobustnessView(QWidget *parent):
     connect(ui->spinBox_exptnum, SIGNAL(valueChanged(int)), this, SLOT(on_spinBox_exptnum_valueChanged(int)));
     connect(ui->pushButton_run, SIGNAL(pressed()), this, SLOT(run_robustVeri()));
     connect(ui->pushButton_stop, SIGNAL(pressed()), this, SLOT(stopProcess()));
-    connect(ui->comboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(on_comboBox_currentTextChanged(QString)));
+    // connect(ui->comboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(on_comboBox_currentTextChanged(QString)));
 }
 
 void RobustnessView::init()
@@ -71,25 +71,35 @@ void RobustnessView::init()
     palette.setBrush(QPalette::Window, Qt::transparent);
     ui->groupBox_runtime->setPalette(palette);
 
-    ui->comboBox->clear();
-    QStringList strList;
-    strList << "1 & 7" << "3 & 6" << "3 & 8" << "3 & 9" << "4 & 9" << "5 & 6" << "6 & 8";
-    ui->comboBox->addItems(strList);
+    // MultiSelectComboBox for mnist digits
+    comboBox_digits = new MultiSelectComboBox(ui->groupBox_file);
+    comboBox_digits->setObjectName("comboBox_digits");
+    ui->gridLayout->addWidget(comboBox_digits, 1, 2, 1, 1);
+    QStringList digitsList;
+    digitsList << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8" << "9";
+    comboBox_digits->setMaxSelectNum(2);
+    comboBox_digits->addItems_for_mnist(digitsList);
 
-    // dragCircuit = new DragCircuit(ui->tab_drag_circ);
-    // dragCircuit->setObjectName(QString::fromUtf8("dragCircuit"));
-    // ui->verticalLayout_7->addWidget(dragCircuit);
+    // MultiSelectComboBox for noise
+    QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    sizePolicy1.setHorizontalStretch(0);
+    sizePolicy1.setVerticalStretch(0);
+    sizePolicy1.setHeightForWidth(ui->pushButton_importdata->sizePolicy().hasHeightForWidth());
 
-    // webView = new QWebEngineView(ui->scrollAreaWidgetContents_2);
-    // palette = webView->palette();
-    // palette.setBrush(QPalette::Base, Qt::transparent);  // 设置背景颜色为透明
-    // webView->setPalette(palette);
-    // setAttribute(Qt::WA_OpaquePaintEvent,false);
+    comboBox_mixednoise = new MultiSelectComboBox(ui->groupBox_noisetype);
+    comboBox_mixednoise->setObjectName("comboBox_mixednoise");
+    sizePolicy1.setHeightForWidth(comboBox_mixednoise->sizePolicy().hasHeightForWidth());
+    comboBox_mixednoise->setSizePolicy(sizePolicy1);
+    ui->gridLayout_2->addWidget(comboBox_mixednoise, 0, 5, 1, 1);
+    QStringList noiseList;
+    noiseList << "bit flip" << "depolarizing" << "phase flip";
+    comboBox_mixednoise->setMaxSelectNum(3);
+    comboBox_mixednoise->addItems_for_noise(noiseList);
+}
 
-    // webView->load(QUrl("https://hiq.huaweicloud.com/portal/programming/hiq-composer?id=UntitledCircuit&type=circuit"));
-    // webView->show();
-
-    // ui->horizontalLayout_6->addWidget(webView);
+void RobustnessView::on_comboBox_currentTextChanged(const QString &op)
+{
+    qDebug() << op;
 }
 
 void RobustnessView::resizeEvent(QResizeEvent *)
@@ -150,28 +160,37 @@ void RobustnessView::openFile(){
     // 从文件名获取各种参数信息
     QStringList args = file_name_.split("_");
     QString unit, img_file;
-    if(args.size() == 4){
+    if(args.size() == 4){   // four original case
         model_name_ = args[0];
         unit = args[1];
         robustness_unit_ = unit.toDouble();
         experiment_number_ = args[2].toInt();
         state_type_ = args[3];
         img_file = model_name_;
-        if(model_name_.startsWith("mnist") && model_name_.size() > 5){
+        if(model_name_.startsWith("mnist") && model_name_.size() > 5){  // mnist17_0.001_1_pure
             show_circuit_diagram_svg(robustDir+"/Figures/"+img_file+"_model.svg");
         }
-        else{
+        else  // binary_0.001_5_mixed or mnist_0.001_3_pure etc.
+        {
             show_circuit_diagram_pdf(robustDir+"/Figures/"+img_file+"_model.pdf");
         }
     }
-    else{
-        state_type_ = args[args.size()-3];
-        experiment_number_ = args[args.size()-4].toInt();
+    else{  // iris_0.001_3_mixed_0.13462_BitFlip
         unit = args[args.size()-5];
         robustness_unit_ = unit.toDouble();
+        experiment_number_ = args[args.size()-4].toInt();
+        state_type_ = args[args.size()-3];
+        noise_prob_ = args[args.size()-2].toDouble();
+        noise_type_ = args[args.size()-1];
         model_name_ = file_name_.mid(0, file_name_.indexOf(unit)-1);
-        img_file = model_name_ + "_with_" + args[args.size()-2] + "_" + args[args.size()-1];
+        // show circuit diagram
+        img_file = model_name_ + "_with_" + args[args.size()-2] + "_" + noise_type_;
         show_circuit_diagram_svg(robustDir+"/Figures/"+img_file+"_model.svg");
+        // model_file_ = QFileInfo(robustDir+"/model_and_data/"+model_name_+".qasm");
+        // data_file_ = QFileInfo(robustDir+"/model_and_data/"+model_name_+"_data.npz");
+        // ui->lineEdit_modelfile->setText(model_file_.filePath());
+        // ui->lineEdit_datafile->setText(data_file_.filePath());
+        model_change_to_ui();
     }
     qDebug() << "model_name_: " << model_name_;
 
@@ -194,14 +213,15 @@ void RobustnessView::openFile(){
         ui->radioButton_mnist->setChecked(1);
         if(model_name_.size() == 5)
         {
-            ui->comboBox->setCurrentIndex(1);
+            comboBox_digits->setToolTip("3 & 6");
         }
         else
         {
-            QString text = QString(model_name_[5]) + " & " +QString(model_name_[6]);
-            ui->comboBox->setCurrentIndex(ui->comboBox->findText(text));
+            // QString text = QString(model_name_[5]) + " & " +QString(model_name_[6]);
+            // ui->comboBox->setCurrentIndex(ui->comboBox->findText(text));
+            comboBox_digits->setToolTip(QString(model_name_[5]) + " & " +QString(model_name_[6]));
         }
-        qDebug() << ui->comboBox->currentText();
+        qDebug() << comboBox_digits->current_select_items();
     }
     else{
         ui->radioButton_importfile->setChecked(1);
@@ -225,6 +245,31 @@ void RobustnessView::openFile(){
 
     file.close();
 }
+
+void RobustnessView::model_change_to_ui(){
+    // selected model change
+    ui->lineEdit_modelfile->setText(robustDir+"/model_and_data/"+model_name_+".qasm");
+    ui->lineEdit_datafile->setText(robustDir+"/model_and_data/"+model_name_+"_data.npz");
+
+    // noise type change
+    if(noise_type_ == "PhaseFlip"){
+        ui->radioButton_phaseflip->setChecked(1);
+    }
+    else if(noise_type_ == "BitFlip"){
+        ui->radioButton_bitflip->setChecked(1);
+    }
+    else if(noise_type_ == "Depolarizing"){
+        ui->radioButton_depolarizing->setChecked(1);
+    }
+    else if(noise_type_ == "mixed"){
+        ui->radioButton_mixednoise->setChecked(1);
+    }
+
+    // noise probability change
+    ui->doubleSpinBox_prob->setValue(noise_prob_);
+    qDebug() << ui->slider_prob->value();
+}
+
 
 /* 将运行时输出信息存为txt文件 */
 void RobustnessView::saveFile()
@@ -580,8 +625,8 @@ void RobustnessView::show_adversary_examples()
 
     mImgNames = dir.entryList();
     // qDebug() << dir.entryList();
-    QString digits = ui->comboBox->currentText();
-    digits = "advExample_" + QString(digits[0]) + QString(digits[4]);
+    QString digits = comboBox_digits->current_select_items().join("");
+    digits = "advExample_" + digits;
     qDebug() << "The selected numbers are: " << digits;
     for (int i = 0; i < mImgNames.size(); ++i)
     {
@@ -671,6 +716,9 @@ void RobustnessView::close_circuit_diagram_pdf()
 
 void RobustnessView::show_circuit_diagram_svg(QString filename)
 {
+    QSpacerItem *verticalSpacer1 = new QSpacerItem(20, 40, QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->verticalLayout_circ->addItem(verticalSpacer1);
+
     qDebug() << "img_file: " << filename;
     svgWidget = new SvgWidget(ui->scrollAreaWidgetContents_circ);
     svgWidget->load(filename);
@@ -685,12 +733,13 @@ void RobustnessView::show_circuit_diagram_svg(QString filename)
     // qDebug() << svg_h;
     // iris.svg: (width, height) = (977, 260)
 
-    QSpacerItem *verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Expanding, QSizePolicy::Expanding);
-    ui->verticalLayout_circ->addItem(verticalSpacer);
+    QSpacerItem *verticalSpacer2 = new QSpacerItem(20, 40, QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->verticalLayout_circ->addItem(verticalSpacer2);
     int diff = double(svg_h*2)/double(iris_h) * 1000;
     // qDebug() << diff;
-    ui->verticalLayout_circ->insertWidget(0, svgWidget, diff);
-    ui->verticalLayout_circ->setStretch(1, 3*1000);
+    ui->verticalLayout_circ->insertWidget(1, svgWidget, diff);
+    ui->verticalLayout_circ->setStretch(0, 1.5*1000);
+    ui->verticalLayout_circ->setStretch(2, 1.5*1000);
     showed_svg = true;
 }
 
@@ -864,8 +913,4 @@ RobustnessView::~RobustnessView()
     delete ui;
 }
 
-void RobustnessView::on_comboBox_currentTextChanged(const QString &op)
-{
-    qDebug() << op;
-}
 

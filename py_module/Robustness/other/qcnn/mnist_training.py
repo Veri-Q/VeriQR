@@ -9,8 +9,9 @@ from mindquantum.core.gates import I
 
 normalize = lambda v: v / norm(v)
 
-m = np.array([[1.+0.j, 0.+0.j],
-              [0.+0.j, 0.+0.j]])
+m = np.array([[1. + 0.j, 0. + 0.j],
+              [0. + 0.j, 0. + 0.j]])
+
 
 def mat_m(qubit_num):
     M_0 = I.matrix()
@@ -19,6 +20,9 @@ def mat_m(qubit_num):
 
     M_0 = np.kron(M_0, m)
     return M_0
+
+
+M = mat_m(8)
 
 
 def qasm2mq(qasm_str):
@@ -42,44 +46,48 @@ def convert_to_qcnn_data(data):
 
 digits = fetch_openml('mnist_784')
 
-d0, d1 = '6', '8'
-ind0, ind1 = digits.target == d0, digits.target == d1
-x0, x1 = digits.data[ind0].to_numpy(), digits.data[ind1].to_numpy()
-y0, y1 = (digits.target[ind0] == d0).to_numpy(), (digits.target[ind1] == d0).to_numpy()
+# for d0 in range(1, 10):
+for d1 in range(1, 10):
+    d0, d1 = str(0), str(d1)
+    # if d0+d1 in ['12', '17', '38', '39', '49', '56', '68']:
+    #     continue
 
-n_train = 500
-n_all = 700
+    ind0, ind1 = digits.target == d0, digits.target == d1
+    x0, x1 = digits.data[ind0].to_numpy(), digits.data[ind1].to_numpy()
+    y0, y1 = (digits.target[ind0] == d0).to_numpy(), (digits.target[ind1] == d0).to_numpy()
 
-ind0, ind1 = np.random.permutation(x0.shape[0])[:n_all], np.random.permutation(x1.shape[0])[:n_all]
+    n_train = 500
+    n_all = 700
 
-x_train = convert_to_qcnn_data(np.vstack((x0[ind0[:n_train]], x1[ind1[:n_train]])))
-y_train = jnp.array(np.hstack((y0[ind0[:n_train]], y1[ind1[:n_train]])))
-print(x_train.shape)
-print(x_train)
-print(y_train.shape)
-print(y_train)
-x_test = convert_to_qcnn_data(np.vstack((x0[ind0[n_train:n_all]], x1[ind1[n_train:n_all]])))
-y_test = jnp.array(np.hstack((y0[ind0[n_train:n_all]], y1[ind1[n_train:n_all]])))
+    ind0, ind1 = np.random.permutation(x0.shape[0])[:n_all], np.random.permutation(x1.shape[0])[:n_all]
 
-model = qcnn(8)
+    x_train = convert_to_qcnn_data(np.vstack((x0[ind0[:n_train]], x1[ind1[:n_train]])))
+    y_train = jnp.array(np.hstack((y0[ind0[:n_train]], y1[ind1[:n_train]])))
+    # print(x_train.shape)
+    # print(x_train)
+    # print(y_train.shape)
+    # print(y_train)
+    x_test = convert_to_qcnn_data(np.vstack((x0[ind0[n_train:n_all]], x1[ind1[n_train:n_all]])))
+    y_test = jnp.array(np.hstack((y0[ind0[n_train:n_all]], y1[ind1[n_train:n_all]])))
 
-model.train(x_train, y_train, x_test, y_test)
+    model = qcnn(8)
 
-qasm_str = model.to_qasm()
-f = open('../../model_and_data/mnist{}.qasm'.format(d0+d1), 'w')
-f.write(qasm_str)
-f.close()
+    model.train(x_train, y_train, x_test, y_test)
 
-ansatz = qasm2mq(qasm_str)
-ansatz.svg().to_file("../../Figures/mnist{}_model.svg".format(d0+d1))
+    qasm_str = model.to_qasm()
+    f = open('../../model_and_data/mnist{}.qasm'.format(d0 + d1), 'w')
+    f.write(qasm_str)
+    f.close()
 
-M = mat_m(8)
-print(M.shape)
-x_train = x_train.T
-y_train = [1 if i==True else 0 for i in y_train]
-label = np.array(y_train)
-print(x_train.shape)
-print(x_train)
-print(label.shape)
-print(label)
-np.savez('../../model_and_data/mnist{}_data.npz'.format(d0+d1), O=M, data=x_train, label=label)
+    ansatz = qasm2mq(qasm_str)
+    ansatz.svg().to_file("../../Figures/mnist{}_model.svg".format(d0 + d1))
+
+    print(M.shape)
+    x_train = x_train.T
+    y_train = [1 if i == True else 0 for i in y_train]
+    label = np.array(y_train)
+    print(x_train.shape)
+    # print(x_train)
+    print(label.shape)
+    # print(label)
+    np.savez('../../model_and_data/mnist{}_data.npz'.format(d0 + d1), O=M, data=x_train, label=label)

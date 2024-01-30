@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    this->setWindowTitle("Robustness Verifier");
+    this->setWindowTitle("VeriQR");
     //    this->setWindowIcon(QIcon(":/icons/images/notepad.png"));  //设置应用显示图标
 
     init_GUI();

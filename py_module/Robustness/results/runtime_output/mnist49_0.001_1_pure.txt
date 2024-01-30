@@ -11,6 +11,6 @@ Starting pure state robustness verifier
 ===================================
 Verification over
 ----------------------------------------
-Robust accuracy: 93.70%, Verification time: 19.16s
+Robust accuracy: 93.70%, Verification time: 20.48s
 =============================================
-mnist_49_0.001_1_pure.csv saved successfully! 
+mnist49_0.001_1_pure.csv saved successfully! 

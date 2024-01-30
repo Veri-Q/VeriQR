@@ -95,20 +95,9 @@ hams = [Hamiltonian(QubitOperator(f'Z{i}')) for i in [2, 3]]  # 分别对第2位
 for h in hams:
     print(h)
 
-# print(QubitOperator('Z2').matrix(n_qubits=circuit.n_qubits))
-# print(QubitOperator('Z3').matrix(n_qubits=circuit.n_qubits))
-
-mat_0 = np.array([[1. + 0.j, 0. + 0.j],
-                  [0. + 0.j, 0. + 0.j]])
-
-mat_1 = np.array([[0. + 0.j, 0. + 0.j],
-                  [0. + 0.j, 1. + 0.j]])
-
 M_2 = np.kron(np.kron(np.kron(I.matrix(), Z.matrix()), I.matrix()), I.matrix())
 M_3 = np.kron(np.kron(np.kron(Z.matrix(), I.matrix()), I.matrix()), I.matrix())
 M = M_2 - M_3
-P2_0 = np.kron(np.kron(np.kron(I.matrix(), mat_0), I.matrix()), I.matrix())
-P2_1 = np.kron(np.kron(np.kron(I.matrix(), mat_1), I.matrix()), I.matrix())
 
 
 def sign(x):

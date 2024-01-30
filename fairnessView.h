@@ -6,6 +6,7 @@
 #include <QWidget>
 #include "ui_fairnessview.h"
 #include "svgWidget.h"
+#include "multiSelectComboBox.h"
 
 namespace Ui {
 class fairnessView;
@@ -31,7 +32,7 @@ public:
     void model_change_to_ui();
     void clear_all_information();
     void resizeEvent(QResizeEvent *) override;
-    void exec_process(QString cmd, QStringList args);
+    void exec_calculation(QString cmd, QStringList args);
 
 public slots:
     void on_radioButton_importfile_clicked();
@@ -44,15 +45,22 @@ public slots:
     void on_radioButton_mixed_clicked();
     void on_slider_prob_sliderMoved(int pos);
     void on_doubleSpinBox_prob_valueChanged(double pos);
-    void run_fairnessVeri();
+    void run_calculate_k();
     void stateChanged(QProcess::ProcessState state);
     void stopProcess();
-    void on_read_from_terminal();
+    void on_read_from_terminal_cal();
+    void on_slider_epsilon_sliderMoved(int pos);
+    void on_doubleSpinBox_epsilon_valueChanged(double pos);
+    void on_slider_delta_sliderMoved(int pos);
+    void on_doubleSpinBox_delta_valueChanged(double pos);
+    void run_fairnessVeri();
+    void on_read_from_terminal_veri();
 
 private:
     Ui::fairnessView *ui;
 
-    QProcess* process;
+    QProcess* process_cal;
+    QProcess* process_veri;
 
     QString fairDir;
 
@@ -66,6 +74,7 @@ private:
 
     QFileInfo model_file_; // 当前选择的qasm模型文件
     QString file_name_;   // txt结果文件命名: dice_phase_flip_0.0001
+    QString model_name_;
 
     QString noise_type_ = noise_types[3];
     double noise_prob_ = 0.0;
@@ -74,6 +83,8 @@ private:
 
     double lipschitz_;
     double veri_time_;
+    double epsilon_ = 0.0;
+    double delta_ = 0.0;
 
     QString output_;
     QString output_line_;
@@ -83,6 +94,7 @@ private:
 
     SvgWidget *svgWidget;
     QSvgRenderer *svgRender;
+    MultiSelectComboBox *comboBox_mixednoise;
 };
 
 #endif // FAIRNESSVIEW_H
