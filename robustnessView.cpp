@@ -45,6 +45,62 @@ RobustnessView::RobustnessView(QWidget *parent):
     connect(ui->pushButton_run, SIGNAL(pressed()), this, SLOT(run_robustVeri()));
     connect(ui->pushButton_stop, SIGNAL(pressed()), this, SLOT(stopProcess()));
     // connect(ui->comboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(on_comboBox_currentTextChanged(QString)));
+    connect(ui->radioButton_bitflip, SIGNAL(pressed()), this, SLOT(on_radioButton_bitflip_clicked()));
+    connect(ui->radioButton_depolarizing, SIGNAL(pressed()), this, SLOT(on_radioButton_depolarizing_clicked()));
+    connect(ui->radioButton_phaseflip, SIGNAL(pressed()), this, SLOT(on_radioButton_phaseflip_clicked()));
+    connect(ui->radioButton_mixednoise, SIGNAL(pressed()), this, SLOT(on_radioButton_mixednoise_clicked()));
+    connect(ui->radioButton_custom_noise, SIGNAL(pressed()), this, SLOT(on_radioButton_importops_clicked()));
+    connect(ui->slider_prob, SIGNAL(valueChanged(int)), this, SLOT(on_slider_prob_sliderMoved(int)));
+    connect(ui->doubleSpinBox_prob, SIGNAL(valueChanged(double)), this, SLOT(on_doubleSpinBox_prob_valueChanged(double)));
+}
+
+void RobustnessView::on_radioButton_bitflip_clicked()
+{
+    noise_type_ = "bit_flip";
+
+    kraus_file_.fileName().clear();
+    ui->lineEdit_custom_noise->clear();
+    ui->radioButton_custom_noise->setChecked(false);
+}
+
+void RobustnessView::on_radioButton_depolarizing_clicked()
+{
+    noise_type_ = "depolarizing";
+
+    kraus_file_.fileName().clear();
+    ui->lineEdit_custom_noise->clear();
+    ui->radioButton_custom_noise->setChecked(false);
+}
+
+void RobustnessView::on_radioButton_phaseflip_clicked()
+{
+    noise_type_ = "phase_flip";
+
+    kraus_file_.fileName().clear();
+    ui->lineEdit_custom_noise->clear();
+    ui->radioButton_custom_noise->setChecked(false);
+}
+
+void RobustnessView::on_radioButton_mixednoise_clicked()
+{
+    noise_type_ = "mixed";
+
+    kraus_file_.fileName().clear();
+    ui->lineEdit_custom_noise->clear();
+    ui->radioButton_custom_noise->setChecked(false);
+}
+
+void RobustnessView::on_slider_prob_sliderMoved(int pos)
+{
+    ui->doubleSpinBox_prob->setValue(ui->slider_prob->value()* 0.001);
+    noise_prob_ = ui->doubleSpinBox_prob->value();
+    qDebug() << "noise_prob: " << noise_prob_;
+}
+
+void RobustnessView::on_doubleSpinBox_prob_valueChanged(double pos)
+{
+    ui->slider_prob->setValue(ui->doubleSpinBox_prob->value()/ 0.001);
+    noise_prob_ = ui->doubleSpinBox_prob->value();
 }
 
 void RobustnessView::init()
@@ -76,7 +132,7 @@ void RobustnessView::init()
     comboBox_digits->setObjectName("comboBox_digits");
     ui->gridLayout->addWidget(comboBox_digits, 1, 2, 1, 1);
     QStringList digitsList;
-    digitsList << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8" << "9";
+    digitsList << "0" << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8" << "9";
     comboBox_digits->setMaxSelectNum(2);
     comboBox_digits->addItems_for_mnist(digitsList);
 
@@ -97,9 +153,31 @@ void RobustnessView::init()
     comboBox_mixednoise->addItems_for_noise(noiseList);
 }
 
-void RobustnessView::on_comboBox_currentTextChanged(const QString &op)
+void RobustnessView::on_radioButton_importops_clicked()
 {
-    qDebug() << op;
+    // if(ui->radioButton_custom_noise->isChecked()){
+
+    // }
+    QString fileName = QFileDialog::getOpenFileName(this, "Open file");
+    QFile file(fileName);
+    kraus_file_ = QFileInfo(fileName);
+
+    // model_name_ = fileName.mid(fileName.lastIndexOf("/")+1, fileName.indexOf(".")-fileName.lastIndexOf("/")-1);
+    // qDebug() << "model_name_: " << model_name_;
+
+    if (!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
+        return;
+    }else if(kraus_file_.suffix() != "npz"){
+        QMessageBox::warning(this, "Warning", "VeriQRobust only supports .npz kraus files.");
+        return;
+    }
+
+    ui->lineEdit_custom_noise->setText(kraus_file_.filePath());
+
+    file.close();
+
+    ui->radioButton_custom_noise->setChecked(true);
 }
 
 void RobustnessView::resizeEvent(QResizeEvent *)
@@ -326,7 +404,7 @@ void RobustnessView::importModel()
         QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
         return;
     }else if(model_file_.suffix() != "qasm"){
-        QMessageBox::warning(this, "Warning", "VeriQRobust only supports .npz data files.");
+        QMessageBox::warning(this, "Warning", "VeriQRobust only supports .qasm model files.");
         return;
     }
 
@@ -494,10 +572,20 @@ void RobustnessView::run_robustVeri()
     QStringList args;
     qDebug() << exptnum;
 
-    if(model_file_.fileName().isEmpty() || data_file_.fileName().isEmpty())
+    if(npzfile_ != "")
     {
-        QString npzfile = "./model_and_data/" + npzfile_; // npzfile is complete path
-        args << excuteFile << npzfile << unit << exptnum << state_type_;
+        if(npzfile_.contains("mnist"))
+        {
+            QString digits = comboBox_digits->current_select_items().join("");
+            QString qasmfile = QString("./model_and_data/mnist%1.qasm").arg(digits);
+            QString datafile = QString("./model_and_data/mnist%1_data.npz").arg(digits);
+            args << excuteFile << qasmfile << datafile << unit << exptnum << state_type_;
+        }
+        else
+        {
+            QString npzfile = "./model_and_data/" + npzfile_; // npzfile is complete path
+            args << excuteFile << npzfile << unit << exptnum << state_type_;
+        }
     }
     else    // has imported a file
     {
@@ -507,7 +595,7 @@ void RobustnessView::run_robustVeri()
     }
 
     // model_name be like: "binary"
-    if(model_name_ == "mnist")
+    if(model_name_.contains("mnist"))
     {
         if(state_type_ == "pure"){
             ui->checkBox->setChecked(1);
@@ -518,6 +606,22 @@ void RobustnessView::run_robustVeri()
             args << "false";
         }
     }
+
+    if(noise_type_ == "mixed")
+    {
+        args << "mixed";
+        mixed_noises_ = comboBox_mixednoise->current_select_items();
+        for(int i = 0; i < mixed_noises_.count(); i++)
+        {
+            args << mixed_noises_[i];
+        }
+        args << QString::number(noise_prob_);
+    }
+    else
+    {
+        args << noise_type_ << QString::number(noise_prob_);
+    }
+
     paramsList = cmd + " " + args.join(" ");
     qDebug() << paramsList;
 

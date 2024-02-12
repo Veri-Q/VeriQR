@@ -36,7 +36,7 @@ FORMS += \
     fairnessview.ui \
     mainwindow.ui \
     robustnessview.ui \
-    robustnessview1.ui \
+    # robustnessview1.ui \
 
 RESOURCES += \
     resources.qrc

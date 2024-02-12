@@ -4,7 +4,7 @@
 MultiSelectComboBox::MultiSelectComboBox(QWidget *parent)
     : QComboBox(parent)
 {
-    /*设置文本框*/
+    /* 设置文本框 */
     line_edit_ = new QLineEdit();
     line_edit_->setReadOnly(true);
     line_edit_->installEventFilter(this);
@@ -99,7 +99,7 @@ void MultiSelectComboBox::stateChange(int state)
     qDebug() << "***********************************************";
 }
 
-void MultiSelectComboBox::stateChange_1(int state)
+void MultiSelectComboBox::stateChange_0(int state)
 {
     QString selected_data = line_edit_->text();
     QCheckBox *check_box = static_cast<QCheckBox*>(list_widget_->itemWidget(list_widget_->item(0)));
@@ -156,11 +156,12 @@ void MultiSelectComboBox::stateChange_1(int state)
             line_edit_->clear();
         }
     }
-    qDebug() << current_select_items().size() << " items: " << current_select_items().join(", ");
+    qDebug() << current_select_items();
+    qDebug() << current_select_items().count() << " items: " << current_select_items().join(", ");
     qDebug() << "***********************************************";
 }
 
-void MultiSelectComboBox::stateChange_2(int state)
+void MultiSelectComboBox::stateChange_1(int state)
 {
     QString selected_data = line_edit_->text();
     QCheckBox *check_box = static_cast<QCheckBox*>(list_widget_->itemWidget(list_widget_->item(1)));
@@ -221,7 +222,7 @@ void MultiSelectComboBox::stateChange_2(int state)
     qDebug() << "***********************************************";
 }
 
-void MultiSelectComboBox::stateChange_3(int state)
+void MultiSelectComboBox::stateChange_2(int state)
 {
     QString selected_data = line_edit_->text();
     QCheckBox *check_box = static_cast<QCheckBox*>(list_widget_->itemWidget(list_widget_->item(2)));
@@ -282,7 +283,7 @@ void MultiSelectComboBox::stateChange_3(int state)
     qDebug() << "***********************************************";
 }
 
-void MultiSelectComboBox::stateChange_4(int state)
+void MultiSelectComboBox::stateChange_3(int state)
 {
     QString selected_data = line_edit_->text();
     QCheckBox *check_box = static_cast<QCheckBox*>(list_widget_->itemWidget(list_widget_->item(3)));
@@ -343,7 +344,7 @@ void MultiSelectComboBox::stateChange_4(int state)
     qDebug() << "***********************************************";
 }
 
-void MultiSelectComboBox::stateChange_5(int state)
+void MultiSelectComboBox::stateChange_4(int state)
 {
     QString selected_data = line_edit_->text();
     QCheckBox *check_box = static_cast<QCheckBox*>(list_widget_->itemWidget(list_widget_->item(4)));
@@ -404,7 +405,7 @@ void MultiSelectComboBox::stateChange_5(int state)
     qDebug() << "***********************************************";
 }
 
-void MultiSelectComboBox::stateChange_6(int state)
+void MultiSelectComboBox::stateChange_5(int state)
 {
     QString selected_data = line_edit_->text();
     QCheckBox *check_box = static_cast<QCheckBox*>(list_widget_->itemWidget(list_widget_->item(5)));
@@ -465,7 +466,7 @@ void MultiSelectComboBox::stateChange_6(int state)
     qDebug() << "***********************************************";
 }
 
-void MultiSelectComboBox::stateChange_7(int state)
+void MultiSelectComboBox::stateChange_6(int state)
 {
     QString selected_data = line_edit_->text();
     QCheckBox *check_box = static_cast<QCheckBox*>(list_widget_->itemWidget(list_widget_->item(6)));
@@ -526,7 +527,7 @@ void MultiSelectComboBox::stateChange_7(int state)
     qDebug() << "***********************************************";
 }
 
-void MultiSelectComboBox::stateChange_8(int state)
+void MultiSelectComboBox::stateChange_7(int state)
 {
     QString selected_data = line_edit_->text();
     QCheckBox *check_box = static_cast<QCheckBox*>(list_widget_->itemWidget(list_widget_->item(7)));
@@ -587,10 +588,71 @@ void MultiSelectComboBox::stateChange_8(int state)
     qDebug() << "***********************************************";
 }
 
-void MultiSelectComboBox::stateChange_9(int state)
+void MultiSelectComboBox::stateChange_8(int state)
 {
     QString selected_data = line_edit_->text();
     QCheckBox *check_box = static_cast<QCheckBox*>(list_widget_->itemWidget(list_widget_->item(8)));
+    qDebug() << "state " << state;
+    if(Qt::Checked == state)
+    {
+        int s = current_select_items().count();
+        qDebug() << "selected " << s;
+        if(s+1 <= max_select_num_)
+        {
+            qDebug() << "selected_data " << selected_data;
+            selected_data.append(check_box->text()).append(";");
+            qDebug() << "selected_data " << selected_data;
+            if(!selected_data.isEmpty())
+            {
+                line_edit_->setText(selected_data);
+                // select_items_count_++;
+                qDebug() << "Check " << check_box->text();
+            }
+            else
+            {
+                line_edit_->clear();
+            }
+        }
+        else
+        {
+            check_box->setChecked(false);
+        }
+    }
+    else
+    {
+        qDebug() << "selected_data " << selected_data;
+        if(selected_data.contains(check_box->text()))
+        {
+            int ind = selected_data.indexOf(check_box->text());
+            if(ind < selected_data.size())
+            {
+                selected_data = selected_data.mid(0, ind);
+            }
+            if(ind+check_box->text().size()+1 < selected_data.size())
+            {
+                selected_data += selected_data.mid(ind+check_box->text().size()+1);
+            }
+        }
+        qDebug() << "selected_data " << selected_data;
+        if(!selected_data.isEmpty())
+        {
+            line_edit_->setText(selected_data);
+            // select_items_count_--;
+            qDebug() << "UnCheck " << check_box->text();
+        }
+        else
+        {
+            line_edit_->clear();
+        }
+    }
+    qDebug() << current_select_items().size() << " items: " << current_select_items().join(", ");
+    qDebug() << "***********************************************";
+}
+
+void MultiSelectComboBox::stateChange_9(int state)
+{
+    QString selected_data = line_edit_->text();
+    QCheckBox *check_box = static_cast<QCheckBox*>(list_widget_->itemWidget(list_widget_->item(9)));
     qDebug() << "state " << state;
     if(Qt::Checked == state)
     {
@@ -809,62 +871,69 @@ void MultiSelectComboBox::addItem(const QString& _text, const QVariant& _variant
 
 void MultiSelectComboBox::addItems_for_mnist(const QStringList& _text_list)
 {
-    if(_text_list.size() != 9) return;
+    if(_text_list.size() != 10) return;
+
+    QListWidgetItem* item_0 = new QListWidgetItem(list_widget_);
+    checkbox_0 = new QCheckBox(this);
+    checkbox_0->setText(_text_list[0]);
+    list_widget_->addItem(item_0);
+    list_widget_->setItemWidget(item_0, checkbox_0);
 
     QListWidgetItem* item_1 = new QListWidgetItem(list_widget_);
-    QCheckBox* checkbox_1 = new QCheckBox(this);
-    checkbox_1->setText(_text_list[0]);
+    checkbox_1 = new QCheckBox(this);
+    checkbox_1->setText(_text_list[1]);
     list_widget_->addItem(item_1);
     list_widget_->setItemWidget(item_1, checkbox_1);
 
     QListWidgetItem* item_2 = new QListWidgetItem(list_widget_);
-    QCheckBox* checkbox_2 = new QCheckBox(this);
-    checkbox_2->setText(_text_list[1]);
+    checkbox_2 = new QCheckBox(this);
+    checkbox_2->setText(_text_list[2]);
     list_widget_->addItem(item_2);
     list_widget_->setItemWidget(item_2, checkbox_2);
 
     QListWidgetItem* item_3 = new QListWidgetItem(list_widget_);
-    QCheckBox* checkbox_3 = new QCheckBox(this);
-    checkbox_3->setText(_text_list[2]);
+    checkbox_3 = new QCheckBox(this);
+    checkbox_3->setText(_text_list[3]);
     list_widget_->addItem(item_3);
     list_widget_->setItemWidget(item_3, checkbox_3);
 
     QListWidgetItem* item_4 = new QListWidgetItem(list_widget_);
-    QCheckBox* checkbox_4 = new QCheckBox(this);
-    checkbox_4->setText(_text_list[3]);
+    checkbox_4 = new QCheckBox(this);
+    checkbox_4->setText(_text_list[4]);
     list_widget_->addItem(item_4);
     list_widget_->setItemWidget(item_4, checkbox_4);
 
     QListWidgetItem* item_5 = new QListWidgetItem(list_widget_);
-    QCheckBox* checkbox_5 = new QCheckBox(this);
-    checkbox_5->setText(_text_list[4]);
+    checkbox_5 = new QCheckBox(this);
+    checkbox_5->setText(_text_list[5]);
     list_widget_->addItem(item_5);
     list_widget_->setItemWidget(item_5, checkbox_5);
 
     QListWidgetItem* item_6 = new QListWidgetItem(list_widget_);
-    QCheckBox* checkbox_6 = new QCheckBox(this);
-    checkbox_6->setText(_text_list[5]);
+    checkbox_6 = new QCheckBox(this);
+    checkbox_6->setText(_text_list[6]);
     list_widget_->addItem(item_6);
     list_widget_->setItemWidget(item_6, checkbox_6);
 
     QListWidgetItem* item_7 = new QListWidgetItem(list_widget_);
-    QCheckBox* checkbox_7 = new QCheckBox(this);
-    checkbox_7->setText(_text_list[6]);
+    checkbox_7 = new QCheckBox(this);
+    checkbox_7->setText(_text_list[7]);
     list_widget_->addItem(item_7);
     list_widget_->setItemWidget(item_7, checkbox_7);
 
     QListWidgetItem* item_8 = new QListWidgetItem(list_widget_);
-    QCheckBox* checkbox_8 = new QCheckBox(this);
-    checkbox_8->setText(_text_list[7]);
+    checkbox_8 = new QCheckBox(this);
+    checkbox_8->setText(_text_list[8]);
     list_widget_->addItem(item_8);
     list_widget_->setItemWidget(item_8, checkbox_8);
 
     QListWidgetItem* item_9 = new QListWidgetItem(list_widget_);
-    QCheckBox* checkbox_9 = new QCheckBox(this);
-    checkbox_9->setText(_text_list[8]);
+    checkbox_9 = new QCheckBox(this);
+    checkbox_9->setText(_text_list[9]);
     list_widget_->addItem(item_9);
     list_widget_->setItemWidget(item_9, checkbox_9);
 
+    connect(checkbox_0, &QCheckBox::stateChanged, this, &MultiSelectComboBox::stateChange_0);
     connect(checkbox_1, &QCheckBox::stateChanged, this, &MultiSelectComboBox::stateChange_1);
     connect(checkbox_2, &QCheckBox::stateChanged, this, &MultiSelectComboBox::stateChange_2);
     connect(checkbox_3, &QCheckBox::stateChanged, this, &MultiSelectComboBox::stateChange_3);
@@ -880,26 +949,26 @@ void MultiSelectComboBox::addItems_for_noise(const QStringList& _text_list)
 {
     if(_text_list.size() != 3) return;
 
-    QListWidgetItem* item_1 = new QListWidgetItem(list_widget_);
-    QCheckBox* checkbox_1 = new QCheckBox(this);
-    checkbox_1->setText(_text_list[0]);
-    list_widget_->addItem(item_1);
-    list_widget_->setItemWidget(item_1, checkbox_1);
-    connect(checkbox_1, &QCheckBox::stateChanged, this, &MultiSelectComboBox::stateChange_bitflip);
-
-    QListWidgetItem* item_2 = new QListWidgetItem(list_widget_);
-    QCheckBox* checkbox_2 = new QCheckBox(this);
-    checkbox_2->setText(_text_list[1]);
-    list_widget_->addItem(item_2);
-    list_widget_->setItemWidget(item_2, checkbox_2);
-    connect(checkbox_2, &QCheckBox::stateChanged, this, &MultiSelectComboBox::stateChange_depolarizing);
-
     QListWidgetItem* item_3 = new QListWidgetItem(list_widget_);
-    QCheckBox* checkbox_3 = new QCheckBox(this);
+    checkbox_3 = new QCheckBox(this);
     checkbox_3->setText(_text_list[2]);
     list_widget_->addItem(item_3);
     list_widget_->setItemWidget(item_3, checkbox_3);
-    connect(checkbox_3, &QCheckBox::stateChanged, this, &MultiSelectComboBox::stateChange_phaseflip);
+    connect(checkbox_3, &QCheckBox::stateChanged, this, &MultiSelectComboBox::stateChange_bitflip);
+
+    QListWidgetItem* item_1 = new QListWidgetItem(list_widget_);
+    checkbox_1 = new QCheckBox(this);
+    checkbox_1->setText(_text_list[0]);
+    list_widget_->addItem(item_1);
+    list_widget_->setItemWidget(item_1, checkbox_1);
+    connect(checkbox_1, &QCheckBox::stateChanged, this, &MultiSelectComboBox::stateChange_depolarizing);
+
+    QListWidgetItem* item_2 = new QListWidgetItem(list_widget_);
+    checkbox_2 = new QCheckBox(this);
+    checkbox_2->setText(_text_list[1]);
+    list_widget_->addItem(item_2);
+    list_widget_->setItemWidget(item_2, checkbox_2);
+    connect(checkbox_2, &QCheckBox::stateChanged, this, &MultiSelectComboBox::stateChange_phaseflip);
 }
 
 void MultiSelectComboBox::setMaxSelectNum(int n)
@@ -913,6 +982,10 @@ QStringList MultiSelectComboBox::current_select_items()
     if (!line_edit_->text().isEmpty())
     {
         text_list = line_edit_->text().split(';'); // 以;为分隔符分割字符串
+    }
+    if(text_list.contains(""))
+    {
+        text_list.removeLast();
     }
     return text_list;
 }

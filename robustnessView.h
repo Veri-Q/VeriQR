@@ -64,9 +64,13 @@ public slots:
     void on_read_output();
     void get_table_data(QString op);
     void stateChanged(QProcess::ProcessState state);
-    void on_comboBox_currentTextChanged(const QString &arg1);
-    // void dights_checkbox_stateChange();
-
+    void on_radioButton_bitflip_clicked();
+    void on_radioButton_depolarizing_clicked();
+    void on_radioButton_phaseflip_clicked();
+    void on_radioButton_mixednoise_clicked();
+    void on_radioButton_importops_clicked();
+    void on_slider_prob_sliderMoved(int);
+    void on_doubleSpinBox_prob_valueChanged(double);
 
 private:
     PdfView *pdfView;
@@ -96,8 +100,12 @@ private:
     bool need_adversary_examples_ = false;
     QString output_;
     QString output_line_;
-    QString noise_type_ = "mixed";
+
+    QString noise_types[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
+    QStringList mixed_noises_;
+    QString noise_type_ = noise_types[3];
     double noise_prob_ = 0.0;
+    QFileInfo kraus_file_;  // 当前选择的kraus operators file
 
     bool showed_svg = false;
     bool showed_pdf = false;

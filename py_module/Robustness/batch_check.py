@@ -338,8 +338,8 @@ else:
     # for example:
     # python batch_check.py ./model_and_data/mnist56.qasm ./model_and_data/mnist56_data.npz 0.001 1 pure true (argv[6])
     # python batch_check.py ./model_and_data/mnist56.qasm ./model_and_data/mnist56_data.npz 0.001 1 pure true phase_flip 0.001 (argv[8])
-    # python batch_check.py ./model_and_data/FashionMNIST_Ent1.qasm ./model_and_data/FashionMNIST_Ent1_data.npz 0.001 1 pure (argv[5])
-    # python batch_check.py ./model_and_data/FashionMNIST_Ent1.qasm ./model_and_data/FashionMNIST_Ent1_data.npz 0.001 1 pure phase_flip 0.001 (argv[7])
+    # python batch_check.py ./model_and_data/FashionMNIST.qasm ./model_and_data/FashionMNIST_data.npz 0.001 1 pure (argv[5])
+    # python batch_check.py ./model_and_data/FashionMNIST.qasm ./model_and_data/FashionMNIST_data.npz 0.001 1 pure phase_flip 0.001 (argv[7])
     # python batch_check.py ./model_and_data/iris.qasm ./model_and_data/iris_data.npz 0.001 1 mixed (argv[5])
     # python batch_check.py ./model_and_data/iris.qasm ./model_and_data/iris_data.npz 0.001 1 mixed phase_flip 0.001 (argv[7])
     qasm_file = str(argv[1])
@@ -375,63 +375,63 @@ if state_flag == 'mixed':
 else:
     verifier = PureRobustnessVerifier
 
-# ac = PrettyTable()
-# time = PrettyTable()
-# ac.add_column('epsilon', ['Robust Bound', 'Robustness Algorithm'])
-# time.add_column('epsilon', ['Robust Bound', 'Robustness Algorithm'])
-# for j in range(n):
-#     c_eps = eps * (j + 1)
-#     if 'mnist' in data_file:
-#         ac_temp, time_temp = verifier(kraus, O, data, label, c_eps, type, ADVERSARY_EXAMPLE, digits, 'mnist')
-#     else:
-#         ac_temp, time_temp = verifier(kraus, O, data, label, c_eps, type)
-#
-#     ac.add_column('{:e}'.format(c_eps), [
-#         '{:.2f}'.format(ac_temp[0] * 100),
-#         '{:.2f}'.format(ac_temp[1] * 100)])
-#     time.add_column('{:e}'.format(c_eps), [
-#         '{:.4f}'.format(time_temp[0]),
-#         '{:.4f}'.format(time_temp[1])])
-#
-#
-# file_path = './results/result_tables/' + file_name
-# # print(file_path)
-#
-# with open(file_path, 'w', newline='') as f_output:
-#     f_output.write(ac.get_csv_string())
-#     f_output.write('\n')
-#     f_output.write(time.get_csv_string())
-#     f_output.close()
-#     print(file_name + " saved successfully! ")
+ac = PrettyTable()
+time = PrettyTable()
+ac.add_column('epsilon', ['Robust Bound', 'Robustness Algorithm'])
+time.add_column('epsilon', ['Robust Bound', 'Robustness Algorithm'])
+for j in range(n):
+    c_eps = eps * (j + 1)
+    if 'mnist' in data_file:
+        ac_temp, time_temp = verifier(kraus, O, data, label, c_eps, type, ADVERSARY_EXAMPLE, digits, 'mnist')
+    else:
+        ac_temp, time_temp = verifier(kraus, O, data, label, c_eps, type)
+
+    ac.add_column('{:e}'.format(c_eps), [
+        '{:.2f}'.format(ac_temp[0] * 100),
+        '{:.2f}'.format(ac_temp[1] * 100)])
+    time.add_column('{:e}'.format(c_eps), [
+        '{:.4f}'.format(time_temp[0]),
+        '{:.4f}'.format(time_temp[1])])
+
+
+file_path = './results/result_tables/' + file_name
+# print(file_path)
+
+with open(file_path, 'w', newline='') as f_output:
+    f_output.write(ac.get_csv_string())
+    f_output.write('\n')
+    f_output.write(time.get_csv_string())
+    f_output.close()
+    print(file_name + " saved successfully! ")
 
 
 # ac_1 = []
 # ac_2 = []
 # time_1 = []
 # time_2 = []
-model_name = data_file[data_file.rfind('/') + 1: data_file.rfind('_')]
-noise_name = noise_type.replace('_', ' ')
-with open("./results/local_results.csv", "a+") as csvfile_ac:
-    # with open("./results/{}_results.csv".format(model_name), "a+") as csvfile_ac:
-    # with open("./results/time_{}.csv".format(model_name), "a+") as csvfile_time:
-    w_ac = csv.writer(csvfile_ac)
-    # w_time = csv.writer(csvfile_time)
-    for j in range(n):
-        c_eps = eps * (j + 1)
-        if 'mnist' in data_file:
-            ac_temp, time_temp = verifier(kraus, O, data, label, c_eps, type, ADVERSARY_EXAMPLE, digits, 'mnist')
-        else:
-            ac_temp, time_temp = verifier(kraus, O, data, label, c_eps, type)
-
-        # ac_1.append(np.round(ac_temp[0] * 100, 2))
-        # ac_2.append(np.round(ac_temp[1] * 100, 2))
-        # time_1.append(np.round(time_temp[0], 4))
-        # time_2.append(np.round(time_temp[1], 4))
-        ac_1 = np.round(ac_temp[0] * 100, 2)
-        ac_2 = np.round(ac_temp[1] * 100, 2)
-        time_1 = np.round(time_temp[0], 4)
-        time_2 = np.round(time_temp[1], 4)
-        w_ac.writerow([model_name, noise_name, p, c_eps, ac_1, time_1, ac_2, time_2])
+# model_name = data_file[data_file.rfind('/') + 1: data_file.rfind('_')]
+# noise_name = noise_type.replace('_', ' ')
+# with open("./results/local_results.csv", "a+") as csvfile_ac:
+#     # with open("./results/{}_results.csv".format(model_name), "a+") as csvfile_ac:
+#     # with open("./results/time_{}.csv".format(model_name), "a+") as csvfile_time:
+#     w_ac = csv.writer(csvfile_ac)
+#     # w_time = csv.writer(csvfile_time)
+#     for j in range(n):
+#         c_eps = eps * (j + 1)
+#         if 'mnist' in data_file:
+#             ac_temp, time_temp = verifier(kraus, O, data, label, c_eps, type, ADVERSARY_EXAMPLE, digits, 'mnist')
+#         else:
+#             ac_temp, time_temp = verifier(kraus, O, data, label, c_eps, type)
+#
+#         # ac_1.append(np.round(ac_temp[0] * 100, 2))
+#         # ac_2.append(np.round(ac_temp[1] * 100, 2))
+#         # time_1.append(np.round(time_temp[0], 4))
+#         # time_2.append(np.round(time_temp[1], 4))
+#         ac_1 = np.round(ac_temp[0] * 100, 2)
+#         ac_2 = np.round(ac_temp[1] * 100, 2)
+#         time_1 = np.round(time_temp[0], 4)
+#         time_2 = np.round(time_temp[1], 4)
+#         w_ac.writerow([model_name, noise_name, p, c_eps, ac_1, time_1, ac_2, time_2])
 
         # 逐行写入数据 (写入多行用writerows)
         # w_time.writerow([model_name, noise_name, p] + time_1 + time_2)

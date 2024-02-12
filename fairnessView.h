@@ -64,7 +64,7 @@ private:
 
     QString fairDir;
 
-    QString noise_types[4] = {"phase_flip", "bit_flip", "depolarize", "mixed"};
+    QString noise_types[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
     QString pyfiles[4] = {
         "evaluate_finance_model_gc",
         "evaluate_finance_model_dice",

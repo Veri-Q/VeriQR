@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1670</width>
-    <height>880</height>
+    <height>905</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -108,7 +108,7 @@
                </font>
               </property>
               <property name="text">
-               <string>MNIST classification</string>
+               <string>MNIST Classification</string>
               </property>
              </widget>
             </item>
@@ -965,7 +965,7 @@ background-color: rgb(255, 255, 255);</string>
             <x>0</x>
             <y>0</y>
             <width>962</width>
-            <height>794</height>
+            <height>819</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_circ"/>
@@ -996,7 +996,7 @@ background-color: rgb(255, 255, 255);</string>
             <x>0</x>
             <y>0</y>
             <width>962</width>
-            <height>794</height>
+            <height>819</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4"/>

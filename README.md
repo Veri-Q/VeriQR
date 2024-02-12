@@ -181,7 +181,7 @@ make -j8
 
 See [veriqr_manual.pdf](https://github.com/Veri-Q/VeriQR/blob/main/veriqr_manual.pdf)
 
-# Results
+# Experimental Results
 
 ## Local Raobustness Verification
 
@@ -194,7 +194,6 @@ VeriQR provides several labeled datasets, all of which are encoded into quantum 
 -  The models $tfi$, trained on the data points of 4 qubits and of 8 qubits in the [TFI\_chain dataset](https://tensorflow.google.cn/quantum/api_docs/python/tfq/datasets/tfi_chain) respectively using the approach in [the paper](https://www.scipost.org/SciPostPhysLectNotes.61), are used for identifying the wavefunction at different phases in a quantum many-body system. 
 
 For each of these models, we perform noisy quantum simulation by adding a noise on each qubit at the end of the circuit with a specified probability $0 \leq p \leq 1$, which can be any one of the four supported noises, namely *depolarizing*, *phase flip*, *bit flip*, and *mixed* (a mixture of the first three) introduced in ~\cite{nielsen2001quantum}. Then we set different adversarial disturbance parameters $\varepsilon$, each of which indicates the $\varepsilon-robustness$ to be verified. We demonstrate *VeriQR* with the 50 models and the full verification results are shown in the following table, where $RA$ indicates the robust accuracy of classifiers, and $VT$ is the verification time: 
-
 
 <table class="tg">
 <thead>
@@ -412,39 +411,6 @@ For each of these models, we perform noisy quantum simulation by adding a noise 
     <td class="tg-pb0m">0.8339</td>
     <td class="tg-pb0m">100</td>
     <td class="tg-pb0m">6.5601</td>
-  </tr>
-  <tr>
-    <td class="tg-c3ow" rowspan="4">tfi_8</td>
-    <td class="tg-c3ow" rowspan="4">8</td>
-    <td class="tg-c3ow" rowspan="4">mixed</td>
-    <td class="tg-c3ow" rowspan="2">0.01</td>
-    <td class="tg-c3ow">0.001</td>
-    <td class="tg-c3ow">98.59</td>
-    <td class="tg-c3ow">5.5427</td>
-    <td class="tg-c3ow">100</td>
-    <td class="tg-c3ow">6.4524</td>
-  </tr>
-  <tr>
-    <td class="tg-c3ow">0.01</td>
-    <td class="tg-c3ow">90.62</td>
-    <td class="tg-c3ow">5.2601</td>
-    <td class="tg-c3ow">100</td>
-    <td class="tg-c3ow">10.2166</td>
-  </tr>
-  <tr>
-    <td class="tg-c3ow" rowspan="2">0.05</td>
-    <td class="tg-c3ow">0.005</td>
-    <td class="tg-c3ow">93.59</td>
-    <td class="tg-c3ow">5.6429</td>
-    <td class="tg-c3ow">100</td>
-    <td class="tg-c3ow">9.4697</td>
-  </tr>
-  <tr>
-    <td class="tg-c3ow">0.01</td>
-    <td class="tg-c3ow">89.69</td>
-    <td class="tg-c3ow">4.4898</td>
-    <td class="tg-c3ow">100</td>
-    <td class="tg-c3ow">10.1605</td>
   </tr>
   <tr>
     <td class="tg-9wq8">mnist01</td>
@@ -943,6 +909,7 @@ For each of these models, we perform noisy quantum simulation by adding a noise 
   </tr>
 </tbody>
 </table>
+
 
 ## Global Robustness Verification
 

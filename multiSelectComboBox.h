@@ -42,6 +42,7 @@ protected:
 
 private slots:
     void stateChange(int state); // 文本框文本变化
+    void stateChange_0(int state);
     void stateChange_1(int state);
     void stateChange_2(int state);
     void stateChange_3(int state);
@@ -62,12 +63,20 @@ signals:
 public:
     QLineEdit* line_edit_;
     QListWidget* list_widget_;
+    QCheckBox* checkbox_0;
+    QCheckBox* checkbox_1;
+    QCheckBox* checkbox_2;
+    QCheckBox* checkbox_3;
+    QCheckBox* checkbox_4;
+    QCheckBox* checkbox_5;
+    QCheckBox* checkbox_6;
+    QCheckBox* checkbox_7;
+    QCheckBox* checkbox_8;
+    QCheckBox* checkbox_9;
 
     int max_select_num_ = 0;
     int select_items_count_ = 0;
 };
-
-
 
 
 #endif // MULTISELECTCOMBOBOX_H
