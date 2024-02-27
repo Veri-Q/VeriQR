@@ -11,8 +11,8 @@
 #include <QProcess>
 
 #include "ui_mainwindow.h"
-#include "robustnessView.h"
-#include "fairnessView.h"
+#include "localView.h"
+#include "globalView.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -36,8 +36,8 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    RobustnessView *robustnessView;
-    FairnessView *fairnessView;
+    LocalView *localView;
+    GlobalView *globalView;
 
     QProcess* process;
     QMenu *fileMenu, *helpMenu;  //菜单栏

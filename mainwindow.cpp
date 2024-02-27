@@ -47,15 +47,15 @@ void MainWindow::init_GUI(){
     fileMenu->addAction(saveasAct);
     helpMenu->addAction(aboutQtAct);
 
-    this->robustnessView = new RobustnessView();
-    this->robustnessView->setObjectName(QString::fromUtf8("robustnessView"));
+    this->localView = new LocalView();
+    this->localView->setObjectName(QString::fromUtf8("localView"));
 
-    this->ui->horizontalLayout_robustness->addWidget(this->robustnessView);
+    this->ui->horizontalLayout_local->addWidget(this->localView);
 
-    this->fairnessView = new FairnessView();
-    this->fairnessView->setObjectName(QString::fromUtf8("fairnessView"));
+    this->globalView = new GlobalView();
+    this->globalView->setObjectName(QString::fromUtf8("globalView"));
 
-    this->ui->horizontalLayout_fairness->addWidget(this->fairnessView, 1);
+    this->ui->horizontalLayout_global->addWidget(this->globalView, 1);
 
 
     // 信号与槽
@@ -69,29 +69,29 @@ void MainWindow::init_GUI(){
 
 /* 打开一个运行时输出信息txt文件 */
 void MainWindow::openFile(){
-    if(this->ui->tabWidget->currentIndex() == 0){  // ROBUST
-        this->robustnessView->openFile();
+    if(this->ui->tabWidget->currentIndex() == 0){  // LOCAL
+        this->localView->openFile();
     }else{
-        this->fairnessView->openFile();
+        this->globalView->openFile();
     }
 }
 
 /* 将运行时输出信息存为txt文件 */
 void MainWindow::saveFile()
 {
-    if(this->ui->tabWidget->currentIndex() == 0){  // ROBUST
-        this->robustnessView->saveFile();
+    if(this->ui->tabWidget->currentIndex() == 0){  // LOCAL
+        this->localView->saveFile();
     }else{
-        this->fairnessView->saveFile();
+        this->globalView->saveFile();
     }
 }
 
 void MainWindow::saveasFile()
 {
-    if(this->ui->tabWidget->currentIndex() == 0){  // ROBUST
-        this->robustnessView->saveasFile();
+    if(this->ui->tabWidget->currentIndex() == 0){  // LOCAL
+        this->localView->saveasFile();
     }else{
-        this->fairnessView->saveasFile();
+        this->globalView->saveasFile();
     }
 }
 

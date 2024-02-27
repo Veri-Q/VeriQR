@@ -1,7 +1,0 @@
-epsilon,1.000000e-03,2.000000e-03,3.000000e-03
-Robust Bound,99.70,99.10,98.90
-Robustness Algorithm,99.80,99.70,99.40
-
-epsilon,1.000000e-03,2.000000e-03,3.000000e-03
-Robust Bound,0.0417,0.0256,0.0247
-Robustness Algorithm,0.7581,1.3804,2.0101

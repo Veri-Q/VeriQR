@@ -16,42 +16,41 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    fairnessView.cpp \
+    globalView.cpp \
+    localView.cpp \
     main.cpp \
     mainwindow.cpp \
     multiSelectComboBox.cpp \
     pdfView.cpp \
-    robustnessView.cpp \
     svgWidget.cpp
 
 HEADERS += \
-    fairnessView.h \
+    globalView.h \
+    localView.h \
     mainwindow.h \
     multiSelectComboBox.h \
     pdfView.h \
-    robustnessView.h \
     svgWidget.h
 
 FORMS += \
-    fairnessview.ui \
-    mainwindow.ui \
-    robustnessview.ui \
-    # robustnessview1.ui \
+    globalview.ui \
+    localview.ui \
+    mainwindow.ui
 
 RESOURCES += \
     resources.qrc
 
 DISTFILES += \
-    py_module/Robustness/batch_check.py \
-    py_module/Robustness/VeriQ.py \
-    py_module/Robustness/generate_adversary.py \
-    py_module/Robustness/README.md \
-    py_module/Fairness/qlipschitz.py \
-    py_module/Fairness/evaluate_finance_model_dice.py \
-    py_module/Fairness/evaluate_finance_model_gc.py \
-    py_module/Fairness/evaluate_qcnn_model.py \
-    py_module/Fairness/evaluate_trained_model_gc.py \
-    py_module/Fairness/README.md \
+    py_module/Local/batch_check.py \
+    py_module/Local/VeriQ.py \
+    py_module/Local/generate_adversary.py \
+    py_module/Local/README.md \
+    py_module/Global/qlipschitz.py \
+    py_module/Global/evaluate_finance_model_dice.py \
+    py_module/Global/evaluate_finance_model_gc.py \
+    py_module/Global/evaluate_qcnn_model.py \
+    py_module/Global/evaluate_trained_model_gc.py \
+    py_module/Global/README.md \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -41,20 +41,20 @@
         <property name="tabBarAutoHide">
          <bool>false</bool>
         </property>
-        <widget class="QWidget" name="Robustness">
+        <widget class="QWidget" name="Local">
          <property name="accessibleName">
           <string/>
          </property>
          <attribute name="title">
           <string>Local-robustness</string>
          </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout_robustness"/>
+         <layout class="QHBoxLayout" name="horizontalLayout_local"/>
         </widget>
-        <widget class="QWidget" name="Fairness">
+        <widget class="QWidget" name="Global">
          <attribute name="title">
           <string>Global-robustness</string>
          </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout_fairness"/>
+         <layout class="QHBoxLayout" name="horizontalLayout_global"/>
         </widget>
        </widget>
       </item>

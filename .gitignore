@@ -1,8 +1,9 @@
-py_module/Robustness/__pycache__/
-py_module/Robustness/.idea/
-py_module/Robustness/.DS_Store
-py_module/Robustness/printdata.py
-py_module/Robustness/other/FashionMNIST_training/.ipynb_checkpoints
+py_module/Local/__pycache__/
+py_module/Local/.idea/
+py_module/Local/.DS_Store
+py_module/Local/printdata.py
+py_module/Local/other/FashionMNIST_training/.ipynb_checkpoints
+py_module/Local/other/qcnn/__pycache__/
 py_module/Fairness/__pycache__/
 py_module/Fairness/.idea/
 py_module/Fairness/adult.zip
@@ -13,4 +14,3 @@ dragcircuit.ui
 build/
 test/
 VeriQR.pro.user
-py_module/Robustness/other/qcnn/__pycache__/
