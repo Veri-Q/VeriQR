@@ -13,12 +13,13 @@ import gc
 import csv
 from multiprocessing import Pool
 
-noise_op_mq = [
-    PhaseFlipChannel,
-    DepolarizingChannel,
-    BitFlipChannel,
-    DepolarizingChannel
-]
+# noise_ops = [
+#     PhaseFlipChannel,
+#     DepolarizingChannel,
+#     BitFlipChannel
+#     # DepolarizingChannel
+# ]
+noise_ops = ["phase_flip", "depolarizing", "bit_flip"]
 
 noise_op_map = {
     "bit_flip": BitFlipChannel,
@@ -26,6 +27,8 @@ noise_op_map = {
     "phase_flip": PhaseFlipChannel,
     "mixed": DepolarizingChannel
 }
+
+I = mindquantum.core.gates.I.matrix()
 
 
 def random_insert_ops(circuit, *nums_and_ops, with_ctrl=True, after_measure=False, shots=1):
@@ -121,7 +124,7 @@ def qasm2mq(qasm_file):
         circuit = circuit.apply_value(pr)
 
     # model_name = "{}_model.svg".format(qasm_file[qasm_file.rfind('/') + 1:-5])
-    # circuit.svg().to_file("./Figures/" + model_name)  # qasm_file chop '.qasm'
+    # circuit.svg().to_file("./figures/" + model_name)  # qasm_file chop '.qasm'
     # print(model_name + " saved successfully! ")
 
     if circuit.has_measure_gate:
@@ -130,9 +133,6 @@ def qasm2mq(qasm_file):
     U = circuit.matrix()
     kraus = np.array([U])
     return kraus
-
-
-I = mindquantum.core.gates.I.matrix()
 
 
 def qasm2mq_with_specified_noise(file, noise, noise_list, kraus_file, p: float):
@@ -148,10 +148,8 @@ def qasm2mq_with_specified_noise(file, noise, noise_list, kraus_file, p: float):
         pr = dict(zip(circuit.params_name, val_list))  # 获取线路参数
         circuit = circuit.apply_value(pr)
 
-    # print(circuit)
     all_measures = []
     for gate in circuit:
-        # print(type(gate))
         if type(gate) is Measure:
             all_measures.append(gate)
 
@@ -159,74 +157,51 @@ def qasm2mq_with_specified_noise(file, noise, noise_list, kraus_file, p: float):
         circuit = circuit.remove_measure()
     U = circuit.matrix()
 
-    # add random noise
-    num = circuit.n_qubits
-    n_qubits = range(num)
+    n_qubits = range(circuit.n_qubits)
     print("The noise type is:", noise)
     if noise == "mixed":
-        noise_ = noise
         # get all kraus operators
         E = noise_op_map[noise_list[0]](p).matrix()
         kraus = E
         l = len(noise_list)
         for q in n_qubits[::l]:
             for i in range(l):
+                if q + i >= circuit.n_qubits:
+                    break
                 noise_op = noise_op_map[noise_list[i]]
-                matrices = noise_op(p).matrix()
                 circuit += noise_op(p).on(q + i)
+                if q == 0 and i == 0:
+                    continue
                 new_kraus = []
-                if not (q == 0 and i == 0):
-                    for m in kraus:
-                        for e in matrices:
-                            new_kraus.append(np.kron(m, e))
-                    kraus = new_kraus
-
-        # for q in n_qubits[::3]:
-            # circuit += BitFlipChannel(p).on(q)
-            # new_kraus = []
-            # if q != 0:
-            #     for m in kraus:
-            #         for e in BitFlipChannel(p).matrix():
-            #             new_kraus.append(np.kron(m, e))
-            #     kraus = new_kraus
-            #
-            # new_kraus = []
-            # if q + 1 < circuit.n_qubits and l > 1:
-            #     circuit += DepolarizingChannel(p).on(q + 1)
-            #     for m in kraus:
-            #         for e in DepolarizingChannel(p).matrix():
-            #             new_kraus.append(np.kron(m, e))
-            #     kraus = new_kraus
-            #
-            # new_kraus = []
-            # if q + 2 < circuit.n_qubits and l > 2:
-            #     circuit += PhaseFlipChannel(p).on(q + 2)
-            #     for m in kraus:
-            #         for e in PhaseFlipChannel(p).matrix():
-            #             new_kraus.append(np.kron(m, e))
-            #     kraus = new_kraus
+                for m in kraus:
+                    for e in noise_op(p).matrix():
+                        new_kraus.append(np.kron(m, e))
+                kraus = new_kraus
+        noise_list_ = [noise_op_map[i].__name__ for i in noise_list]
+        noise_list_ = [i[0: i.index("Channel")] for i in noise_list_]
+        noise_name = "mixed_{}".format('_'.join(noise_list_))
     elif noise == "custom":
-        noise_ = noise
         data = load(kraus_file)
         kraus = data['kraus']
         for i in range(kraus.shape[0]):
             if kraus[i].shape[0] != circuit.n_qubits or kraus[i].shape[1] != circuit.n_qubits:
                 raise RuntimeError("The dimension of the kraus operator is {}, not consistent with "
-                                   "the circuit's ({}, {})! ".format(kraus[i].shape, 2**circuit.n_qubits, 2**circuit.n_qubits))
+                                   "the circuit's ({}, {})! ".format(kraus[i].shape, 2 ** circuit.n_qubits,
+                                                                     2 ** circuit.n_qubits))
+        noise_name = "custom_{}".format(kraus_file[kraus_file.rfind('/') + 1:-4])
     else:
         noise_op = noise_op_map[noise]
         noise_ = noise_op.__name__
         noise_ = noise_[0: noise_.index("Channel")]
         E = noise_op(p).matrix()
-        # print(E)
         kraus = E
         if noise_ == "Depolarizing":
             for q in n_qubits[::2]:
                 circuit += noise_op(p).on(q)
                 new_kraus = []
                 if q != 0:
-                    print(q + 1)
-                    print(len(kraus))
+                    # print(q + 1)
+                    # print(len(kraus))
                     for i in kraus:
                         for e in E:
                             new_kraus.append(np.kron(i, e))
@@ -241,15 +216,14 @@ def qasm2mq_with_specified_noise(file, noise, noise_list, kraus_file, p: float):
                 circuit += noise_op(p).on(q)
                 # get all kraus operators
                 if q != 0:
-                    # print(q + 1)
-                    # print(len(kraus))
                     new_kraus = []
                     for i in kraus:
                         for e in E:
                             new_kraus.append(np.kron(i, e))
                     kraus = new_kraus
+        noise_name = noise_
 
-    print(len(kraus))
+    # print(len(kraus))
     # print(kraus[0].shape)
     for i in range(len(kraus)):
         # print(kraus[i].shape)
@@ -269,69 +243,70 @@ def qasm2mq_with_specified_noise(file, noise, noise_list, kraus_file, p: float):
     for m in all_measures:
         circuit += m
 
-    model_name = "{}_with_{}_{}_model.svg".format(file[file.rfind('/') + 1:-5], p, noise_)
-    circuit.svg().to_file("./Figures/" + model_name)  # qasm_file chop '.qasm'
+    model_name = "{}_{}_{}.svg".format(file[file.rfind('/') + 1:-5], noise_name, p)
+    circuit.svg().to_file("./figures/" + model_name)  # qasm_file chop '.qasm'
     print(model_name + " saved successfully! ")
 
     kraus = np.array(kraus)
-    print(kraus.shape)
-    return kraus
+    # print(kraus.shape)
+    return kraus, noise_name
 
 
-def qasm2mq_with_random_noise(file):
-    f = open(file)
-    qasm_str = f.read()
-    f.close()
-    circuit = OpenQASM().from_string(qasm_str)
-    if circuit.parameterized:
-        val_list = []
-        for param in circuit.params_name:
-            param = param.replace('pi', str(np.pi)).replace('π', str(np.pi))
-            val_list.append(float(param))
-        pr = dict(zip(circuit.params_name, val_list))  # 获取线路参数
-        circuit = circuit.apply_value(pr)
-
-    all_measures = []
-    for gate in circuit:
-        if type(gate) == Measure:
-            all_measures.append(gate)
-
-    if circuit.has_measure_gate:
-        circuit = circuit.remove_measure()
-    U = circuit.matrix()
-
-    # add random noise
-    noise_op = choice(noise_op_mq)
-    p = float(round(uniform(0, 0.2), 5))  # 随机数的精度round(数值，精度)
-    noise = noise_op.__name__
-    print("add {} with probability {}".format(noise, p))
-    for q in range(circuit.n_qubits):
-        circuit += noise_op(p).on(q)
-
-    for m in all_measures:
-        circuit += m
-
-    noise = noise[0:noise.index("Channel")]
-    model_name = "{}_with_{}_{}_model.svg".format(file[file.rfind('/') + 1:-5], p, noise)
-    # circuit.svg().to_file("./Figures/" + model_name)  # qasm_file chop '.qasm'
-    print(model_name + " saved successfully! ")
-
-    # get all kraus operators
-    E = noise_op(p).matrix()
-    kraus = E
-    for i in range(circuit.n_qubits - 1):
-        new_kraus = []
-        for m in kraus:
-            for e in E:
-                new_kraus.append(np.kron(m, e))
-        kraus = new_kraus
-
-    for i in range(len(kraus)):
-        kraus[i] = kraus[i] @ U
-
-    kraus = np.array(kraus)
-    print(kraus.shape)
-    return kraus, p, noise
+# def qasm2mq_with_random_noise(file):
+#     f = open(file)
+#     qasm_str = f.read()
+#     f.close()
+#     circuit = OpenQASM().from_string(qasm_str)
+#     if circuit.parameterized:
+#         val_list = []
+#         for param in circuit.params_name:
+#             param = param.replace('pi', str(np.pi)).replace('π', str(np.pi))
+#             val_list.append(float(param))
+#         pr = dict(zip(circuit.params_name, val_list))  # 获取线路参数
+#         circuit = circuit.apply_value(pr)
+#
+#     all_measures = []
+#     for gate in circuit:
+#         if type(gate) == Measure:
+#             all_measures.append(gate)
+#
+#     if circuit.has_measure_gate:
+#         circuit = circuit.remove_measure()
+#     U = circuit.matrix()
+#
+#     # add random noise
+#     noise_op = choice(noise_ops)
+#     p = float(round(uniform(0, 0.2), 5))  # 随机数的精度round(数值，精度)
+#     noise = noise_op.__name__
+#     print("add {} with probability {}".format(noise, p))
+#     for q in range(circuit.n_qubits):
+#         circuit += noise_op(p).on(q)
+#
+#     for m in all_measures:
+#         circuit += m
+#
+#     noise = noise[0:noise.index("Channel")]
+#     # model_name = "./figures/{}_{}_{}.svg".format(file[file.rfind('/') + 1:-5], noise_name, p)
+#     model_name = "{}_with_{}_{}_model.svg".format(file[file.rfind('/') + 1:-5], p, noise)
+#     # circuit.svg().to_file("./figures/" + model_name)  # qasm_file chop '.qasm'
+#     print(model_name + " saved successfully! ")
+#
+#     # get all kraus operators
+#     E = noise_op(p).matrix()
+#     kraus = E
+#     for i in range(circuit.n_qubits - 1):
+#         new_kraus = []
+#         for m in kraus:
+#             for e in E:
+#                 new_kraus.append(np.kron(m, e))
+#         kraus = new_kraus
+#
+#     for i in range(len(kraus)):
+#         kraus[i] = kraus[i] @ U
+#
+#     kraus = np.array(kraus)
+#     print(kraus.shape)
+#     return kraus, p, noise
 
 
 digits = '36'
@@ -375,30 +350,31 @@ else:
         if '_data' in data_file:  # digits != '36'
             digits = data_file[data_file.rfind('_data') - 2: data_file.rfind('_data')]
 
-    if len(argv) > 7:
-        # noise_type = argv[len(argv) - 2]
+    noise_list = []
+    kraus_file = None
+    arg_num = len(argv)
+    if arg_num > 7:
         noise_type = argv[7]
-        p = float(argv[len(argv) - 1])
-        noise_list = []
-        kraus_file = None
+        p = float(argv[arg_num - 1])
         if noise_type == 'mixed':
-            noise_list = [i for i in argv[8: len(argv) - 1]]
+            noise_list = [i for i in argv[8: arg_num - 1]]
             print("noise_list: ", noise_list)
         elif noise_type == 'custom':
             kraus_file = argv[8]
-        kraus = qasm2mq_with_specified_noise(qasm_file, noise_type, noise_list, kraus_file, p)
     else:
-        kraus, p, noise_type = qasm2mq_with_random_noise(qasm_file)
-    # kraus = qasm2mq(qasm_file)
+        noise_type = choice(noise_ops)
+        p = float(round(uniform(0, 0.2), 5))  # 随机数的精度round(数值，精度)
+    kraus, noise_name = qasm2mq_with_specified_noise(qasm_file, noise_type, noise_list, kraus_file, p)
+
     DATA = load(data_file)
     O = DATA['O']
     data = DATA['data']
     label = DATA['label']
     type = 'qasm'
     file_name = '{}_{}_{}_{}_{}_{}.csv'.format(
-        qasm_file[qasm_file.rfind('/') + 1:-5], eps, n, state_flag, p, noise_type)  # 默认文件名
+        qasm_file[qasm_file.rfind('/') + 1:-5], eps, n, state_flag, p, noise_name)  # 默认文件名
     # file_name = '{}_{}_{}_{}.csv'.format(
-    #     qasm_file[qasm_file.rfind('/') + 1:-5], eps, n, state_flag)  # 默认文件名
+    # qasm_file[qasm_file.rfind('/') + 1:-5], eps, n, state_flag)  # 默认文件名
 
 if state_flag == 'mixed':
     verifier = RobustnessVerifier
@@ -424,7 +400,6 @@ for j in range(n):
         '{:.4f}'.format(time_temp[1])])
 
 file_path = './results/result_tables/' + file_name
-# print(file_path)
 
 with open(file_path, 'w', newline='') as f_output:
     f_output.write(ac.get_csv_string())

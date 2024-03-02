@@ -80,7 +80,7 @@ for d1 in range(1, 10):
     f.close()
 
     ansatz = qasm2mq(qasm_str)
-    ansatz.svg().to_file("../../Figures/mnist{}_model.svg".format(d0 + d1))
+    ansatz.svg().to_file("../../figures/mnist{}_model.svg".format(d0 + d1))
 
     print(M.shape)
     x_train = x_train.T

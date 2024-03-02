@@ -135,7 +135,7 @@ def qasm2mq(qasm_file):
 
     # 先保存图片, 再移除测量门
     circuit.svg().to_file(
-        "./Figures/" + qasm_file[qasm_file.rfind('/') + 1:-5] + "_model.svg")  # qasm_file chop '.qasm'
+        "./figures/" + qasm_file[qasm_file.rfind('/') + 1:-5] + "_model.svg")  # qasm_file chop '.qasm'
     if circuit.has_measure_gate:
         circuit = circuit.remove_measure()
 

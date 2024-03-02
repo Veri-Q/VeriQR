@@ -1,0 +1,20 @@
+noise_list: ['phase_flip', 'bit_flip']
+The noise type is: mixed
+add mixed with probability 0.03735
+mnist04_mixed_PhaseFlip_BitFlip_0.03735.svg saved successfully!
+=============================================
+Starting Pure Robustness Verifier
+---------------------------------------------
+Checking 0.001-robustness
+----------------------------------------
+Filted by robust bound, 4 states left for QCQP method
+===================================
+Starting pure state robustness verifier
+-----------------------------------
+1/4 states checked: 1 unrobust state 2/4 states checked: 1 unrobust state 3/4 states checked: 1 unrobust state 4/4 states checked: 2 unrobust state 4/4 states checked: 2 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 99.80%, Verification time: 1.13s
+=============================================
+mnist04_0.001_1_pure_0.03735_mixed_PhaseFlip_BitFlip.csv saved successfully!

@@ -68,10 +68,10 @@ void GlobalView::init()
 
 void GlobalView::resizeEvent(QResizeEvent *)
 {
-    if(showed_loss)
-    {
-        show_loss_and_acc_plot();
-    }
+    // if(showed_loss)
+    // {
+    //     show_loss_and_acc_plot();
+    // }
 }
 
 bool GlobalView::findFile(QString filename)
@@ -103,8 +103,8 @@ void GlobalView::clear_all_information()
     ui->lineEdit_k->setText("");
     ui->lineEdit_time->setText("");
     ui->textBrowser_output->setText("");
-    ui->imageLabel_plot->clear();
-    showed_loss = false;
+    // ui->imageLabel_plot->clear();
+    // showed_loss = false;
 
     if(showed_svg){
         delete_circuit_diagram();
@@ -160,11 +160,12 @@ void GlobalView::show_saved_results(QString fileName)
         ui->textBrowser_output->append(output_line_.simplified());
         // qDebug() << output_line_;
 
-        if(output_line_.contains("Training End"))
-        {
-            show_loss_and_acc_plot();
-        }
-        else if(output_line_.contains("Printing Model Circuit End"))
+        // if(output_line_.contains("Training End"))
+        // {
+        //     show_loss_and_acc_plot();
+        // }
+        // else
+        if(output_line_.contains("Printing Model Circuit End"))
         {
             show_circuit_diagram();
         }
@@ -482,11 +483,12 @@ void GlobalView::on_read_from_terminal_cal()
         ui->textBrowser_output->append(output_line_.simplified());
         //        qDebug() << output_line_;
 
-        if(output_line_.contains("Training End"))
-        {
-            show_loss_and_acc_plot();
-        }
-        else if(output_line_.contains("Printing Model Circuit End"))
+        // if(output_line_.contains("Training End"))
+        // {
+        //     show_loss_and_acc_plot();
+        // }
+        // else
+        if(output_line_.contains("Printing Model Circuit End"))
         {
             show_circuit_diagram();
         }
@@ -511,17 +513,17 @@ void GlobalView::on_read_from_terminal_cal()
     }
 }
 
-void GlobalView::show_loss_and_acc_plot()
-{
-    QString img_file = globalDir + "/loss_figures/" + file_name_ + ".png";
-    qDebug() << img_file;
+// void GlobalView::show_loss_and_acc_plot()
+// {
+//     QString img_file = globalDir + "/loss_figures/" + file_name_ + ".png";
+//     qDebug() << img_file;
 
-    QImage image(img_file);
-    QPixmap pixmap = QPixmap::fromImage(image);
-    ui->imageLabel_plot->setPixmap(pixmap.scaled(ui->tabWidget->width()*0.8, ui->tabWidget->height()*0.8,
-                                                 Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    showed_loss = true;
-}
+//     QImage image(img_file);
+//     QPixmap pixmap = QPixmap::fromImage(image);
+//     // ui->imageLabel_plot->setPixmap(pixmap.scaled(ui->tabWidget->width()*0.8, ui->tabWidget->height()*0.8,
+//     //                                              Qt::KeepAspectRatio, Qt::SmoothTransformation));
+//     showed_loss = true;
+// }
 
 void GlobalView::show_circuit_diagram()
 {

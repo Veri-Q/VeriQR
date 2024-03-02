@@ -3,6 +3,15 @@ from mindquantum.core.gates import H, X, RZ, RY, I, Z, DepolarizingChannel
 
 # import mindquantum.core.gates as gate
 
+import numpy as np
+from numpy import load
+
+data = load("./model_and_data/binary_cav.npz")
+kraus = data["kraus"]
+np.savez('./kraus/kraus_1qubit.npz', kraus=kraus)
+
+
+
 # I = gate.I.matrix()
 # Z = gate.Z.matrix()
 

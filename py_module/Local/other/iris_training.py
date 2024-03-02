@@ -287,7 +287,7 @@ def train():
 
     ansatz_ += Measure('Z2').on(2)
     ansatz_ += Measure('Z3').on(3)
-    ansatz_.svg().to_file("../Figures/iris_model.svg")
+    ansatz_.svg().to_file("../figures/iris_model.svg")
 
     # print(ansatz_)
     ansatz_str = OpenQASM().to_string(ansatz_)

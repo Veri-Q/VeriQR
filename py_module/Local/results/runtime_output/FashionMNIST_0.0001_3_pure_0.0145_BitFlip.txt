@@ -1,0 +1,49 @@
+The noise type is: bit_flip
+add bit_flip with probability 0.0145
+FashionMNIST_BitFlip_0.0145.svg saved successfully!
+=============================================
+Starting Pure Robustness Verifier
+---------------------------------------------
+Checking 0.0001-robustness
+----------------------------------------
+Filted by robust bound, 32 states left for QCQP method
+===================================
+Starting pure state robustness verifier
+-----------------------------------
+1/32 states checked: 0 unrobust state 2/32 states checked: 1 unrobust state 3/32 states checked: 2 unrobust state 4/32 states checked: 2 unrobust state 5/32 states checked: 2 unrobust state 6/32 states checked: 2 unrobust state 7/32 states checked: 2 unrobust state 8/32 states checked: 2 unrobust state 9/32 states checked: 3 unrobust state 10/32 states checked: 3 unrobust state 11/32 states checked: 3 unrobust state 12/32 states checked: 4 unrobust state 13/32 states checked: 4 unrobust state 14/32 states checked: 4 unrobust state 15/32 states checked: 5 unrobust state 16/32 states checked: 6 unrobust state 17/32 states checked: 6 unrobust state 18/32 states checked: 7 unrobust state 19/32 states checked: 7 unrobust state 20/32 states checked: 7 unrobust state 21/32 states checked: 7 unrobust state 22/32 states checked: 7 unrobust state 23/32 states checked: 7 unrobust state 24/32 states checked: 7 unrobust state 25/32 states checked: 7 unrobust state 26/32 states checked: 8 unrobust state 27/32 states checked: 8 unrobust state 28/32 states checked: 8 unrobust state 29/32 states checked: 8 unrobust state 30/32 states checked: 9 unrobust state 31/32 states checked: 9 unrobust state 32/32 states checked: 10 unrobust state 32/32 states checked: 10 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 99.00%, Verification time: 2.47s
+=============================================
+=============================================
+Starting Pure Robustness Verifier
+---------------------------------------------
+Checking 0.0002-robustness
+----------------------------------------
+Filted by robust bound, 39 states left for QCQP method
+===================================
+Starting pure state robustness verifier
+-----------------------------------
+1/39 states checked: 0 unrobust state 2/39 states checked: 1 unrobust state 3/39 states checked: 2 unrobust state 4/39 states checked: 2 unrobust state 5/39 states checked: 3 unrobust state 6/39 states checked: 3 unrobust state 7/39 states checked: 3 unrobust state 8/39 states checked: 3 unrobust state 9/39 states checked: 3 unrobust state 10/39 states checked: 4 unrobust state 11/39 states checked: 4 unrobust state 12/39 states checked: 4 unrobust state 13/39 states checked: 4 unrobust state 14/39 states checked: 4 unrobust state 15/39 states checked: 4 unrobust state 16/39 states checked: 5 unrobust state 17/39 states checked: 5 unrobust state 18/39 states checked: 5 unrobust state 19/39 states checked: 6 unrobust state 20/39 states checked: 7 unrobust state 21/39 states checked: 7 unrobust state 22/39 states checked: 8 unrobust state 23/39 states checked: 8 unrobust state 24/39 states checked: 8 unrobust state 25/39 states checked: 8 unrobust state 26/39 states checked: 8 unrobust state 27/39 states checked: 8 unrobust state 28/39 states checked: 8 unrobust state 29/39 states checked: 8 unrobust state 30/39 states checked: 9 unrobust state 31/39 states checked: 9 unrobust state 32/39 states checked: 9 unrobust state 33/39 states checked: 10 unrobust state 34/39 states checked: 10 unrobust state 35/39 states checked: 10 unrobust state 36/39 states checked: 11 unrobust state 37/39 states checked: 11 unrobust state 38/39 states checked: 12 unrobust state 39/39 states checked: 12 unrobust state 39/39 states checked: 12 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 98.80%, Verification time: 4.02s
+=============================================
+=============================================
+Starting Pure Robustness Verifier
+---------------------------------------------
+Checking 0.0003-robustness
+----------------------------------------
+Filted by robust bound, 48 states left for QCQP method
+===================================
+Starting pure state robustness verifier
+-----------------------------------
+1/48 states checked: 0 unrobust state 2/48 states checked: 1 unrobust state 3/48 states checked: 2 unrobust state 4/48 states checked: 2 unrobust state 5/48 states checked: 3 unrobust state 6/48 states checked: 3 unrobust state 7/48 states checked: 4 unrobust state 8/48 states checked: 4 unrobust state 9/48 states checked: 4 unrobust state 10/48 states checked: 4 unrobust state 11/48 states checked: 4 unrobust state 12/48 states checked: 5 unrobust state 13/48 states checked: 5 unrobust state 14/48 states checked: 5 unrobust state 15/48 states checked: 6 unrobust state 16/48 states checked: 6 unrobust state 17/48 states checked: 6 unrobust state 18/48 states checked: 6 unrobust state 19/48 states checked: 7 unrobust state 20/48 states checked: 7 unrobust state 21/48 states checked: 7 unrobust state 22/48 states checked: 8 unrobust state 23/48 states checked: 9 unrobust state 24/48 states checked: 9 unrobust state 25/48 states checked: 9 unrobust state 26/48 states checked: 10 unrobust state 27/48 states checked: 10 unrobust state 28/48 states checked: 10 unrobust state 29/48 states checked: 10 unrobust state 30/48 states checked: 10 unrobust state 31/48 states checked: 11 unrobust state 32/48 states checked: 11 unrobust state 33/48 states checked: 11 unrobust state 34/48 states checked: 11 unrobust state 35/48 states checked: 11 unrobust state 36/48 states checked: 12 unrobust state 37/48 states checked: 13 unrobust state 38/48 states checked: 13 unrobust state 39/48 states checked: 13 unrobust state 40/48 states checked: 14 unrobust state 41/48 states checked: 14 unrobust state 42/48 states checked: 15 unrobust state 43/48 states checked: 15 unrobust state 44/48 states checked: 15 unrobust state 45/48 states checked: 16 unrobust state 46/48 states checked: 16 unrobust state 47/48 states checked: 17 unrobust state 48/48 states checked: 17 unrobust state 48/48 states checked: 17 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 98.30%, Verification time: 4.31s
+=============================================
+FashionMNIST_0.0001_3_pure_0.0145_BitFlip.csv saved successfully!

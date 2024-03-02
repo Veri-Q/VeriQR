@@ -299,7 +299,7 @@ class Main():
 
             ansatz_ += Measure('Z{}'.format(QUBIT_NUM - 2)).on(QUBIT_NUM - 2)
             ansatz_ += Measure('Z{}'.format(QUBIT_NUM - 1)).on(QUBIT_NUM - 1)
-            ansatz_.svg().to_file("../../Figures/FashionMNIST_{}_model.svg".format(self.Ent))
+            ansatz_.svg().to_file("../../figures/FashionMNIST_{}_model.svg".format(self.Ent))
 
             # print(ansatz_)
             ansatz_str = OpenQASM().to_string(ansatz_)

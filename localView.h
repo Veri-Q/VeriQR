@@ -103,7 +103,7 @@ private:
 
     QString noise_types[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
     QStringList mixed_noises_;
-    QString noise_type_ = noise_types[3];
+    QString noise_type_ = "";
     double noise_prob_ = 0.0;
     QFileInfo kraus_file_;  // 当前选择的kraus operators file
 
@@ -115,8 +115,14 @@ private:
     std::map<QString, QString> circuit_diagram_map = {
         {"binary", "binary_model.pdf"},
         {"excitation", "excitation_model.pdf"},
-        {"mnist", "mnist_model.pdf"},
-        {"phaseRecog", "qcnn_model_phase.pdf"},
+        // {"mnist", "mnist_model.pdf"},
+        {"phaseRecog", "phaseRecog.pdf"},
+    };
+
+    std::map<QString, QString> noise_name_map = {
+        {"BitFlip", "bit_flip"},
+        {"Depolarizing", "depolarizing"},
+        {"PhaseFlip", "phase_flip"},
     };
 };
 

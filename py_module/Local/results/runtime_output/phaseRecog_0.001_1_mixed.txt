@@ -1,0 +1,16 @@
+=============================================
+Starting Robustness Verifier
+---------------------------------------------
+Checking 0.001-robustness
+----------------------------------------
+Filted by robust bound, 26 states left for SDP method
+===================================
+Starting state robustness verifier
+-----------------------------------
+1/26 states checked: 1 unrobust state 2/26 states checked: 2 unrobust state 3/26 states checked: 3 unrobust state 4/26 states checked: 4 unrobust state 5/26 states checked: 5 unrobust state 6/26 states checked: 6 unrobust state 7/26 states checked: 7 unrobust state 8/26 states checked: 8 unrobust state 9/26 states checked: 9 unrobust state 10/26 states checked: 10 unrobust state 11/26 states checked: 11 unrobust state 12/26 states checked: 12 unrobust state 13/26 states checked: 13 unrobust state 14/26 states checked: 14 unrobust state 15/26 states checked: 15 unrobust state 16/26 states checked: 16 unrobust state 17/26 states checked: 17 unrobust state 18/26 states checked: 18 unrobust state 19/26 states checked: 19 unrobust state 20/26 states checked: 20 unrobust state 21/26 states checked: 21 unrobust state 22/26 states checked: 22 unrobust state 23/26 states checked: 23 unrobust state 24/26 states checked: 24 unrobust state 25/26 states checked: 25 unrobust state 26/26 states checked: 26 unrobust state 26/26 states checked: 26 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 97.40%, Verification time: 66.09s
+=============================================
+phaseRecog_0.001_1_mixed.csv saved successfully!

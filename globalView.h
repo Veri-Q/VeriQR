@@ -26,7 +26,7 @@ public:
     void saveasFile();
     bool findFile(QString filename);
     void show_saved_results(QString fileName);
-    void show_loss_and_acc_plot();
+    // void show_loss_and_acc_plot();
     void show_circuit_diagram();
     void delete_circuit_diagram();
     void model_change_to_ui();
@@ -89,7 +89,7 @@ private:
     QString output_;
     QString output_line_;
 
-    bool showed_loss = false;
+    // bool showed_loss = false;
     bool showed_svg = false;
 
     SvgWidget *svgWidget;

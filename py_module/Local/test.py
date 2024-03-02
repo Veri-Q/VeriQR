@@ -38,7 +38,7 @@ def qasm2mq(qasm_file):
         circuit = circuit.apply_value(pr)
 
     model_name = "{}_model.svg".format(qasm_file[qasm_file.rfind('/') + 1:-5])
-    circuit.svg().to_file("./Figures/" + model_name)  # qasm_file chop '.qasm'
+    circuit.svg().to_file("./figures/" + model_name)  # qasm_file chop '.qasm'
     print(model_name + " saved successfully! ")
 
     if circuit.has_measure_gate:
@@ -154,7 +154,7 @@ def qasm2mq_with_specified_noise(file, noise_type, p: float):
         circuit += m
 
     # model_name = "{}_with_{}_{}_model.svg".format(file[file.rfind('/') + 1:-5], p, noise)
-    # circuit.svg().to_file("./Figures/" + model_name)  # qasm_file chop '.qasm'
+    # circuit.svg().to_file("./figures/" + model_name)  # qasm_file chop '.qasm'
     # print(model_name + " saved successfully! ")
 
     kraus = np.array(kraus)

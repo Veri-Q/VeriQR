@@ -1,0 +1,19 @@
+The noise type is: depolarizing
+add depolarizing with probability 0.0125
+mnist09_Depolarizing_0.0125.svg saved successfully!
+=============================================
+Starting Pure Robustness Verifier
+---------------------------------------------
+Checking 0.0001-robustness
+----------------------------------------
+Filted by robust bound, 78 states left for QCQP method
+===================================
+Starting pure state robustness verifier
+-----------------------------------
+1/78 states checked: 1 unrobust state 2/78 states checked: 2 unrobust state 3/78 states checked: 3 unrobust state 4/78 states checked: 4 unrobust state 5/78 states checked: 5 unrobust state 6/78 states checked: 6 unrobust state 7/78 states checked: 7 unrobust state 8/78 states checked: 8 unrobust state 9/78 states checked: 9 unrobust state 10/78 states checked: 10 unrobust state 11/78 states checked: 10 unrobust state 12/78 states checked: 11 unrobust state 13/78 states checked: 12 unrobust state 14/78 states checked: 12 unrobust state 15/78 states checked: 12 unrobust state 16/78 states checked: 13 unrobust state 17/78 states checked: 14 unrobust state 18/78 states checked: 14 unrobust state 19/78 states checked: 15 unrobust state 20/78 states checked: 16 unrobust state 21/78 states checked: 17 unrobust state 22/78 states checked: 17 unrobust state 23/78 states checked: 18 unrobust state 24/78 states checked: 19 unrobust state 25/78 states checked: 19 unrobust state 26/78 states checked: 19 unrobust state 27/78 states checked: 20 unrobust state 28/78 states checked: 21 unrobust state 29/78 states checked: 22 unrobust state 30/78 states checked: 23 unrobust state 31/78 states checked: 24 unrobust state 32/78 states checked: 25 unrobust state 33/78 states checked: 26 unrobust state 34/78 states checked: 27 unrobust state 35/78 states checked: 28 unrobust state 36/78 states checked: 29 unrobust state 37/78 states checked: 30 unrobust state 38/78 states checked: 31 unrobust state 39/78 states checked: 32 unrobust state 40/78 states checked: 33 unrobust state 41/78 states checked: 33 unrobust state 42/78 states checked: 34 unrobust state 43/78 states checked: 34 unrobust state 44/78 states checked: 35 unrobust state 45/78 states checked: 36 unrobust state 46/78 states checked: 37 unrobust state 47/78 states checked: 38 unrobust state 48/78 states checked: 39 unrobust state 49/78 states checked: 40 unrobust state 50/78 states checked: 41 unrobust state 51/78 states checked: 42 unrobust state 52/78 states checked: 43 unrobust state 53/78 states checked: 44 unrobust state 54/78 states checked: 45 unrobust state 55/78 states checked: 46 unrobust state 56/78 states checked: 46 unrobust state 57/78 states checked: 47 unrobust state 58/78 states checked: 47 unrobust state 59/78 states checked: 48 unrobust state 60/78 states checked: 49 unrobust state 61/78 states checked: 49 unrobust state 62/78 states checked: 49 unrobust state 63/78 states checked: 49 unrobust state 64/78 states checked: 49 unrobust state 65/78 states checked: 50 unrobust state 66/78 states checked: 51 unrobust state 67/78 states checked: 52 unrobust state 68/78 states checked: 53 unrobust state 69/78 states checked: 54 unrobust state 70/78 states checked: 55 unrobust state 71/78 states checked: 56 unrobust state 72/78 states checked: 56 unrobust state 73/78 states checked: 57 unrobust state 74/78 states checked: 57 unrobust state 75/78 states checked: 58 unrobust state 76/78 states checked: 59 unrobust state 77/78 states checked: 60 unrobust state 78/78 states checked: 61 unrobust state 78/78 states checked: 61 unrobust state
+===================================
+Verification over
+----------------------------------------
+Robust accuracy: 93.90%, Verification time: 30.18s
+=============================================
+mnist09_0.0001_1_pure_0.0125_Depolarizing.csv saved successfully!

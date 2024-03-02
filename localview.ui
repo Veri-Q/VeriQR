@@ -388,13 +388,13 @@
             <item>
              <widget class="QSlider" name="slider_prob">
               <property name="minimum">
-               <number>0</number>
+               <number>1</number>
               </property>
               <property name="maximum">
-               <number>1000</number>
+               <number>100000</number>
               </property>
               <property name="value">
-               <number>0</number>
+               <number>1</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -420,11 +420,14 @@
               <property name="decimals">
                <number>5</number>
               </property>
+              <property name="minimum">
+               <double>0.000010000000000</double>
+              </property>
               <property name="maximum">
                <double>1.000000000000000</double>
               </property>
               <property name="singleStep">
-               <double>0.001000000000000</double>
+               <double>0.000010000000000</double>
               </property>
              </widget>
             </item>

@@ -4,10 +4,10 @@ py_module/Local/.DS_Store
 py_module/Local/printdata.py
 py_module/Local/other/FashionMNIST_training/.ipynb_checkpoints
 py_module/Local/other/qcnn/__pycache__/
-py_module/Fairness/__pycache__/
-py_module/Fairness/.idea/
-py_module/Fairness/adult.zip
-py_module/Fairness/test.py
+py_module/Global/__pycache__/
+py_module/Global/.idea/
+py_module/Global/adult.zip
+py_module/Global/test.py
 dragCircuit.cpp
 dragCircuit.h
 dragcircuit.ui
