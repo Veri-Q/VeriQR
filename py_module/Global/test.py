@@ -55,7 +55,7 @@ def fileTest(file):
         w = csv.writer(csvfile)
         for noise_type in ["bit_flip", "depolarizing", "phase_flip", "mixed"]:
             # for noise_type in ["mixed"]:
-            noise_op_ = noise_op[noise_type]
+            noise_op_ = noise_ops[noise_type]
             noise_op_mq_ = noise_op_mq[noise_type]
             p = choice([0.0001, 0.0005, 0.001, 0.005, 0.01, 0.025, 0.05, 0.075])
             epsilon = choice([0.0001, 0.0003, 0.0005, 0.001, 0.003, 0.005, 0.01, 0.03, 0.05, 0.075])
@@ -106,12 +106,12 @@ def fileTest(file):
 
 # batchTest('./qasm_models/HFVQE/')
 
-# fileTest('./qasm_models/HFVQE/hf_6_0_5.qasm')
-# fileTest('./qasm_models/HFVQE/hf_8_0_5.qasm')
-# fileTest('./qasm_models/HFVQE/hf_10_0_5.qasm')
-# fileTest('./qasm_models/HFVQE/hf_12_0_5.qasm')
+# fileTest('./qasm_models/HFVQE/ehc_6.qasm')
+# fileTest('./qasm_models/HFVQE/ehc_8.qasm')
+# fileTest('./qasm_models/HFVQE/ehc_10.qasm')
+# fileTest('./qasm_models/HFVQE/ehc_12.qasm')
 # fileTest('./qasm_models/QAOA/qaoa_10.qasm')
-# fileTest('./qasm_models/inst/inst_4x4_10_0.qasm')
+# fileTest('./qasm_models/inst/inst_4x4.qasm')
 
 # fileTest('./qasm_models/fashion.qasm')
 # fileTest('./qasm_models/iris.qasm')

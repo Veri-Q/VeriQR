@@ -36,9 +36,10 @@ public:
 
 public slots:
     void on_radioButton_importfile_clicked();
-    void on_radioButton_gc_clicked();
-    void on_radioButton_dice_clicked();
-    void importModel();  // TODO
+    void on_radioButton_cr_clicked();
+    void on_radioButton_aci_clicked();
+    void on_radioButton_fct_clicked();
+    void importModel();
     void on_radioButton_phaseflip_clicked();
     void on_radioButton_bitflip_clicked();
     void on_radioButton_depolarize_clicked();
@@ -65,12 +66,6 @@ private:
     QString globalDir;
 
     QString noise_types[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
-    QString pyfiles[4] = {
-        "evaluate_finance_model_gc",
-        "evaluate_finance_model_dice",
-        "evaluate_trained_model_gc",
-        "evaluate_qcnn_model"
-    };
 
     QFileInfo model_file_; // 当前选择的qasm模型文件
     QString file_name_;   // txt结果文件命名: dice_phase_flip_0.0001

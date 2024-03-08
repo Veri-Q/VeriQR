@@ -65,7 +65,7 @@ sudo ln -s /usr/bin/qmake6 /usr/bin/qmake
 2) source ~/.bashrc
 ```
 
-### dependency for [VeriQRobust](https://github.com/Veri-Q/Robustness) and [VeriQFair](https://github.com/Veri-Q/Fairness)
+### dependency for python module
 
 1. Follow the instructions of [Miniconda Installation](https://conda.io/projects/conda/en/latest/user-guide/install/index.html) to install Miniconda.
 2. Execute the following commands: 
@@ -1280,3 +1280,450 @@ The full experimental results are shown in the following table:
   </tr>
 </tbody>
 </table>
+### Experimental Comparison
+
+We have added an experimental comparison against a baseline implementation without tensors for global robustness verification on several models, which is missing in our paper: 
+
+<table>
+<thead>
+  <tr>
+    <th rowspan="2">model</th>
+    <th rowspan="2">#qubits</th>
+    <th rowspan="2">noise</th>
+    <th rowspan="2">p </th>
+    <th rowspan="2">(ε, δ)</th>
+    <th rowspan="2">robust</th>
+    <th colspan="2">TN</th>
+    <th colspan="2">Baseline</th>
+  </tr>
+  <tr>
+    <th>K*</th>
+    <th>time (sec.)</th>
+    <th>K*</th>
+    <th>time (sec.)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td rowspan="4">iris</td>
+    <td rowspan="4">4</td>
+    <td>bit flip</td>
+    <td>0.005</td>
+    <td>(0.003, 0.0001)</td>
+    <td>NO</td>
+    <td>0.98622</td>
+    <td>1.35</td>
+    <td>0.99055</td>
+    <td>0.02</td>
+  </tr>
+  <tr>
+    <td>depolarizing</td>
+    <td>0.005</td>
+    <td>(0.03, 0.0075)</td>
+    <td>NO</td>
+    <td>0.9673</td>
+    <td>1.11</td>
+    <td>0.98075</td>
+    <td>0.02</td>
+  </tr>
+  <tr>
+    <td>phase flip</td>
+    <td>0.0001</td>
+    <td>(0.005, 0.005)</td>
+    <td>YES</td>
+    <td>0.96935</td>
+    <td>1.2</td>
+    <td>0.99968</td>
+    <td>0.02</td>
+  </tr>
+  <tr>
+    <td>mixed</td>
+    <td>0.0001</td>
+    <td>(0.03, 0.005)</td>
+    <td>NO</td>
+    <td>0.96811</td>
+    <td>1.22</td>
+    <td>0.99967</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td rowspan="4">ehc</td>
+    <td rowspan="4">6</td>
+    <td>bit flip</td>
+    <td>0.05</td>
+    <td>(0.001, 0.0005)</td>
+    <td>NO</td>
+    <td>0.89995</td>
+    <td>2.82</td>
+    <td>0.90009</td>
+    <td>0.03</td>
+  </tr>
+  <tr>
+    <td>depolarizing</td>
+    <td>0.075</td>
+    <td>(0.001, 0.0001)</td>
+    <td>NO</td>
+    <td>0.80916</td>
+    <td>2.67</td>
+    <td>0.9</td>
+    <td>1.38</td>
+  </tr>
+  <tr>
+    <td>phase flip</td>
+    <td>0.0001</td>
+    <td>(0.005, 0.003)</td>
+    <td>NO</td>
+    <td>0.80899</td>
+    <td>2.69</td>
+    <td>1</td>
+    <td>1.97</td>
+  </tr>
+  <tr>
+    <td>mixed</td>
+    <td>0.01</td>
+    <td>(0.0003, 0.0005)</td>
+    <td>YES</td>
+    <td>0.80903</td>
+    <td>2.79</td>
+    <td>0.99989</td>
+    <td>2.08</td>
+  </tr>
+  <tr>
+    <td rowspan="4">ehc</td>
+    <td rowspan="4">8</td>
+    <td>bit flip</td>
+    <td>0.0001</td>
+    <td>(0.0003, 0.0075)</td>
+    <td>YES</td>
+    <td>0.99976</td>
+    <td>5</td>
+    <td>0.9998</td>
+    <td>1.48</td>
+  </tr>
+  <tr>
+    <td>depolarizing</td>
+    <td>0.05</td>
+    <td>(0.001, 0.0075)</td>
+    <td>YES</td>
+    <td>0.93287</td>
+    <td>5.6</td>
+    <td>0.93333</td>
+    <td>1.88</td>
+  </tr>
+  <tr>
+    <td>phase flip</td>
+    <td>0.025</td>
+    <td>(0.075, 0.0003)</td>
+    <td>NO</td>
+    <td>0.9327</td>
+    <td>5.43</td>
+    <td>1</td>
+    <td>2.7</td>
+  </tr>
+  <tr>
+    <td>mixed</td>
+    <td>0.0005</td>
+    <td>(0.005, 0.005)</td>
+    <td>YES</td>
+    <td>0.9322</td>
+    <td>5.76</td>
+    <td>0.99938</td>
+    <td>0.19</td>
+  </tr>
+  <tr>
+    <td rowspan="4">fashion</td>
+    <td rowspan="4">8</td>
+    <td>bit flip</td>
+    <td>0.005</td>
+    <td>(0.075, 0.005)</td>
+    <td>NO</td>
+    <td>0.98987</td>
+    <td>1.8</td>
+    <td>0.98791</td>
+    <td>0.16</td>
+  </tr>
+  <tr>
+    <td>depolarizing</td>
+    <td>0.025</td>
+    <td>(0.03, 0.003)</td>
+    <td>NO</td>
+    <td>0.95307</td>
+    <td>1.9</td>
+    <td>0.95652</td>
+    <td>1.36</td>
+  </tr>
+  <tr>
+    <td>phase flip</td>
+    <td>0.025</td>
+    <td>(0.005, 0.0003)</td>
+    <td>NO</td>
+    <td>0.93769</td>
+    <td>1.94</td>
+    <td>0.98452</td>
+    <td>2.76</td>
+  </tr>
+  <tr>
+    <td>mixed</td>
+    <td>0.075</td>
+    <td>(0.0005, 0.0075)</td>
+    <td>YES</td>
+    <td>0.8326</td>
+    <td>1.94</td>
+    <td>0.88763</td>
+    <td>2.59</td>
+  </tr>
+  <tr>
+    <td rowspan="4">aci</td>
+    <td rowspan="4">8</td>
+    <td>bit flip</td>
+    <td>0.0001</td>
+    <td>(0.003, 0.0001)</td>
+    <td>NO</td>
+    <td>0.99984</td>
+    <td>1.98</td>
+    <td>0.99976</td>
+    <td>0.15</td>
+  </tr>
+  <tr>
+    <td>depolarizing</td>
+    <td>0.025</td>
+    <td>(0.03, 0.0005)</td>
+    <td>NO</td>
+    <td>0.92412</td>
+    <td>3.08</td>
+    <td>0.93864</td>
+    <td>0.22</td>
+  </tr>
+  <tr>
+    <td>phase flip</td>
+    <td>0.05</td>
+    <td>(0.05, 0.001)</td>
+    <td>NO</td>
+    <td>0.79528</td>
+    <td>4.48</td>
+    <td>0.92925</td>
+    <td>3.33</td>
+  </tr>
+  <tr>
+    <td>mixed</td>
+    <td>0.005</td>
+    <td>(0.005, 0.005)</td>
+    <td>YES</td>
+    <td>0.78436</td>
+    <td>2.97</td>
+    <td>0.98565</td>
+    <td>0.2</td>
+  </tr>
+  <tr>
+    <td rowspan="4">fct</td>
+    <td rowspan="4">9</td>
+    <td>bit flip</td>
+    <td>0.05</td>
+    <td>(0.075, 0.003)</td>
+    <td>NO</td>
+    <td>0.9</td>
+    <td>2.13</td>
+    <td>0.87652</td>
+    <td>0.8</td>
+  </tr>
+  <tr>
+    <td>depolarizing</td>
+    <td>0.05</td>
+    <td>(0.0003, 0.0001)</td>
+    <td>NO</td>
+    <td>0.84</td>
+    <td>2.07</td>
+    <td>0.87557</td>
+    <td>3.92</td>
+  </tr>
+  <tr>
+    <td>phase flip</td>
+    <td>0.01</td>
+    <td>(0.01, 0.0075)</td>
+    <td>NO</td>
+    <td>0.84</td>
+    <td>8.32</td>
+    <td>0.98657</td>
+    <td>3.57</td>
+  </tr>
+  <tr>
+    <td>mixed</td>
+    <td>0.05</td>
+    <td>(0.075, 0.0075)</td>
+    <td>NO</td>
+    <td>0.84</td>
+    <td>3.63</td>
+    <td>0.91278</td>
+    <td>0.99</td>
+  </tr>
+  <tr>
+    <td rowspan="4">cr</td>
+    <td rowspan="4">9</td>
+    <td>bit flip</td>
+    <td>0.025</td>
+    <td>(0.01, 0.0005)</td>
+    <td>NO</td>
+    <td>0.95</td>
+    <td>2.08</td>
+    <td>0.971</td>
+    <td>2.92</td>
+  </tr>
+  <tr>
+    <td>depolarizing</td>
+    <td>0.005</td>
+    <td>(0.075, 0.005)</td>
+    <td>NO</td>
+    <td>0.94366</td>
+    <td>2.18</td>
+    <td>0.99087</td>
+    <td>5.88</td>
+  </tr>
+  <tr>
+    <td>phase flip</td>
+    <td>0.025</td>
+    <td>(0.0003, 0.0001)</td>
+    <td>NO</td>
+    <td>0.94366</td>
+    <td>3.92</td>
+    <td>0.96781</td>
+    <td>4.19</td>
+  </tr>
+  <tr>
+    <td>mixed</td>
+    <td>0.025</td>
+    <td>(0.0001, 0.0001)</td>
+    <td>YES</td>
+    <td>0.94366</td>
+    <td>2.2</td>
+    <td>0.95905</td>
+    <td>6.89</td>
+  </tr>
+  <tr>
+    <td rowspan="4">qaoa</td>
+    <td rowspan="4">10</td>
+    <td>bit flip</td>
+    <td>0.005</td>
+    <td>(0.05, 0.0005)</td>
+    <td>NO</td>
+    <td>0.98497</td>
+    <td>3.98</td>
+    <td>0.98995</td>
+    <td>10.01</td>
+  </tr>
+  <tr>
+    <td>depolarizing</td>
+    <td>0.0001</td>
+    <td>(0.01, 0.003)</td>
+    <td>NO</td>
+    <td>0.9847</td>
+    <td>3.89</td>
+    <td>0.99976</td>
+    <td>13.88</td>
+  </tr>
+  <tr>
+    <td>phase flip</td>
+    <td>0.005</td>
+    <td>(0.075, 0.0075)</td>
+    <td>NO</td>
+    <td>0.97097</td>
+    <td>4.28</td>
+    <td>0.99454</td>
+    <td>9.82</td>
+  </tr>
+  <tr>
+    <td>mixed</td>
+    <td>0.001</td>
+    <td>(0.03, 0.0075)</td>
+    <td>NO</td>
+    <td>0.96874</td>
+    <td>4.33</td>
+    <td>0.99892</td>
+    <td>16.57</td>
+  </tr>
+  <tr>
+    <td rowspan="4">ehc</td>
+    <td rowspan="4">10</td>
+    <td>bit flip</td>
+    <td>0.075</td>
+    <td>(0.05, 0.0003)</td>
+    <td>NO</td>
+    <td>0.85264</td>
+    <td>24.7</td>
+    <td>0.85238</td>
+    <td>7.01</td>
+  </tr>
+  <tr>
+    <td>depolarizing</td>
+    <td>0.0005</td>
+    <td>(0.03, 0.001)</td>
+    <td>NO</td>
+    <td>0.85212</td>
+    <td>17.74</td>
+    <td>0.99933</td>
+    <td>16.08</td>
+  </tr>
+  <tr>
+    <td>phase flip</td>
+    <td>0.01</td>
+    <td>(0.0003, 0.0075)</td>
+    <td>YES</td>
+    <td>0.85058</td>
+    <td>14.32</td>
+    <td>1</td>
+    <td>18.45</td>
+  </tr>
+  <tr>
+    <td>mixed</td>
+    <td>0.0001</td>
+    <td>(0.005, 0.001)</td>
+    <td>NO</td>
+    <td>0.85027</td>
+    <td>22.34</td>
+    <td>0.99981</td>
+    <td>8.39</td>
+  </tr>
+  <tr>
+    <td rowspan="4">ehc</td>
+    <td rowspan="4">12</td>
+    <td>bit flip</td>
+    <td>0.005</td>
+    <td>(0.0005, 0.0003)</td>
+    <td>NO</td>
+    <td>0.98966</td>
+    <td>25.73</td>
+    <td>0.99001</td>
+    <td>822.58</td>
+  </tr>
+  <tr>
+    <td>depolarizing</td>
+    <td>0.0005</td>
+    <td>(0.0001, 0.005)</td>
+    <td>YES</td>
+    <td>0.99926</td>
+    <td>21.22</td>
+    <td>0.99933</td>
+    <td>1779.02</td>
+  </tr>
+  <tr>
+    <td>phase flip</td>
+    <td>0.075</td>
+    <td>(0.001, 0.0075)</td>
+    <td>YES</td>
+    <td>0.99883</td>
+    <td>206.08</td>
+    <td>1</td>
+    <td>838.7</td>
+  </tr>
+  <tr>
+    <td>mixed</td>
+    <td>0.001</td>
+    <td>(0.01, 0.0001)</td>
+    <td>NO</td>
+    <td>0.99984</td>
+    <td>45.53</td>
+    <td>0.99997</td>
+    <td>1295.06</td>
+  </tr>
+</tbody>
+</table>
+

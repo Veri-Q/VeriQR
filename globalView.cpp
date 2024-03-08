@@ -23,8 +23,9 @@ GlobalView::GlobalView(QWidget *parent):
     this->init();
 
     connect(ui->radioButton_importfile, SIGNAL(pressed()), this, SLOT(on_radioButton_importfile_clicked()));
-    connect(ui->radioButton_gc, SIGNAL(pressed()), this, SLOT(on_radioButton_gc_clicked()));
-    connect(ui->radioButton_dice, SIGNAL(pressed()), this, SLOT(on_radioButton_dice_clicked()));
+    connect(ui->radioButton_cr, SIGNAL(pressed()), this, SLOT(on_radioButton_cr_clicked()));
+    connect(ui->radioButton_aci, SIGNAL(pressed()), this, SLOT(on_radioButton_aci_clicked()));
+    connect(ui->radioButton_fct, SIGNAL(pressed()), this, SLOT(on_radioButton_aci_clicked()));
     connect(ui->radioButton_phaseflip, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_phaseflip_clicked()));
     connect(ui->radioButton_bitflip, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_bitflip_clicked()));
     connect(ui->radioButton_depolarizing, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_depolarize_clicked()));
@@ -113,7 +114,7 @@ void GlobalView::clear_all_information()
 
 /* 打开一个运行时输出信息txt文件 */
 void GlobalView::openFile(){
-    QString fileName = QFileDialog::getOpenFileName(this, "Open file", globalDir+"/output/");
+    QString fileName = QFileDialog::getOpenFileName(this, "Open file", globalDir+"/results/");
 
     show_saved_results(fileName);
 }
@@ -160,11 +161,6 @@ void GlobalView::show_saved_results(QString fileName)
         ui->textBrowser_output->append(output_line_.simplified());
         // qDebug() << output_line_;
 
-        // if(output_line_.contains("Training End"))
-        // {
-        //     show_loss_and_acc_plot();
-        // }
-        // else
         if(output_line_.contains("Printing Model Circuit End"))
         {
             show_circuit_diagram();
@@ -202,7 +198,7 @@ void GlobalView::saveFile()
 
     output_ = ui->textBrowser_output->toPlainText();
 
-    QString runtime_path = globalDir + "/output/" + file_name_ + ".txt";
+    QString runtime_path = globalDir + "/results/" + file_name_ + ".txt";
     qDebug() << runtime_path;
 
     QFile file(runtime_path);
@@ -218,7 +214,7 @@ void GlobalView::saveFile()
 
 void GlobalView::saveasFile()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, "Save as", globalDir + "/output/");
+    QString fileName = QFileDialog::getSaveFileName(this, "Save as", globalDir + "/results/");
     QFile file(fileName);
 
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
@@ -233,14 +229,20 @@ void GlobalView::saveasFile()
     file.close();
 }
 
-void GlobalView::on_radioButton_gc_clicked(){
-    pyfile_ = pyfiles[0];
+void GlobalView::on_radioButton_cr_clicked(){
+    model_name_ = "cr";
     model_file_.fileName().clear();
     ui->lineEdit_modelfile->clear();
 }
 
-void GlobalView::on_radioButton_dice_clicked(){
-    pyfile_ = pyfiles[1];
+void GlobalView::on_radioButton_aci_clicked(){
+    model_name_ = "aci";
+    model_file_.fileName().clear();
+    ui->lineEdit_modelfile->clear();
+}
+
+void GlobalView::on_radioButton_fct_clicked(){
+    model_name_ = "fct";
     model_file_.fileName().clear();
     ui->lineEdit_modelfile->clear();
 }
@@ -249,7 +251,7 @@ void GlobalView::on_radioButton_importfile_clicked(){
     if(ui->radioButton_importfile->isChecked()){
         importModel();
     }
-    pyfile_ = "";
+    model_name_ = "";
 }
 
 /* 导入.npz数据文件 */
@@ -298,9 +300,9 @@ void GlobalView::on_radioButton_mixed_clicked()
 void GlobalView::model_change_to_ui(){
     // selected model change
     if(file_name_.startsWith("gc")){
-        ui->radioButton_gc->setChecked(1);
+        ui->radioButton_cr->setChecked(1);
     }else if(file_name_.startsWith("dice")){
-        ui->radioButton_dice->setChecked(1);
+        ui->radioButton_aci->setChecked(1);
     }else{
         ui->radioButton_importfile->setChecked(1);
         ui->lineEdit_modelfile->setText(globalDir+"/qasm_models/"+model_name_+".qasm");
@@ -334,37 +336,15 @@ void GlobalView::run_calculate_k()
     if (!pyfile_.isEmpty())  // has selected a existing model file
     {
         QString model_name = pyfile_.mid(pyfile_.lastIndexOf("_") + 1); // 去掉evaluate_finance_model_前缀
-        QString choice = "train";
 
         QStringList list;
         list << model_name << noise_type_ << QString::number(noise_prob_);
         file_name_ = list.join("_");   // like: gc_phase_flip_0.0001
         qDebug() << "file_name_: " << file_name_;
 
-        if(findFile(globalDir + "/saved_models/" + file_name_))  // the current model has been trained and saved before
-        {
-            QString dlgTitle = "Select an option";
-            QString strInfo = "The model has been trained and saved before. "
-                              "Do you want to review the previous model or retrain it?";
-            QMessageBox msgBox;
-            msgBox.setWindowTitle(dlgTitle);
-            msgBox.setText(strInfo);
-            QPushButton *showButton = msgBox.addButton(tr("Show the previous model"), QMessageBox::ActionRole);
-            QPushButton *trainButton = msgBox.addButton(tr("Retrain"),QMessageBox::ActionRole);
-            msgBox.addButton(QMessageBox::No);
-            msgBox.button(QMessageBox::No)->setHidden(true);
-            msgBox.setDefaultButton(QMessageBox::NoButton);
-            msgBox.exec();
-
-            if (msgBox.clickedButton() == showButton)
-            {
-                choice = "notrain";
-            }
-        }
-
         QString cmd = "python";
         QStringList args;
-        args << pyfile_+".py" << noise_type_ << QString::number(noise_prob_) << choice;
+        args << pyfile_+".py" << noise_type_ << QString::number(noise_prob_);
 
         QString paramsList = cmd + " " + args.join(" ");
         qDebug() << paramsList;
@@ -400,19 +380,8 @@ void GlobalView::run_calculate_k()
         msgBox.button(QMessageBox::No)->setHidden(true);
         msgBox.setDefaultButton(QMessageBox::NoButton);
 
-        QString file = globalDir + "/output/" + file_name_ + ".txt";
-
-        // if(findFile(file) && (msgBox.exec() && msgBox.clickedButton() == showButton))  // the current model has been trained and saved before
-        // {
-
-        //     show_saved_results(file);
-        // }
-        // else
-        // {
-        //     exec_process(cmd, args);
-        // }
-
-        if(findFile(file))  // the current model has been trained and saved before
+        QString file = globalDir + "/results/" + file_name_ + ".txt";
+        if(findFile(file))  // The current model has been verified before.
         {
             msgBox.exec();
             if(msgBox.clickedButton() == showButton){
@@ -483,11 +452,6 @@ void GlobalView::on_read_from_terminal_cal()
         ui->textBrowser_output->append(output_line_.simplified());
         //        qDebug() << output_line_;
 
-        // if(output_line_.contains("Training End"))
-        // {
-        //     show_loss_and_acc_plot();
-        // }
-        // else
         if(output_line_.contains("Printing Model Circuit End"))
         {
             show_circuit_diagram();
