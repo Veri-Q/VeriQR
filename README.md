@@ -1280,6 +1280,7 @@ The full experimental results are shown in the following table:
   </tr>
 </tbody>
 </table>
+
 ### Experimental Comparison
 
 We have added an experimental comparison against a baseline implementation without tensors for global robustness verification on several models, which is missing in our paper: 
