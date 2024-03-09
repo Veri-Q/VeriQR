@@ -1322,7 +1322,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.005</td>
     <td>(0.03, 0.0075)</td>
     <td>NO</td>
-    <td>0.9673</td>
+    <td>0.96730</td>
     <td>1.11</td>
     <td>0.98075</td>
     <td>0.02</td>
@@ -1333,7 +1333,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>(0.005, 0.005)</td>
     <td>YES</td>
     <td>0.96935</td>
-    <td>1.2</td>
+    <td>1.20</td>
     <td>0.99968</td>
     <td>0.02</td>
   </tr>
@@ -1345,7 +1345,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.96811</td>
     <td>1.22</td>
     <td>0.99967</td>
-    <td>0</td>
+    <td>0.00</td>
   </tr>
   <tr>
     <td rowspan="4">ehc</td>
@@ -1366,7 +1366,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>NO</td>
     <td>0.80916</td>
     <td>2.67</td>
-    <td>0.9</td>
+    <td>0.90000</td>
     <td>1.38</td>
   </tr>
   <tr>
@@ -1397,8 +1397,8 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>(0.0003, 0.0075)</td>
     <td>YES</td>
     <td>0.99976</td>
-    <td>5</td>
-    <td>0.9998</td>
+    <td>5.00</td>
+    <td>0.99980</td>
     <td>1.48</td>
   </tr>
   <tr>
@@ -1407,7 +1407,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>(0.001, 0.0075)</td>
     <td>YES</td>
     <td>0.93287</td>
-    <td>5.6</td>
+    <td>5.60</td>
     <td>0.93333</td>
     <td>1.88</td>
   </tr>
@@ -1416,17 +1416,17 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.025</td>
     <td>(0.075, 0.0003)</td>
     <td>NO</td>
-    <td>0.9327</td>
+    <td>0.93270</td>
     <td>5.43</td>
     <td>1</td>
-    <td>2.7</td>
+    <td>2.70</td>
   </tr>
   <tr>
     <td>mixed</td>
     <td>0.0005</td>
     <td>(0.005, 0.005)</td>
     <td>YES</td>
-    <td>0.9322</td>
+    <td>0.93220</td>
     <td>5.76</td>
     <td>0.99938</td>
     <td>0.19</td>
@@ -1439,7 +1439,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>(0.075, 0.005)</td>
     <td>NO</td>
     <td>0.98987</td>
-    <td>1.8</td>
+    <td>1.80</td>
     <td>0.98791</td>
     <td>0.16</td>
   </tr>
@@ -1449,7 +1449,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>(0.03, 0.003)</td>
     <td>NO</td>
     <td>0.95307</td>
-    <td>1.9</td>
+    <td>1.90</td>
     <td>0.95652</td>
     <td>1.36</td>
   </tr>
@@ -1468,7 +1468,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.075</td>
     <td>(0.0005, 0.0075)</td>
     <td>YES</td>
-    <td>0.8326</td>
+    <td>0.83260</td>
     <td>1.94</td>
     <td>0.88763</td>
     <td>2.59</td>
@@ -1513,7 +1513,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.78436</td>
     <td>2.97</td>
     <td>0.98565</td>
-    <td>0.2</td>
+    <td>0.20</td>
   </tr>
   <tr>
     <td rowspan="4">fct</td>
@@ -1522,7 +1522,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.05</td>
     <td>(0.075, 0.003)</td>
     <td>NO</td>
-    <td>0.9</td>
+    <td>0.90000</td>
     <td>2.13</td>
     <td>0.87652</td>
     <td>0.8</td>
@@ -1532,7 +1532,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.05</td>
     <td>(0.0003, 0.0001)</td>
     <td>NO</td>
-    <td>0.84</td>
+    <td>0.84000</td>
     <td>2.07</td>
     <td>0.87557</td>
     <td>3.92</td>
@@ -1542,7 +1542,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.01</td>
     <td>(0.01, 0.0075)</td>
     <td>NO</td>
-    <td>0.84</td>
+    <td>0.84000</td>
     <td>8.32</td>
     <td>0.98657</td>
     <td>3.57</td>
@@ -1552,7 +1552,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.05</td>
     <td>(0.075, 0.0075)</td>
     <td>NO</td>
-    <td>0.84</td>
+    <td>0.84000</td>
     <td>3.63</td>
     <td>0.91278</td>
     <td>0.99</td>
@@ -1564,9 +1564,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.025</td>
     <td>(0.01, 0.0005)</td>
     <td>NO</td>
-    <td>0.95</td>
+    <td>0.95000</td>
     <td>2.08</td>
-    <td>0.971</td>
+    <td>0.97100</td>
     <td>2.92</td>
   </tr>
   <tr>
@@ -1595,7 +1595,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>(0.0001, 0.0001)</td>
     <td>YES</td>
     <td>0.94366</td>
-    <td>2.2</td>
+    <td>2.20</td>
     <td>0.95905</td>
     <td>6.89</td>
   </tr>
@@ -1616,7 +1616,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.0001</td>
     <td>(0.01, 0.003)</td>
     <td>NO</td>
-    <td>0.9847</td>
+    <td>0.98470</td>
     <td>3.89</td>
     <td>0.99976</td>
     <td>13.88</td>
@@ -1649,7 +1649,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>(0.05, 0.0003)</td>
     <td>NO</td>
     <td>0.85264</td>
-    <td>24.7</td>
+    <td>24.70</td>
     <td>0.85238</td>
     <td>7.01</td>
   </tr>
@@ -1713,7 +1713,7 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.99883</td>
     <td>206.08</td>
     <td>1</td>
-    <td>838.7</td>
+    <td>838.70</td>
   </tr>
   <tr>
     <td>mixed</td>
