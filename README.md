@@ -195,717 +195,717 @@ VeriQR provides several labeled datasets, all of which are encoded into quantum 
 
 For each of these models, we perform noisy quantum simulation by adding a noise on each qubit at the end of the circuit with a specified probability $0 \leq p \leq 1$, which can be any one of the four supported noises, namely *depolarizing*, *phase flip*, *bit flip*, and *mixed* (a mixture of the first three) introduced in ~\cite{nielsen2001quantum}. Then we set different adversarial disturbance parameters $\varepsilon$, each of which indicates the $\varepsilon-robustness$ to be verified. We demonstrate *VeriQR* with the 50 models and the full verification results are shown in the following table, where $RA$ indicates the robust accuracy of classifiers, and $VT$ is the verification time: 
 
-<table class="tg">
+<table>
 <thead>
   <tr>
-    <th class="tg-7btt" rowspan="2">Model</th>
-    <th class="tg-7btt" rowspan="2">#Qubits</th>
-    <th class="tg-7btt" rowspan="2">Noise Type</th>
-    <th class="tg-7btt" rowspan="2">p </th>
-    <th class="tg-7btt" rowspan="2">ε</th>
-    <th class="tg-7btt" colspan="2">Rough Verification</th>
-    <th class="tg-7btt" colspan="2">Accurate Verification</th>
+    <th rowspan="2">Model</th>
+    <th rowspan="2">#Qubits</th>
+    <th rowspan="2">Noise Type</th>
+    <th rowspan="2">p </th>
+    <th rowspan="2">ε</th>
+    <th colspan="2">Rough Verification</th>
+    <th colspan="2">Accurate Verification</th>
   </tr>
   <tr>
-    <th class="tg-7btt">RA (%)</th>
-    <th class="tg-7btt">VT (sec.)</th>
-    <th class="tg-7btt">RA (%)</th>
-    <th class="tg-7btt">VT (sec.)</th>
+    <th>RA (%)</th>
+    <th>VT (sec.)</th>
+    <th>RA (%)</th>
+    <th>VT (sec.)</th>
   </tr>
 </thead>
 <tbody>
   <tr>
-    <td class="tg-9wq8" rowspan="4">qubit</td>
-    <td class="tg-9wq8" rowspan="4">1</td>
-    <td class="tg-9wq8" rowspan="4">depolarizing</td>
-    <td class="tg-9wq8" rowspan="2">0.001</td>
-    <td class="tg-pb0m">0.001</td>
-    <td class="tg-pb0m">88.12</td>
-    <td class="tg-pb0m">0.002</td>
-    <td class="tg-pb0m">90</td>
-    <td class="tg-pb0m">0.7798</td>
-  </tr>
-  <tr>
-    <td class="tg-pb0m">0.003</td>
-    <td class="tg-pb0m">58.75</td>
-    <td class="tg-pb0m">0.002</td>
-    <td class="tg-pb0m">59.62</td>
-    <td class="tg-pb0m">2.6098</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8" rowspan="2">0.05</td>
-    <td class="tg-pb0m">0.0005</td>
-    <td class="tg-pb0m">98.12</td>
-    <td class="tg-pb0m">0.0018</td>
-    <td class="tg-pb0m">99.88</td>
-    <td class="tg-pb0m">0.1209</td>
-  </tr>
-  <tr>
-    <td class="tg-pb0m">0.001</td>
-    <td class="tg-pb0m">86.12</td>
-    <td class="tg-pb0m">0.0019</td>
-    <td class="tg-pb0m">90</td>
-    <td class="tg-pb0m">0.8621</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8" rowspan="4">iris</td>
-    <td class="tg-9wq8" rowspan="4">4</td>
-    <td class="tg-9wq8" rowspan="4">depolarizing</td>
-    <td class="tg-9wq8" rowspan="2">0.01</td>
-    <td class="tg-pb0m">0.001</td>
-    <td class="tg-pb0m">98.75</td>
-    <td class="tg-pb0m">0.001</td>
-    <td class="tg-pb0m">100</td>
-    <td class="tg-pb0m">0.1529</td>
-  </tr>
-  <tr>
-    <td class="tg-pb0m">0.01</td>
-    <td class="tg-pb0m">92.5</td>
-    <td class="tg-pb0m">0.001</td>
-    <td class="tg-pb0m">100</td>
-    <td class="tg-pb0m">5.0708</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8" rowspan="2">0.05</td>
-    <td class="tg-pb0m">0.005</td>
-    <td class="tg-pb0m">97.5</td>
-    <td class="tg-pb0m">0.0011</td>
-    <td class="tg-pb0m">100</td>
-    <td class="tg-pb0m">0.2546</td>
-  </tr>
-  <tr>
-    <td class="tg-pb0m">0.01</td>
-    <td class="tg-pb0m">91.25</td>
-    <td class="tg-pb0m">0.0011</td>
-    <td class="tg-pb0m">100</td>
-    <td class="tg-pb0m">3.2335</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8" rowspan="4">fashion</td>
-    <td class="tg-9wq8" rowspan="4">8</td>
-    <td class="tg-9wq8" rowspan="4">phase flip</td>
-    <td class="tg-9wq8" rowspan="2">0.01</td>
-    <td class="tg-pb0m">0.001</td>
-    <td class="tg-pb0m">90.6</td>
-    <td class="tg-pb0m">0.8519</td>
-    <td class="tg-pb0m">97.4</td>
-    <td class="tg-pb0m">8.921</td>
-  </tr>
-  <tr>
-    <td class="tg-pb0m">0.01</td>
-    <td class="tg-pb0m">54.4</td>
-    <td class="tg-pb0m">0.7487</td>
-    <td class="tg-pb0m">89.1</td>
-    <td class="tg-pb0m">176.9451</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8" rowspan="2">0.05</td>
-    <td class="tg-pb0m">0.001</td>
-    <td class="tg-pb0m">90.6</td>
-    <td class="tg-pb0m">0.8369</td>
-    <td class="tg-pb0m">97.4</td>
-    <td class="tg-pb0m">60.0099</td>
-  </tr>
-  <tr>
-    <td class="tg-pb0m">0.005</td>
-    <td class="tg-pb0m">71.9</td>
-    <td class="tg-pb0m">0.7713</td>
-    <td class="tg-pb0m">93.2</td>
-    <td class="tg-pb0m">101.3314</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8" rowspan="4">mnist49</td>
-    <td class="tg-9wq8" rowspan="4">8</td>
-    <td class="tg-9wq8" rowspan="4">bit flip</td>
-    <td class="tg-9wq8" rowspan="2">0.001</td>
-    <td class="tg-pb0m">0.001</td>
-    <td class="tg-pb0m">92.2</td>
-    <td class="tg-pb0m">0.5289</td>
-    <td class="tg-pb0m">93.7</td>
-    <td class="tg-pb0m">10.6985</td>
-  </tr>
-  <tr>
-    <td class="tg-pb0m">0.003</td>
-    <td class="tg-pb0m">82.6</td>
-    <td class="tg-pb0m">0.6346</td>
-    <td class="tg-pb0m">88</td>
-    <td class="tg-pb0m">50.3715</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8" rowspan="2">0.01</td>
-    <td class="tg-pb0m">0.0001</td>
-    <td class="tg-pb0m">97.1</td>
-    <td class="tg-pb0m">0.7101</td>
-    <td class="tg-pb0m">97.7</td>
-    <td class="tg-pb0m">2.7965</td>
-  </tr>
-  <tr>
-    <td class="tg-pb0m">0.001</td>
-    <td class="tg-pb0m">91.9</td>
-    <td class="tg-pb0m">0.5112</td>
-    <td class="tg-pb0m">93.7</td>
-    <td class="tg-pb0m">14.1884</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8" rowspan="4">tfi</td>
-    <td class="tg-9wq8" rowspan="4">4</td>
-    <td class="tg-9wq8" rowspan="4">mixed</td>
-    <td class="tg-9wq8" rowspan="2">0.01</td>
-    <td class="tg-9wq8">0.001</td>
-    <td class="tg-pb0m">94.38</td>
-    <td class="tg-pb0m">0.0025</td>
-    <td class="tg-pb0m">100</td>
-    <td class="tg-pb0m">0.7577</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8">0.005</td>
-    <td class="tg-pb0m">86.25</td>
-    <td class="tg-pb0m">0.0034</td>
-    <td class="tg-pb0m">100</td>
-    <td class="tg-pb0m">1.8267</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8" rowspan="2">0.05</td>
-    <td class="tg-9wq8">0.005</td>
-    <td class="tg-pb0m">85.78</td>
-    <td class="tg-pb0m">0.0034</td>
-    <td class="tg-pb0m">100</td>
-    <td class="tg-pb0m">1.7682</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8">0.01</td>
-    <td class="tg-pb0m">79.22</td>
-    <td class="tg-pb0m">0.0042</td>
-    <td class="tg-pb0m">100</td>
-    <td class="tg-pb0m">2.6395</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8" rowspan="4">tfi</td>
-    <td class="tg-9wq8" rowspan="4">8</td>
-    <td class="tg-9wq8" rowspan="4">bit flip</td>
-    <td class="tg-9wq8" rowspan="2">0.01</td>
-    <td class="tg-9wq8">0.001</td>
-    <td class="tg-pb0m">98.44</td>
-    <td class="tg-pb0m">0.7339</td>
-    <td class="tg-pb0m">100</td>
-    <td class="tg-pb0m">1.3427</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8">0.01</td>
-    <td class="tg-pb0m">90.31</td>
-    <td class="tg-pb0m">0.7591</td>
-    <td class="tg-pb0m">100</td>
-    <td class="tg-pb0m">4.4057</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8" rowspan="2">0.05</td>
-    <td class="tg-pb0m">0.005</td>
-    <td class="tg-pb0m">92.97</td>
-    <td class="tg-pb0m">0.8704</td>
-    <td class="tg-pb0m">100</td>
-    <td class="tg-pb0m">4.8931</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8">0.01</td>
-    <td class="tg-pb0m">89.22</td>
-    <td class="tg-pb0m">0.8339</td>
-    <td class="tg-pb0m">100</td>
-    <td class="tg-pb0m">6.5601</td>
-  </tr>
-  <tr>
-    <td class="tg-9wq8">mnist01</td>
-    <td class="tg-pb0m">8</td>
-    <td class="tg-9wq8">phase flip</td>
-    <td class="tg-9wq8">0.0005</td>
-    <td class="tg-9wq8">0.0001</td>
-    <td class="tg-9wq8">97.8</td>
-    <td class="tg-9wq8">0.9794</td>
-    <td class="tg-9wq8">98.5</td>
-    <td class="tg-9wq8">5.8255</td>
-  </tr>
-  <tr>
-    <td class="tg-nrix">mnist02</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">depolarizing</td>
-    <td class="tg-nrix">0.0005</td>
-    <td class="tg-nrix">0.005</td>
-    <td class="tg-nrix">62.6</td>
-    <td class="tg-nrix">30.294</td>
-    <td class="tg-nrix">74.9</td>
-    <td class="tg-nrix">107.9118</td>
-  </tr>
-  <tr>
-    <td class="tg-nrix">mnist03</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-nrix">0.025</td>
-    <td class="tg-nrix">0.003</td>
-    <td class="tg-nrix">94.2</td>
-    <td class="tg-nrix">0.7959</td>
-    <td class="tg-nrix">97.4</td>
-    <td class="tg-nrix">11.672</td>
-  </tr>
-  <tr>
-    <td class="tg-nrix">mnist04</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-nrix">0.0005</td>
-    <td class="tg-nrix">0.003</td>
-    <td class="tg-nrix">98.3</td>
-    <td class="tg-nrix">0.8077</td>
-    <td class="tg-nrix">99.5</td>
-    <td class="tg-nrix">2.8234</td>
-  </tr>
-  <tr>
-    <td class="tg-nrix">mnist05</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-nrix">0.025</td>
-    <td class="tg-nrix">0.001</td>
-    <td class="tg-nrix">99.9</td>
-    <td class="tg-nrix">5.8606</td>
-    <td class="tg-nrix">100</td>
-    <td class="tg-nrix">5.9724</td>
-  </tr>
-  <tr>
-    <td class="tg-nrix">mnist06</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-nrix">0.01</td>
-    <td class="tg-nrix">0.0003</td>
-    <td class="tg-nrix">100</td>
-    <td class="tg-nrix">5.3062</td>
-    <td class="tg-nrix">100</td>
-    <td class="tg-nrix">5.3063</td>
-  </tr>
-  <tr>
-    <td class="tg-nrix">mnist07</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">bit flip</td>
-    <td class="tg-nrix">0.005</td>
-    <td class="tg-nrix">0.0003</td>
-    <td class="tg-nrix">97.4</td>
-    <td class="tg-nrix">1.1405</td>
-    <td class="tg-nrix">97.8</td>
-    <td class="tg-nrix">6.7732</td>
-  </tr>
-  <tr>
-    <td class="tg-nrix">mnist08</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-nrix">0.01</td>
-    <td class="tg-nrix">0.0003</td>
-    <td class="tg-nrix">98.8</td>
-    <td class="tg-nrix">0.9005</td>
-    <td class="tg-nrix">99.6</td>
-    <td class="tg-nrix">2.7806</td>
-  </tr>
-  <tr>
-    <td class="tg-nrix">mnist09</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-nrix">0.01</td>
-    <td class="tg-nrix">0.0005</td>
-    <td class="tg-nrix">82.7</td>
-    <td class="tg-nrix">0.8899</td>
-    <td class="tg-nrix">87.4</td>
-    <td class="tg-nrix">39.4768</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist12</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-8d8j">0.05</td>
-    <td class="tg-8d8j">0.003</td>
-    <td class="tg-8d8j">74.6</td>
-    <td class="tg-8d8j">0.8202</td>
-    <td class="tg-8d8j">77.9</td>
-    <td class="tg-8d8j">61.6236</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist13</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-8d8j">0.075</td>
-    <td class="tg-8d8j">0.0003</td>
-    <td class="tg-8d8j">98.6</td>
-    <td class="tg-8d8j">0.9784</td>
-    <td class="tg-8d8j">98.8</td>
-    <td class="tg-8d8j">4.2581</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist14</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">depolarizing</td>
-    <td class="tg-8d8j">0.075</td>
-    <td class="tg-8d8j">0.03</td>
-    <td class="tg-8d8j">85</td>
-    <td class="tg-8d8j">0.7144</td>
-    <td class="tg-8d8j">87.2</td>
-    <td class="tg-8d8j">44.0592</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist15</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">bit flip</td>
-    <td class="tg-8d8j">0.0001</td>
-    <td class="tg-8d8j">0.03</td>
-    <td class="tg-8d8j">66.7</td>
-    <td class="tg-8d8j">0.8398</td>
-    <td class="tg-8d8j">66.8</td>
-    <td class="tg-8d8j">92.4636</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist16</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">bit flip</td>
-    <td class="tg-8d8j">0.05</td>
-    <td class="tg-8d8j">0.0003</td>
-    <td class="tg-8d8j">99.9</td>
-    <td class="tg-8d8j">0.8424</td>
-    <td class="tg-8d8j">99.9</td>
-    <td class="tg-8d8j">1.1047</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist17</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">bit flip</td>
-    <td class="tg-8d8j">0.05</td>
-    <td class="tg-8d8j">0.01</td>
-    <td class="tg-8d8j">80.3</td>
-    <td class="tg-8d8j">0.8068</td>
-    <td class="tg-8d8j">88.9</td>
-    <td class="tg-8d8j">134.6892</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist18</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-8d8j">0.001</td>
-    <td class="tg-8d8j">0.03</td>
-    <td class="tg-8d8j">68.3</td>
-    <td class="tg-8d8j">0.7612</td>
-    <td class="tg-8d8j">68.3</td>
-    <td class="tg-8d8j">81.6266</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist19</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.01</td>
-    <td class="tg-8d8j">0.075</td>
-    <td class="tg-8d8j">55.6</td>
-    <td class="tg-8d8j">4.4499</td>
-    <td class="tg-8d8j">75.5</td>
-    <td class="tg-8d8j">81.2824</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist23</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-8d8j">0.075</td>
-    <td class="tg-8d8j">0.01</td>
-    <td class="tg-8d8j">54</td>
-    <td class="tg-8d8j">0.7597</td>
-    <td class="tg-8d8j">58.1</td>
-    <td class="tg-8d8j">106.9021</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist24</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-8d8j">0.005</td>
-    <td class="tg-8d8j">0.01</td>
-    <td class="tg-8d8j">43.7</td>
-    <td class="tg-8d8j">0.7639</td>
-    <td class="tg-8d8j">44.3</td>
-    <td class="tg-8d8j">135.0514</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist25</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-8d8j">0.0005</td>
-    <td class="tg-8d8j">0.003</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.7725</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.7725</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist26</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">depolarizing</td>
-    <td class="tg-8d8j">0.075</td>
-    <td class="tg-8d8j">0.0003</td>
-    <td class="tg-8d8j">99.9</td>
-    <td class="tg-8d8j">0.5375</td>
-    <td class="tg-8d8j">99.9</td>
-    <td class="tg-8d8j">0.7692</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist27</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">bit flip</td>
-    <td class="tg-8d8j">0.001</td>
-    <td class="tg-8d8j">0.0003</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">1.0876</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">1.0877</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist28</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">bit flip</td>
-    <td class="tg-8d8j">0.001</td>
-    <td class="tg-8d8j">0.0003</td>
-    <td class="tg-8d8j">98.9</td>
-    <td class="tg-8d8j">0.8244</td>
-    <td class="tg-8d8j">99.4</td>
-    <td class="tg-8d8j">2.628</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist29</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-8d8j">0.0001</td>
-    <td class="tg-8d8j">0.003</td>
-    <td class="tg-8d8j">99.9</td>
-    <td class="tg-8d8j">0.7754</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.8467</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist34</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.01</td>
-    <td class="tg-8d8j">0.05</td>
-    <td class="tg-8d8j">74.4</td>
-    <td class="tg-8d8j">4.7773</td>
-    <td class="tg-8d8j">97.6</td>
-    <td class="tg-8d8j">28.4311</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist35</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.025</td>
-    <td class="tg-8d8j">0.075</td>
-    <td class="tg-8d8j">50</td>
-    <td class="tg-8d8j">4.3067</td>
-    <td class="tg-8d8j">52.5</td>
-    <td class="tg-8d8j">122.3814</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist36</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.005</td>
-    <td class="tg-8d8j">0.001</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">4.3917</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">4.3917</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist37</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">bit flip</td>
-    <td class="tg-8d8j">0.05</td>
-    <td class="tg-8d8j">0.001</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.7519</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.752</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist38</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.025</td>
-    <td class="tg-8d8j">0.0005</td>
-    <td class="tg-8d8j">99.8</td>
-    <td class="tg-8d8j">4.5474</td>
-    <td class="tg-8d8j">99.8</td>
-    <td class="tg-8d8j">5.0365</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist39</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">depolarizing</td>
-    <td class="tg-8d8j">0.05</td>
-    <td class="tg-8d8j">0.001</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.5051</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.5051</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist45</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.01</td>
-    <td class="tg-8d8j">0.003</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">4.0323</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">4.0323</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist46</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.01</td>
-    <td class="tg-8d8j">0.01</td>
-    <td class="tg-8d8j">99</td>
-    <td class="tg-8d8j">4.0782</td>
-    <td class="tg-8d8j">99.8</td>
-    <td class="tg-8d8j">5.1361</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist47</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-8d8j">0.0005</td>
-    <td class="tg-8d8j">0.003</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.7727</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.7727</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist48</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.05</td>
-    <td class="tg-8d8j">0.03</td>
-    <td class="tg-8d8j">45.6</td>
-    <td class="tg-8d8j">5.9031</td>
-    <td class="tg-8d8j">45.7</td>
-    <td class="tg-8d8j">137.4534</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist49</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">bit flip</td>
-    <td class="tg-8d8j">0.01</td>
-    <td class="tg-8d8j">0.003</td>
-    <td class="tg-8d8j">81.6</td>
-    <td class="tg-8d8j">0.754</td>
-    <td class="tg-8d8j">88</td>
-    <td class="tg-8d8j">34.1436</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist56</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">bit flip</td>
-    <td class="tg-8d8j">0.025</td>
-    <td class="tg-8d8j">0.001</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.7607</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.7607</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist57</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">depolarizing</td>
-    <td class="tg-8d8j">0.0001</td>
-    <td class="tg-8d8j">0.0003</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.6417</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.6417</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist58</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">phase flip</td>
-    <td class="tg-8d8j">0.05</td>
-    <td class="tg-8d8j">0.01</td>
-    <td class="tg-8d8j">98</td>
-    <td class="tg-8d8j">1.0737</td>
-    <td class="tg-8d8j">99.7</td>
-    <td class="tg-8d8j">3.4832</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist59</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">bit flip</td>
-    <td class="tg-8d8j">0.05</td>
-    <td class="tg-8d8j">0.003</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.8439</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.8439</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist67</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.005</td>
-    <td class="tg-8d8j">0.03</td>
-    <td class="tg-8d8j">95.8</td>
-    <td class="tg-8d8j">4.4031</td>
-    <td class="tg-8d8j">99.6</td>
-    <td class="tg-8d8j">9.3411</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist68</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.0001</td>
-    <td class="tg-8d8j">0.075</td>
-    <td class="tg-8d8j">50</td>
-    <td class="tg-8d8j">4.2098</td>
-    <td class="tg-8d8j">59.9</td>
-    <td class="tg-8d8j">114.269</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist69</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.05</td>
-    <td class="tg-8d8j">0.0005</td>
-    <td class="tg-8d8j">98.7</td>
-    <td class="tg-8d8j">4.2002</td>
-    <td class="tg-8d8j">99.4</td>
-    <td class="tg-8d8j">6.5185</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist78</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.025</td>
-    <td class="tg-8d8j">0.05</td>
-    <td class="tg-8d8j">90.2</td>
-    <td class="tg-8d8j">4.4387</td>
-    <td class="tg-8d8j">98.7</td>
-    <td class="tg-8d8j">15.4179</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist79</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">bit flip</td>
-    <td class="tg-8d8j">0.025</td>
-    <td class="tg-8d8j">0.0003</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.848</td>
-    <td class="tg-8d8j">100</td>
-    <td class="tg-8d8j">0.848</td>
-  </tr>
-  <tr>
-    <td class="tg-8d8j">mnist89</td>
-    <td class="tg-8d8j">8</td>
-    <td class="tg-nrix">mixed</td>
-    <td class="tg-8d8j">0.005</td>
-    <td class="tg-8d8j">0.075</td>
-    <td class="tg-8d8j">71.1</td>
-    <td class="tg-8d8j">4.6005</td>
-    <td class="tg-8d8j">94.8</td>
-    <td class="tg-8d8j">37.9945</td>
+    <td rowspan="4">qubit</td>
+    <td rowspan="4">1</td>
+    <td rowspan="4">depolarizing</td>
+    <td rowspan="2">0.001</td>
+    <td>0.001</td>
+    <td>88.12</td>
+    <td>0.0020</td>
+    <td>90.00</td>
+    <td>0.7798</td>
+  </tr>
+  <tr>
+    <td>0.003</td>
+    <td>58.75</td>
+    <td>0.0020</td>
+    <td>59.62</td>
+    <td>2.6098</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.05</td>
+    <td>0.0005</td>
+    <td>98.12</td>
+    <td>0.0018</td>
+    <td>99.88</td>
+    <td>0.1209</td>
+  </tr>
+  <tr>
+    <td>0.001</td>
+    <td>86.12</td>
+    <td>0.0019</td>
+    <td>90.00</td>
+    <td>0.8621</td>
+  </tr>
+  <tr>
+    <td rowspan="4">iris</td>
+    <td rowspan="4">4</td>
+    <td rowspan="4">depolarizing</td>
+    <td rowspan="2">0.01</td>
+    <td>0.001</td>
+    <td>98.75</td>
+    <td>0.0010</td>
+    <td>100</td>
+    <td>0.1529</td>
+  </tr>
+  <tr>
+    <td>0.01</td>
+    <td>92.50</td>
+    <td>0.0010</td>
+    <td>100</td>
+    <td>5.0708</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.05</td>
+    <td>0.005</td>
+    <td>97.50</td>
+    <td>0.0011</td>
+    <td>100</td>
+    <td>0.2546</td>
+  </tr>
+  <tr>
+    <td>0.01</td>
+    <td>91.25</td>
+    <td>0.0011</td>
+    <td>100</td>
+    <td>3.2335</td>
+  </tr>
+  <tr>
+    <td rowspan="4">fashion</td>
+    <td rowspan="4">8</td>
+    <td rowspan="4">phase flip</td>
+    <td rowspan="2">0.01</td>
+    <td>0.001</td>
+    <td>90.60</td>
+    <td>0.8519</td>
+    <td>97.40</td>
+    <td>8.9210</td>
+  </tr>
+  <tr>
+    <td>0.01</td>
+    <td>54.40</td>
+    <td>0.7487</td>
+    <td>89.10</td>
+    <td>176.9451</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.05</td>
+    <td>0.001</td>
+    <td>90.60</td>
+    <td>0.8369</td>
+    <td>97.40</td>
+    <td>60.0099</td>
+  </tr>
+  <tr>
+    <td>0.005</td>
+    <td>71.90</td>
+    <td>0.7713</td>
+    <td>93.20</td>
+    <td>101.3314</td>
+  </tr>
+  <tr>
+    <td rowspan="4">mnist (4&amp;9)</td>
+    <td rowspan="4">8</td>
+    <td rowspan="4">bit flip</td>
+    <td rowspan="2">0.001</td>
+    <td>0.001</td>
+    <td>92.20</td>
+    <td>0.5289</td>
+    <td>93.70</td>
+    <td>10.6985</td>
+  </tr>
+  <tr>
+    <td>0.003</td>
+    <td>82.60</td>
+    <td>0.6346</td>
+    <td>88.00</td>
+    <td>50.3715</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.01</td>
+    <td>0.0001</td>
+    <td>97.10</td>
+    <td>0.7101</td>
+    <td>97.70</td>
+    <td>2.7965</td>
+  </tr>
+  <tr>
+    <td>0.001</td>
+    <td>91.90</td>
+    <td>0.5112</td>
+    <td>93.70</td>
+    <td>14.1884</td>
+  </tr>
+  <tr>
+    <td rowspan="4">tfi</td>
+    <td rowspan="4">4</td>
+    <td rowspan="4">mixed</td>
+    <td rowspan="2">0.01</td>
+    <td>0.001</td>
+    <td>94.38</td>
+    <td>0.0025</td>
+    <td>100</td>
+    <td>0.7577</td>
+  </tr>
+  <tr>
+    <td>0.005</td>
+    <td>86.25</td>
+    <td>0.0034</td>
+    <td>100</td>
+    <td>1.8267</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.05</td>
+    <td>0.005</td>
+    <td>85.78</td>
+    <td>0.0034</td>
+    <td>100</td>
+    <td>1.7682</td>
+  </tr>
+  <tr>
+    <td>0.01</td>
+    <td>79.22</td>
+    <td>0.0042</td>
+    <td>100</td>
+    <td>2.6395</td>
+  </tr>
+  <tr>
+    <td rowspan="4">tfi</td>
+    <td rowspan="4">8</td>
+    <td rowspan="4">bit flip</td>
+    <td rowspan="2">0.01</td>
+    <td>0.001</td>
+    <td>98.44</td>
+    <td>0.7339</td>
+    <td>100</td>
+    <td>1.3427</td>
+  </tr>
+  <tr>
+    <td>0.01</td>
+    <td>90.31</td>
+    <td>0.7591</td>
+    <td>100</td>
+    <td>4.4057</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.05</td>
+    <td>0.005</td>
+    <td>92.97</td>
+    <td>0.8704</td>
+    <td>100</td>
+    <td>4.8931</td>
+  </tr>
+  <tr>
+    <td>0.01</td>
+    <td>89.22</td>
+    <td>0.8339</td>
+    <td>100</td>
+    <td>6.5601</td>
+  </tr>
+  <tr>
+    <td>mnist01</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.0005</td>
+    <td>0.0001</td>
+    <td>97.80</td>
+    <td>0.9794</td>
+    <td>98.50</td>
+    <td>5.8255</td>
+  </tr>
+  <tr>
+    <td>mnist02</td>
+    <td>8</td>
+    <td>depolarizing</td>
+    <td>0.0005</td>
+    <td>0.005</td>
+    <td>62.60</td>
+    <td>30.2940</td>
+    <td>74.90</td>
+    <td>107.9118</td>
+  </tr>
+  <tr>
+    <td>mnist03</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.025</td>
+    <td>0.003</td>
+    <td>94.20</td>
+    <td>0.7959</td>
+    <td>97.40</td>
+    <td>11.6720</td>
+  </tr>
+  <tr>
+    <td>mnist04</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.0005</td>
+    <td>0.003</td>
+    <td>98.30</td>
+    <td>0.8077</td>
+    <td>99.50</td>
+    <td>2.8234</td>
+  </tr>
+  <tr>
+    <td>mnist05</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.025</td>
+    <td>0.001</td>
+    <td>99.90</td>
+    <td>5.8606</td>
+    <td>100</td>
+    <td>5.9724</td>
+  </tr>
+  <tr>
+    <td>mnist06</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.01</td>
+    <td>0.0003</td>
+    <td>100</td>
+    <td>5.3062</td>
+    <td>100</td>
+    <td>5.3063</td>
+  </tr>
+  <tr>
+    <td>mnist07</td>
+    <td>8</td>
+    <td>bit flip</td>
+    <td>0.005</td>
+    <td>0.0003</td>
+    <td>97.40</td>
+    <td>1.1405</td>
+    <td>97.80</td>
+    <td>6.7732</td>
+  </tr>
+  <tr>
+    <td>mnist08</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.01</td>
+    <td>0.0003</td>
+    <td>98.80</td>
+    <td>0.9005</td>
+    <td>99.60</td>
+    <td>2.7806</td>
+  </tr>
+  <tr>
+    <td>mnist09</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.01</td>
+    <td>0.0005</td>
+    <td>82.70</td>
+    <td>0.8899</td>
+    <td>87.40</td>
+    <td>39.4768</td>
+  </tr>
+  <tr>
+    <td>mnist12</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.05</td>
+    <td>0.003</td>
+    <td>74.60</td>
+    <td>0.8202</td>
+    <td>77.90</td>
+    <td>61.6236</td>
+  </tr>
+  <tr>
+    <td>mnist13</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.075</td>
+    <td>0.0003</td>
+    <td>98.60</td>
+    <td>0.9784</td>
+    <td>98.80</td>
+    <td>4.2581</td>
+  </tr>
+  <tr>
+    <td>mnist14</td>
+    <td>8</td>
+    <td>depolarizing</td>
+    <td>0.075</td>
+    <td>0.03</td>
+    <td>85.00</td>
+    <td>0.7144</td>
+    <td>87.20</td>
+    <td>44.0592</td>
+  </tr>
+  <tr>
+    <td>mnist15</td>
+    <td>8</td>
+    <td>bit flip</td>
+    <td>0.0001</td>
+    <td>0.03</td>
+    <td>66.70</td>
+    <td>0.8398</td>
+    <td>66.80</td>
+    <td>92.4636</td>
+  </tr>
+  <tr>
+    <td>mnist16</td>
+    <td>8</td>
+    <td>bit flip</td>
+    <td>0.05</td>
+    <td>0.0003</td>
+    <td>99.90</td>
+    <td>0.8424</td>
+    <td>99.90</td>
+    <td>1.1047</td>
+  </tr>
+  <tr>
+    <td>mnist17</td>
+    <td>8</td>
+    <td>bit flip</td>
+    <td>0.05</td>
+    <td>0.01</td>
+    <td>80.30</td>
+    <td>0.8068</td>
+    <td>88.90</td>
+    <td>134.6892</td>
+  </tr>
+  <tr>
+    <td>mnist18</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.001</td>
+    <td>0.03</td>
+    <td>68.30</td>
+    <td>0.7612</td>
+    <td>68.30</td>
+    <td>81.6266</td>
+  </tr>
+  <tr>
+    <td>mnist19</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.01</td>
+    <td>0.075</td>
+    <td>55.60</td>
+    <td>4.4499</td>
+    <td>75.50</td>
+    <td>81.2824</td>
+  </tr>
+  <tr>
+    <td>mnist23</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.075</td>
+    <td>0.01</td>
+    <td>54.00</td>
+    <td>0.7597</td>
+    <td>58.10</td>
+    <td>106.9021</td>
+  </tr>
+  <tr>
+    <td>mnist24</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.005</td>
+    <td>0.01</td>
+    <td>43.70</td>
+    <td>0.7639</td>
+    <td>44.30</td>
+    <td>135.0514</td>
+  </tr>
+  <tr>
+    <td>mnist25</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.0005</td>
+    <td>0.003</td>
+    <td>100</td>
+    <td>0.7725</td>
+    <td>100</td>
+    <td>0.7725</td>
+  </tr>
+  <tr>
+    <td>mnist26</td>
+    <td>8</td>
+    <td>depolarizing</td>
+    <td>0.075</td>
+    <td>0.0003</td>
+    <td>99.90</td>
+    <td>0.5375</td>
+    <td>99.90</td>
+    <td>0.7692</td>
+  </tr>
+  <tr>
+    <td>mnist27</td>
+    <td>8</td>
+    <td>bit flip</td>
+    <td>0.001</td>
+    <td>0.0003</td>
+    <td>100</td>
+    <td>1.0876</td>
+    <td>100</td>
+    <td>1.0877</td>
+  </tr>
+  <tr>
+    <td>mnist28</td>
+    <td>8</td>
+    <td>bit flip</td>
+    <td>0.001</td>
+    <td>0.0003</td>
+    <td>98.90</td>
+    <td>0.8244</td>
+    <td>99.40</td>
+    <td>2.6280</td>
+  </tr>
+  <tr>
+    <td>mnist29</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.0001</td>
+    <td>0.003</td>
+    <td>99.90</td>
+    <td>0.7754</td>
+    <td>100</td>
+    <td>0.8467</td>
+  </tr>
+  <tr>
+    <td>mnist34</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.01</td>
+    <td>0.05</td>
+    <td>74.40</td>
+    <td>4.7773</td>
+    <td>97.60</td>
+    <td>28.4311</td>
+  </tr>
+  <tr>
+    <td>mnist35</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.025</td>
+    <td>0.075</td>
+    <td>50.00</td>
+    <td>4.3067</td>
+    <td>52.50</td>
+    <td>122.3814</td>
+  </tr>
+  <tr>
+    <td>mnist36</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.005</td>
+    <td>0.001</td>
+    <td>100</td>
+    <td>4.3917</td>
+    <td>100</td>
+    <td>4.3917</td>
+  </tr>
+  <tr>
+    <td>mnist37</td>
+    <td>8</td>
+    <td>bit flip</td>
+    <td>0.05</td>
+    <td>0.001</td>
+    <td>100</td>
+    <td>0.7519</td>
+    <td>100</td>
+    <td>0.7520</td>
+  </tr>
+  <tr>
+    <td>mnist38</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.025</td>
+    <td>0.0005</td>
+    <td>99.80</td>
+    <td>4.5474</td>
+    <td>99.80</td>
+    <td>5.0365</td>
+  </tr>
+  <tr>
+    <td>mnist39</td>
+    <td>8</td>
+    <td>depolarizing</td>
+    <td>0.05</td>
+    <td>0.001</td>
+    <td>100</td>
+    <td>0.5051</td>
+    <td>100</td>
+    <td>0.5051</td>
+  </tr>
+  <tr>
+    <td>mnist45</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.01</td>
+    <td>0.003</td>
+    <td>100</td>
+    <td>4.0323</td>
+    <td>100</td>
+    <td>4.0323</td>
+  </tr>
+  <tr>
+    <td>mnist46</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.01</td>
+    <td>0.01</td>
+    <td>99.00</td>
+    <td>4.0782</td>
+    <td>99.80</td>
+    <td>5.1361</td>
+  </tr>
+  <tr>
+    <td>mnist47</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.0005</td>
+    <td>0.003</td>
+    <td>100</td>
+    <td>0.7727</td>
+    <td>100</td>
+    <td>0.7727</td>
+  </tr>
+  <tr>
+    <td>mnist48</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.05</td>
+    <td>0.03</td>
+    <td>45.60</td>
+    <td>5.9031</td>
+    <td>45.70</td>
+    <td>137.4534</td>
+  </tr>
+  <tr>
+    <td>mnist49</td>
+    <td>8</td>
+    <td>bit flip</td>
+    <td>0.01</td>
+    <td>0.003</td>
+    <td>81.60</td>
+    <td>0.7540</td>
+    <td>88.00</td>
+    <td>34.1436</td>
+  </tr>
+  <tr>
+    <td>mnist56</td>
+    <td>8</td>
+    <td>bit flip</td>
+    <td>0.025</td>
+    <td>0.001</td>
+    <td>100</td>
+    <td>0.7607</td>
+    <td>100</td>
+    <td>0.7607</td>
+  </tr>
+  <tr>
+    <td>mnist57</td>
+    <td>8</td>
+    <td>depolarizing</td>
+    <td>0.0001</td>
+    <td>0.0003</td>
+    <td>100</td>
+    <td>0.6417</td>
+    <td>100</td>
+    <td>0.6417</td>
+  </tr>
+  <tr>
+    <td>mnist58</td>
+    <td>8</td>
+    <td>phase flip</td>
+    <td>0.05</td>
+    <td>0.01</td>
+    <td>98.00</td>
+    <td>1.0737</td>
+    <td>99.70</td>
+    <td>3.4832</td>
+  </tr>
+  <tr>
+    <td>mnist59</td>
+    <td>8</td>
+    <td>bit flip</td>
+    <td>0.05</td>
+    <td>0.003</td>
+    <td>100</td>
+    <td>0.8439</td>
+    <td>100</td>
+    <td>0.8439</td>
+  </tr>
+  <tr>
+    <td>mnist67</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.005</td>
+    <td>0.03</td>
+    <td>95.80</td>
+    <td>4.4031</td>
+    <td>99.60</td>
+    <td>9.3411</td>
+  </tr>
+  <tr>
+    <td>mnist68</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.0001</td>
+    <td>0.075</td>
+    <td>50</td>
+    <td>4.2098</td>
+    <td>59.90</td>
+    <td>114.2690</td>
+  </tr>
+  <tr>
+    <td>mnist69</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.05</td>
+    <td>0.0005</td>
+    <td>98.70</td>
+    <td>4.2002</td>
+    <td>99.40</td>
+    <td>6.5185</td>
+  </tr>
+  <tr>
+    <td>mnist78</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.025</td>
+    <td>0.05</td>
+    <td>90.20</td>
+    <td>4.4387</td>
+    <td>98.70</td>
+    <td>15.4179</td>
+  </tr>
+  <tr>
+    <td>mnist79</td>
+    <td>8</td>
+    <td>bit flip</td>
+    <td>0.025</td>
+    <td>0.0003</td>
+    <td>100</td>
+    <td>0.8480</td>
+    <td>100</td>
+    <td>0.8480</td>
+  </tr>
+  <tr>
+    <td>mnist89</td>
+    <td>8</td>
+    <td>mixed</td>
+    <td>0.005</td>
+    <td>0.075</td>
+    <td>71.10</td>
+    <td>4.6005</td>
+    <td>94.80</td>
+    <td>37.9945</td>
   </tr>
 </tbody>
 </table>
@@ -924,366 +924,367 @@ For *global-robustness*, we also add different levels of noise to each quantum m
 
 The full experimental results are shown in the following table: 
 
-<table class="tg">
+<table>
 <thead>
   <tr>
-    <th class="tg-c3ow">model</th>
-    <th class="tg-c3ow">#qubits</th>
-    <th class="tg-c3ow">noise</th>
-    <th class="tg-c3ow">p </th>
-    <th class="tg-c3ow">(ε, δ)</th>
-    <th class="tg-c3ow">K*</th>
-    <th class="tg-c3ow">robust</th>
-    <th class="tg-c3ow">time (sec.)</th>
+    <th>model</th>
+    <th>#qubits</th>
+    <th>noise</th>
+    <th>p </th>
+    <th>(ε, δ)</th>
+    <th>K*</th>
+    <th>robust</th>
+    <th>time (sec.)</th>
   </tr>
 </thead>
 <tbody>
   <tr>
-    <td class="tg-c3ow" rowspan="4">aci</td>
-    <td class="tg-c3ow" rowspan="4">8</td>
-    <td class="tg-c3ow">bit flip</td>
-    <td class="tg-c3ow">0.0001</td>
-    <td class="tg-c3ow">(0.003, 0.0001)</td>
-    <td class="tg-c3ow">0.99984</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">1.98</td>
+    <td rowspan="4">iris</td>
+    <td rowspan="4">4</td>
+    <td>bit flip</td>
+    <td>0.005</td>
+    <td>(0.003, 0.0001)</td>
+    <td>0.98600</td>
+    <td>NO</td>
+    <td>1.28</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">depolarizing</td>
-    <td class="tg-c3ow">0.025</td>
-    <td class="tg-c3ow">(0.03, 0.0005)</td>
-    <td class="tg-c3ow">0.92412</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">3.08</td>
+    <td>depolarizing</td>
+    <td>0.005</td>
+    <td>(0.03, 0.0075)</td>
+    <td>0.98044</td>
+    <td>NO</td>
+    <td>2.04</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">phase flip</td>
-    <td class="tg-c3ow">0.05</td>
-    <td class="tg-c3ow">(0.05, 0.001)</td>
-    <td class="tg-c3ow">0.79528</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">4.48</td>
+    <td>phase flip</td>
+    <td>0.0001</td>
+    <td>(0.005, 0.005)</td>
+    <td>0.99939</td>
+    <td>YES</td>
+    <td>1.35</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">mixed</td>
-    <td class="tg-c3ow">0.005</td>
-    <td class="tg-c3ow">(0.005, 0.005)</td>
-    <td class="tg-c3ow">0.78436</td>
-    <td class="tg-c3ow">YES</td>
-    <td class="tg-c3ow">2.97</td>
+    <td>mixed</td>
+    <td>0.0001</td>
+    <td>(0.03, 0.005)</td>
+    <td>0.99957</td>
+    <td>NO</td>
+    <td>1.50</td>
   </tr>
   <tr>
-    <td class="tg-c3ow" rowspan="4">fct</td>
-    <td class="tg-c3ow" rowspan="4">9</td>
-    <td class="tg-c3ow">bit flip</td>
-    <td class="tg-c3ow">0.05</td>
-    <td class="tg-c3ow">(0.075, 0.003)</td>
-    <td class="tg-c3ow">0.9</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">2.13</td>
+    <td rowspan="4">ehc</td>
+    <td rowspan="4">6</td>
+    <td>bit flip</td>
+    <td>0.05</td>
+    <td>(0.001, 0.0005)</td>
+    <td>0.89991</td>
+    <td>NO</td>
+    <td>5.55</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">depolarizing</td>
-    <td class="tg-c3ow">0.05</td>
-    <td class="tg-c3ow">(0.0003, 0.0001)</td>
-    <td class="tg-c3ow">0.84</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">2.07</td>
+    <td>depolarizing</td>
+    <td>0.075</td>
+    <td>(0.001, 0.0001)</td>
+    <td>0.89871</td>
+    <td>NO</td>
+    <td>4.81</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">phase flip</td>
-    <td class="tg-c3ow">0.01</td>
-    <td class="tg-c3ow">(0.01, 0.0075)</td>
-    <td class="tg-c3ow">0.84</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">8.32</td>
+    <td>phase flip</td>
+    <td>0.0001</td>
+    <td>(0.005, 0.003)</td>
+    <td>0.99999</td>
+    <td>NO</td>
+    <td>3.33</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">mixed</td>
-    <td class="tg-c3ow">0.05</td>
-    <td class="tg-c3ow">(0.075, 0.0075)</td>
-    <td class="tg-c3ow">0.84</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">3.63</td>
+    <td>mixed</td>
+    <td>0.01</td>
+    <td>(0.0003, 0.0005)</td>
+    <td>0.99953</td>
+    <td>YES</td>
+    <td>15.32</td>
   </tr>
   <tr>
-    <td class="tg-c3ow" rowspan="4">cr</td>
-    <td class="tg-c3ow" rowspan="4">9</td>
-    <td class="tg-c3ow">bit flip</td>
-    <td class="tg-c3ow">0.025</td>
-    <td class="tg-c3ow">(0.01, 0.0005)</td>
-    <td class="tg-c3ow">0.95</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">2.08</td>
+    <td rowspan="4">ehc</td>
+    <td rowspan="4">8</td>
+    <td>bit flip</td>
+    <td>0.0001</td>
+    <td>(0.0003, 0.0075)</td>
+    <td>0.99976</td>
+    <td>YES</td>
+    <td>5.71</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">depolarizing</td>
-    <td class="tg-c3ow">0.005</td>
-    <td class="tg-c3ow">(0.075, 0.005)</td>
-    <td class="tg-c3ow">0.94366</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">2.18</td>
+    <td>depolarizing</td>
+    <td>0.05</td>
+    <td>(0.001, 0.0075)</td>
+    <td>0.93305</td>
+    <td>YES</td>
+    <td>6.71</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">phase flip</td>
-    <td class="tg-c3ow">0.025</td>
-    <td class="tg-c3ow">(0.0003, 0.0001)</td>
-    <td class="tg-c3ow">0.94366</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">3.92</td>
+    <td>phase flip</td>
+    <td>0.025</td>
+    <td>(0.075, 0.0003)</td>
+    <td>0.99968</td>
+    <td>NO</td>
+    <td>8.39</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">mixed</td>
-    <td class="tg-c3ow">0.025</td>
-    <td class="tg-c3ow">(0.0001, 0.0001)</td>
-    <td class="tg-c3ow">0.94366</td>
-    <td class="tg-c3ow">YES</td>
-    <td class="tg-c3ow">2.2</td>
+    <td>mixed</td>
+    <td>0.0005</td>
+    <td>(0.005, 0.005)</td>
+    <td>0.99906</td>
+    <td>YES</td>
+    <td>5.40</td>
   </tr>
   <tr>
-    <td class="tg-c3ow" rowspan="4">ehc</td>
-    <td class="tg-c3ow" rowspan="4">6</td>
-    <td class="tg-c3ow">bit flip</td>
-    <td class="tg-c3ow">0.05</td>
-    <td class="tg-c3ow">(0.001, 0.0005)</td>
-    <td class="tg-c3ow">0.89995</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">2.82</td>
+    <td rowspan="4">fashion</td>
+    <td rowspan="4">8</td>
+    <td>bit flip</td>
+    <td>0.005</td>
+    <td>(0.075, 0.005)</td>
+    <td>0.98987</td>
+    <td>NO</td>
+    <td>2.07</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">depolarizing</td>
-    <td class="tg-c3ow">0.075</td>
-    <td class="tg-c3ow">(0.001, 0.0001)</td>
-    <td class="tg-c3ow">0.80916</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">2.67</td>
+    <td>depolarizing</td>
+    <td>0.025</td>
+    <td>(0.03, 0.003)</td>
+    <td>0.96274</td>
+    <td>NO</td>
+    <td>2.74</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">phase flip</td>
-    <td class="tg-c3ow">0.0001</td>
-    <td class="tg-c3ow">(0.005, 0.003)</td>
-    <td class="tg-c3ow">0.80899</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">2.69</td>
+    <td>phase flip</td>
+    <td>0.025</td>
+    <td>(0.005, 0.0003)</td>
+    <td>0.98313</td>
+    <td>NO</td>
+    <td>2.31</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">mixed</td>
-    <td class="tg-c3ow">0.01</td>
-    <td class="tg-c3ow">(0.0003, 0.0005)</td>
-    <td class="tg-c3ow">0.80903</td>
-    <td class="tg-c3ow">YES</td>
-    <td class="tg-c3ow">2.79</td>
+    <td>mixed</td>
+    <td>0.075</td>
+    <td>(0.0005, 0.0075)</td>
+    <td>0.88444</td>
+    <td>YES</td>
+    <td>4.22</td>
   </tr>
   <tr>
-    <td class="tg-c3ow" rowspan="4">ehc</td>
-    <td class="tg-c3ow" rowspan="4">8</td>
-    <td class="tg-c3ow">bit flip</td>
-    <td class="tg-c3ow">0.0001</td>
-    <td class="tg-c3ow">(0.0003, 0.0075)</td>
-    <td class="tg-c3ow">0.99976</td>
-    <td class="tg-c3ow">YES</td>
-    <td class="tg-c3ow">5</td>
+    <td rowspan="4">aci</td>
+    <td rowspan="4">8</td>
+    <td>bit flip</td>
+    <td>0.0001</td>
+    <td>(0.003, 0.0001)</td>
+    <td>0.99985</td>
+    <td>NO</td>
+    <td>2.67</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">depolarizing</td>
-    <td class="tg-c3ow">0.05</td>
-    <td class="tg-c3ow">(0.001, 0.0075)</td>
-    <td class="tg-c3ow">0.93287</td>
-    <td class="tg-c3ow">YES</td>
-    <td class="tg-c3ow">5.6</td>
+    <td>depolarizing</td>
+    <td>0.025</td>
+    <td>(0.03, 0.0005)</td>
+    <td>0.92419</td>
+    <td>NO</td>
+    <td>6.87</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">phase flip</td>
-    <td class="tg-c3ow">0.025</td>
-    <td class="tg-c3ow">(0.075, 0.0003)</td>
-    <td class="tg-c3ow">0.9327</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">5.43</td>
+    <td>phase flip</td>
+    <td>0.05</td>
+    <td>(0.05, 0.001)</td>
+    <td>0.85972</td>
+    <td>NO</td>
+    <td>6.39</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">mixed</td>
-    <td class="tg-c3ow">0.0005</td>
-    <td class="tg-c3ow">(0.005, 0.005)</td>
-    <td class="tg-c3ow">0.9322</td>
-    <td class="tg-c3ow">YES</td>
-    <td class="tg-c3ow">5.76</td>
+    <td>mixed</td>
+    <td>0.005</td>
+    <td>(0.005, 0.005)</td>
+    <td>0.98325</td>
+    <td>YES</td>
+    <td>2.21</td>
   </tr>
   <tr>
-    <td class="tg-c3ow" rowspan="4">ehc</td>
-    <td class="tg-c3ow" rowspan="4">10</td>
-    <td class="tg-c3ow">bit flip</td>
-    <td class="tg-c3ow">0.075</td>
-    <td class="tg-c3ow">(0.05, 0.0003)</td>
-    <td class="tg-c3ow">0.85264</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">24.7</td>
+    <td rowspan="4">fct</td>
+    <td rowspan="4">9</td>
+    <td>bit flip</td>
+    <td>0.05</td>
+    <td>(0.075, 0.003)</td>
+    <td>0.97685</td>
+    <td>NO</td>
+    <td>4.31</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">depolarizing</td>
-    <td class="tg-c3ow">0.0005</td>
-    <td class="tg-c3ow">(0.03, 0.001)</td>
-    <td class="tg-c3ow">0.85212</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">17.74</td>
+    <td>depolarizing</td>
+    <td>0.05</td>
+    <td>(0.0003, 0.0001)</td>
+    <td>0.92476</td>
+    <td>NO</td>
+    <td>7.26</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">phase flip</td>
-    <td class="tg-c3ow">0.01</td>
-    <td class="tg-c3ow">(0.0003, 0.0075)</td>
-    <td class="tg-c3ow">0.85058</td>
-    <td class="tg-c3ow">YES</td>
-    <td class="tg-c3ow">14.32</td>
+    <td>phase flip</td>
+    <td>0.01</td>
+    <td>(0.01, 0.0075)</td>
+    <td>0.98274</td>
+    <td>NO</td>
+    <td>18.40</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">mixed</td>
-    <td class="tg-c3ow">0.0001</td>
-    <td class="tg-c3ow">(0.005, 0.001)</td>
-    <td class="tg-c3ow">0.85027</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">22.34</td>
+    <td>mixed</td>
+    <td>0.05</td>
+    <td>(0.075, 0.0075)</td>
+    <td>0.92949</td>
+    <td>NO</td>
+    <td>8.01</td>
   </tr>
   <tr>
-    <td class="tg-c3ow" rowspan="4">ehc</td>
-    <td class="tg-c3ow" rowspan="4">12</td>
-    <td class="tg-c3ow">bit flip</td>
-    <td class="tg-c3ow">0.005</td>
-    <td class="tg-c3ow">(0.0005, 0.0003)</td>
-    <td class="tg-c3ow">0.98966</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">25.73</td>
+    <td rowspan="4">cr</td>
+    <td rowspan="4">9</td>
+    <td>bit flip</td>
+    <td>0.025</td>
+    <td>(0.01, 0.0005)</td>
+    <td>0.93820</td>
+    <td>NO</td>
+    <td>6.28</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">depolarizing</td>
-    <td class="tg-c3ow">0.0005</td>
-    <td class="tg-c3ow">(0.0001, 0.005)</td>
-    <td class="tg-c3ow">0.99926</td>
-    <td class="tg-c3ow">YES</td>
-    <td class="tg-c3ow">21.22</td>
+    <td>depolarizing</td>
+    <td>0.005</td>
+    <td>(0.075, 0.005)</td>
+    <td>0.98520</td>
+    <td>NO</td>
+    <td>2.65</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">phase flip</td>
-    <td class="tg-c3ow">0.075</td>
-    <td class="tg-c3ow">(0.001, 0.0075)</td>
-    <td class="tg-c3ow">0.99883</td>
-    <td class="tg-c3ow">YES</td>
-    <td class="tg-c3ow">206.08</td>
+    <td>phase flip</td>
+    <td>0.025</td>
+    <td>(0.0003, 0.0001)</td>
+    <td>0.93776</td>
+    <td>NO</td>
+    <td>5.76</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">mixed</td>
-    <td class="tg-c3ow">0.001</td>
-    <td class="tg-c3ow">(0.01, 0.0001)</td>
-    <td class="tg-c3ow">0.99984</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">45.53</td>
+    <td>mixed</td>
+    <td>0.025</td>
+    <td>(0.0001, 0.0001)</td>
+    <td>0.94961</td>
+    <td>YES</td>
+    <td>10.13</td>
   </tr>
   <tr>
-    <td class="tg-c3ow" rowspan="4">qaoa</td>
-    <td class="tg-c3ow" rowspan="4">10</td>
-    <td class="tg-c3ow">bit flip</td>
-    <td class="tg-c3ow">0.005</td>
-    <td class="tg-c3ow">(0.05, 0.0005)</td>
-    <td class="tg-c3ow">0.98497</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">3.98</td>
+    <td rowspan="4">qaoa</td>
+    <td rowspan="4">10</td>
+    <td>bit flip</td>
+    <td>0.005</td>
+    <td>(0.05, 0.0005)</td>
+    <td>0.98520</td>
+    <td>NO</td>
+    <td>4.81</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">depolarizing</td>
-    <td class="tg-c3ow">0.0001</td>
-    <td class="tg-c3ow">(0.01, 0.003)</td>
-    <td class="tg-c3ow">0.9847</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">3.89</td>
+    <td>depolarizing</td>
+    <td>0.0001</td>
+    <td>(0.01, 0.003)</td>
+    <td>0.99965</td>
+    <td>NO</td>
+    <td>3.95</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">phase flip</td>
-    <td class="tg-c3ow">0.005</td>
-    <td class="tg-c3ow">(0.075, 0.0075)</td>
-    <td class="tg-c3ow">0.97097</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">4.28</td>
+    <td>phase flip</td>
+    <td>0.005</td>
+    <td>(0.075, 0.0075)</td>
+    <td>0.98517</td>
+    <td>NO</td>
+    <td>4.85</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">mixed</td>
-    <td class="tg-c3ow">0.001</td>
-    <td class="tg-c3ow">(0.03, 0.0075)</td>
-    <td class="tg-c3ow">0.96874</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">4.33</td>
+    <td>mixed</td>
+    <td>0.001</td>
+    <td>(0.03, 0.0075)</td>
+    <td>0.99656</td>
+    <td>NO</td>
+    <td>22.21</td>
   </tr>
   <tr>
-    <td class="tg-c3ow" rowspan="4">fashion</td>
-    <td class="tg-c3ow" rowspan="4">8</td>
-    <td class="tg-c3ow">bit flip</td>
-    <td class="tg-c3ow">0.005</td>
-    <td class="tg-c3ow">(0.075, 0.005)</td>
-    <td class="tg-c3ow">0.98987</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">1.8</td>
+    <td rowspan="4">ehc</td>
+    <td rowspan="4">10</td>
+    <td>bit flip</td>
+    <td>0.075</td>
+    <td>(0.05, 0.0003)</td>
+    <td>0.85276</td>
+    <td>NO</td>
+    <td>73.52</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">depolarizing</td>
-    <td class="tg-c3ow">0.025</td>
-    <td class="tg-c3ow">(0.03, 0.003)</td>
-    <td class="tg-c3ow">0.95307</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">1.9</td>
+    <td>depolarizing</td>
+    <td>0.0005</td>
+    <td>(0.03, 0.001)</td>
+    <td>0.99924</td>
+    <td>NO</td>
+    <td>27.37</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">phase flip</td>
-    <td class="tg-c3ow">0.025</td>
-    <td class="tg-c3ow">(0.005, 0.0003)</td>
-    <td class="tg-c3ow">0.93769</td>
-    <td class="tg-c3ow">NO</td>
-    <td class="tg-c3ow">1.94</td>
+    <td>phase flip</td>
+    <td>0.01</td>
+    <td>(0.0003, 0.0075)</td>
+    <td>0.99859</td>
+    <td>YES</td>
+    <td>118.26</td>
   </tr>
   <tr>
-    <td class="tg-c3ow">mixed</td>
-    <td class="tg-c3ow">0.075</td>
-    <td class="tg-c3ow">(0.0005, 0.0075)</td>
-    <td class="tg-c3ow">0.8326</td>
-    <td class="tg-c3ow">YES</td>
-    <td class="tg-c3ow">1.94</td>
-  </tr>
-    <tr>
-    <td class="tg-nrix" rowspan="4">iris</td>
-    <td class="tg-nrix" rowspan="4">4</td>
-    <td class="tg-8d8j">bit flip</td>
-    <td class="tg-8d8j">0.005</td>
-    <td class="tg-8d8j">(0.003, 0.0001)</td>
-    <td class="tg-8d8j">0.98622</td>
-    <td class="tg-8d8j">NO</td>
-    <td class="tg-8d8j">1.35</td>
+    <td>mixed</td>
+    <td>0.0001</td>
+    <td>(0.005, 0.001)</td>
+    <td>0.99977</td>
+    <td>NO</td>
+    <td>11.29</td>
   </tr>
   <tr>
-    <td class="tg-8d8j">depolarizing</td>
-    <td class="tg-8d8j">0.005</td>
-    <td class="tg-8d8j">(0.03, 0.0075)</td>
-    <td class="tg-8d8j">0.9673</td>
-    <td class="tg-8d8j">NO</td>
-    <td class="tg-8d8j">1.11</td>
+    <td rowspan="4">ehc</td>
+    <td rowspan="4">12</td>
+    <td>bit flip</td>
+    <td>0.005</td>
+    <td>(0.0005, 0.0003)</td>
+    <td>0.98966</td>
+    <td>NO</td>
+    <td>55.67</td>
   </tr>
   <tr>
-    <td class="tg-8d8j">phase flip</td>
-    <td class="tg-8d8j">0.0001</td>
-    <td class="tg-8d8j">(0.005, 0.005)</td>
-    <td class="tg-8d8j">0.96935</td>
-    <td class="tg-8d8j">YES</td>
-    <td class="tg-8d8j">1.2</td>
+    <td>depolarizing</td>
+    <td>0.0005</td>
+    <td>(0.0001, 0.005)</td>
+    <td>0.99926</td>
+    <td>YES</td>
+    <td>18.32</td>
   </tr>
   <tr>
-    <td class="tg-8d8j">mixed</td>
-    <td class="tg-8d8j">0.0001</td>
-    <td class="tg-8d8j">(0.03, 0.005)</td>
-    <td class="tg-8d8j">0.96811</td>
-    <td class="tg-8d8j">NO</td>
-    <td class="tg-8d8j">1.22</td>
+    <td>phase flip</td>
+    <td>0.075</td>
+    <td>(0.001, 0.0075)</td>
+    <td>0.99885</td>
+    <td>YES</td>
+    <td>1581.10</td>
+  </tr>
+  <tr>
+    <td>mixed</td>
+    <td>0.001</td>
+    <td>(0.01, 0.0001)</td>
+    <td>0.99984</td>
+    <td>NO</td>
+    <td>102.32</td>
   </tr>
 </tbody>
 </table>
 
+
 ### Experimental Comparison
 
-Here is an experimental comparison against a baseline implementation without tensors for global robustness verification: 
+Here is an experimental comparison against a baseline implementation without tensors for global robustness verification, where TN and Baseline represent tensor-based and matrix-based implementation methods, respectively. We can see that when the number of qubits is less than 10, the tensor-based implementation does not outperforms the matrix-based implementation. However, when the number of qubits is large (e.g., in *qaoa* and *ehc* models with 12 qubits), the speed of the tensor-based implementation is significantly higher than that of the matrix-based implementation.
 
 <table>
 <thead>
@@ -1312,9 +1313,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.005</td>
     <td>(0.003, 0.0001)</td>
     <td>NO</td>
-    <td>0.98622</td>
-    <td>1.35</td>
-    <td>0.99055</td>
+    <td>0.98600</td>
+    <td>1.28</td>
+    <td>0.99976</td>
     <td>0.02</td>
   </tr>
   <tr>
@@ -1322,9 +1323,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.005</td>
     <td>(0.03, 0.0075)</td>
     <td>NO</td>
-    <td>0.96730</td>
-    <td>1.11</td>
-    <td>0.98075</td>
+    <td>0.98044</td>
+    <td>2.04</td>
+    <td>0.93864</td>
     <td>0.02</td>
   </tr>
   <tr>
@@ -1332,9 +1333,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.0001</td>
     <td>(0.005, 0.005)</td>
     <td>YES</td>
-    <td>0.96935</td>
-    <td>1.20</td>
-    <td>0.99968</td>
+    <td>0.99939</td>
+    <td>1.35</td>
+    <td>0.92925</td>
     <td>0.02</td>
   </tr>
   <tr>
@@ -1342,9 +1343,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.0001</td>
     <td>(0.03, 0.005)</td>
     <td>NO</td>
-    <td>0.96811</td>
-    <td>1.22</td>
-    <td>0.99967</td>
+    <td>0.99957</td>
+    <td>1.50</td>
+    <td>0.98565</td>
     <td>0.00</td>
   </tr>
   <tr>
@@ -1354,9 +1355,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.05</td>
     <td>(0.001, 0.0005)</td>
     <td>NO</td>
-    <td>0.89995</td>
-    <td>2.82</td>
-    <td>0.90009</td>
+    <td>0.89991</td>
+    <td>5.55</td>
+    <td>0.87652</td>
     <td>0.03</td>
   </tr>
   <tr>
@@ -1364,9 +1365,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.075</td>
     <td>(0.001, 0.0001)</td>
     <td>NO</td>
-    <td>0.80916</td>
-    <td>2.67</td>
-    <td>0.90000</td>
+    <td>0.89871</td>
+    <td>4.81</td>
+    <td>0.87557</td>
     <td>1.38</td>
   </tr>
   <tr>
@@ -1374,9 +1375,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.0001</td>
     <td>(0.005, 0.003)</td>
     <td>NO</td>
-    <td>0.80899</td>
-    <td>2.69</td>
-    <td>1</td>
+    <td>0.99999</td>
+    <td>3.33</td>
+    <td>0.98657</td>
     <td>1.97</td>
   </tr>
   <tr>
@@ -1384,9 +1385,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.01</td>
     <td>(0.0003, 0.0005)</td>
     <td>YES</td>
-    <td>0.80903</td>
-    <td>2.79</td>
-    <td>0.99989</td>
+    <td>0.99953</td>
+    <td>15.32</td>
+    <td>0.91278</td>
     <td>2.08</td>
   </tr>
   <tr>
@@ -1397,8 +1398,8 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>(0.0003, 0.0075)</td>
     <td>YES</td>
     <td>0.99976</td>
-    <td>5.00</td>
-    <td>0.99980</td>
+    <td>5.71</td>
+    <td>0.97100</td>
     <td>1.48</td>
   </tr>
   <tr>
@@ -1406,9 +1407,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.05</td>
     <td>(0.001, 0.0075)</td>
     <td>YES</td>
-    <td>0.93287</td>
-    <td>5.60</td>
-    <td>0.93333</td>
+    <td>0.93305</td>
+    <td>6.71</td>
+    <td>0.99087</td>
     <td>1.88</td>
   </tr>
   <tr>
@@ -1416,9 +1417,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.025</td>
     <td>(0.075, 0.0003)</td>
     <td>NO</td>
-    <td>0.93270</td>
-    <td>5.43</td>
-    <td>1</td>
+    <td>0.99968</td>
+    <td>8.39</td>
+    <td>0.96781</td>
     <td>2.70</td>
   </tr>
   <tr>
@@ -1426,9 +1427,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.0005</td>
     <td>(0.005, 0.005)</td>
     <td>YES</td>
-    <td>0.93220</td>
-    <td>5.76</td>
-    <td>0.99938</td>
+    <td>0.99906</td>
+    <td>5.40</td>
+    <td>0.95905</td>
     <td>0.19</td>
   </tr>
   <tr>
@@ -1439,8 +1440,8 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>(0.075, 0.005)</td>
     <td>NO</td>
     <td>0.98987</td>
-    <td>1.80</td>
-    <td>0.98791</td>
+    <td>2.07</td>
+    <td>0.90009</td>
     <td>0.16</td>
   </tr>
   <tr>
@@ -1448,9 +1449,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.025</td>
     <td>(0.03, 0.003)</td>
     <td>NO</td>
-    <td>0.95307</td>
-    <td>1.90</td>
-    <td>0.95652</td>
+    <td>0.96274</td>
+    <td>2.74</td>
+    <td>0.90000</td>
     <td>1.36</td>
   </tr>
   <tr>
@@ -1458,9 +1459,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.025</td>
     <td>(0.005, 0.0003)</td>
     <td>NO</td>
-    <td>0.93769</td>
-    <td>1.94</td>
-    <td>0.98452</td>
+    <td>0.98313</td>
+    <td>2.31</td>
+    <td>1</td>
     <td>2.76</td>
   </tr>
   <tr>
@@ -1468,9 +1469,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.075</td>
     <td>(0.0005, 0.0075)</td>
     <td>YES</td>
-    <td>0.83260</td>
-    <td>1.94</td>
-    <td>0.88763</td>
+    <td>0.88444</td>
+    <td>4.22</td>
+    <td>0.99989</td>
     <td>2.59</td>
   </tr>
   <tr>
@@ -1480,9 +1481,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.0001</td>
     <td>(0.003, 0.0001)</td>
     <td>NO</td>
-    <td>0.99984</td>
-    <td>1.98</td>
-    <td>0.99976</td>
+    <td>0.99985</td>
+    <td>2.67</td>
+    <td>0.99980</td>
     <td>0.15</td>
   </tr>
   <tr>
@@ -1490,9 +1491,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.025</td>
     <td>(0.03, 0.0005)</td>
     <td>NO</td>
-    <td>0.92412</td>
-    <td>3.08</td>
-    <td>0.93864</td>
+    <td>0.92419</td>
+    <td>6.87</td>
+    <td>0.93333</td>
     <td>0.22</td>
   </tr>
   <tr>
@@ -1500,9 +1501,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.05</td>
     <td>(0.05, 0.001)</td>
     <td>NO</td>
-    <td>0.79528</td>
-    <td>4.48</td>
-    <td>0.92925</td>
+    <td>0.85972</td>
+    <td>6.39</td>
+    <td>1</td>
     <td>3.33</td>
   </tr>
   <tr>
@@ -1510,9 +1511,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.005</td>
     <td>(0.005, 0.005)</td>
     <td>YES</td>
-    <td>0.78436</td>
-    <td>2.97</td>
-    <td>0.98565</td>
+    <td>0.98325</td>
+    <td>2.21</td>
+    <td>0.99938</td>
     <td>0.20</td>
   </tr>
   <tr>
@@ -1522,19 +1523,19 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.05</td>
     <td>(0.075, 0.003)</td>
     <td>NO</td>
-    <td>0.90000</td>
-    <td>2.13</td>
-    <td>0.87652</td>
-    <td>0.8</td>
+    <td>0.97685</td>
+    <td>4.31</td>
+    <td>0.85238</td>
+    <td>0.80</td>
   </tr>
   <tr>
     <td>depolarizing</td>
     <td>0.05</td>
     <td>(0.0003, 0.0001)</td>
     <td>NO</td>
-    <td>0.84000</td>
-    <td>2.07</td>
-    <td>0.87557</td>
+    <td>0.92476</td>
+    <td>7.26</td>
+    <td>0.99933</td>
     <td>3.92</td>
   </tr>
   <tr>
@@ -1542,9 +1543,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.01</td>
     <td>(0.01, 0.0075)</td>
     <td>NO</td>
-    <td>0.84000</td>
-    <td>8.32</td>
-    <td>0.98657</td>
+    <td>0.98274</td>
+    <td>18.40</td>
+    <td>1</td>
     <td>3.57</td>
   </tr>
   <tr>
@@ -1552,9 +1553,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.05</td>
     <td>(0.075, 0.0075)</td>
     <td>NO</td>
-    <td>0.84000</td>
-    <td>3.63</td>
-    <td>0.91278</td>
+    <td>0.92949</td>
+    <td>8.01</td>
+    <td>0.99981</td>
     <td>0.99</td>
   </tr>
   <tr>
@@ -1564,9 +1565,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.025</td>
     <td>(0.01, 0.0005)</td>
     <td>NO</td>
-    <td>0.95000</td>
-    <td>2.08</td>
-    <td>0.97100</td>
+    <td>0.93820</td>
+    <td>6.28</td>
+    <td>0.99001</td>
     <td>2.92</td>
   </tr>
   <tr>
@@ -1574,9 +1575,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.005</td>
     <td>(0.075, 0.005)</td>
     <td>NO</td>
-    <td>0.94366</td>
-    <td>2.18</td>
-    <td>0.99087</td>
+    <td>0.98520</td>
+    <td>2.65</td>
+    <td>0.99933</td>
     <td>5.88</td>
   </tr>
   <tr>
@@ -1584,9 +1585,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.025</td>
     <td>(0.0003, 0.0001)</td>
     <td>NO</td>
-    <td>0.94366</td>
-    <td>3.92</td>
-    <td>0.96781</td>
+    <td>0.93776</td>
+    <td>5.76</td>
+    <td>1</td>
     <td>4.19</td>
   </tr>
   <tr>
@@ -1594,9 +1595,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.025</td>
     <td>(0.0001, 0.0001)</td>
     <td>YES</td>
-    <td>0.94366</td>
-    <td>2.20</td>
-    <td>0.95905</td>
+    <td>0.94961</td>
+    <td>10.13</td>
+    <td>0.99997</td>
     <td>6.89</td>
   </tr>
   <tr>
@@ -1606,8 +1607,8 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.005</td>
     <td>(0.05, 0.0005)</td>
     <td>NO</td>
-    <td>0.98497</td>
-    <td>3.98</td>
+    <td>0.98520</td>
+    <td>4.81</td>
     <td>0.98995</td>
     <td>10.01</td>
   </tr>
@@ -1616,8 +1617,8 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.0001</td>
     <td>(0.01, 0.003)</td>
     <td>NO</td>
-    <td>0.98470</td>
-    <td>3.89</td>
+    <td>0.99965</td>
+    <td>3.95</td>
     <td>0.99976</td>
     <td>13.88</td>
   </tr>
@@ -1626,8 +1627,8 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.005</td>
     <td>(0.075, 0.0075)</td>
     <td>NO</td>
-    <td>0.97097</td>
-    <td>4.28</td>
+    <td>0.98517</td>
+    <td>4.85</td>
     <td>0.99454</td>
     <td>9.82</td>
   </tr>
@@ -1636,8 +1637,8 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.001</td>
     <td>(0.03, 0.0075)</td>
     <td>NO</td>
-    <td>0.96874</td>
-    <td>4.33</td>
+    <td>0.99656</td>
+    <td>22.21</td>
     <td>0.99892</td>
     <td>16.57</td>
   </tr>
@@ -1648,9 +1649,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.075</td>
     <td>(0.05, 0.0003)</td>
     <td>NO</td>
-    <td>0.85264</td>
-    <td>24.70</td>
-    <td>0.85238</td>
+    <td>0.85276</td>
+    <td>73.52</td>
+    <td>0.98791</td>
     <td>7.01</td>
   </tr>
   <tr>
@@ -1658,9 +1659,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.0005</td>
     <td>(0.03, 0.001)</td>
     <td>NO</td>
-    <td>0.85212</td>
-    <td>17.74</td>
-    <td>0.99933</td>
+    <td>0.99924</td>
+    <td>27.37</td>
+    <td>0.95652</td>
     <td>16.08</td>
   </tr>
   <tr>
@@ -1668,9 +1669,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.01</td>
     <td>(0.0003, 0.0075)</td>
     <td>YES</td>
-    <td>0.85058</td>
-    <td>14.32</td>
-    <td>1</td>
+    <td>0.99859</td>
+    <td>118.26</td>
+    <td>0.98452</td>
     <td>18.45</td>
   </tr>
   <tr>
@@ -1678,9 +1679,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.0001</td>
     <td>(0.005, 0.001)</td>
     <td>NO</td>
-    <td>0.85027</td>
-    <td>22.34</td>
-    <td>0.99981</td>
+    <td>0.99977</td>
+    <td>11.29</td>
+    <td>0.88763</td>
     <td>8.39</td>
   </tr>
   <tr>
@@ -1691,8 +1692,8 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>(0.0005, 0.0003)</td>
     <td>NO</td>
     <td>0.98966</td>
-    <td>25.73</td>
-    <td>0.99001</td>
+    <td>55.67</td>
+    <td>0.99055</td>
     <td>822.58</td>
   </tr>
   <tr>
@@ -1701,8 +1702,8 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>(0.0001, 0.005)</td>
     <td>YES</td>
     <td>0.99926</td>
-    <td>21.22</td>
-    <td>0.99933</td>
+    <td>18.32</td>
+    <td>0.98075</td>
     <td>1779.02</td>
   </tr>
   <tr>
@@ -1710,9 +1711,9 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>0.075</td>
     <td>(0.001, 0.0075)</td>
     <td>YES</td>
-    <td>0.99883</td>
-    <td>206.08</td>
-    <td>1</td>
+    <td>0.99885</td>
+    <td>1581.10</td>
+    <td>0.99968</td>
     <td>838.70</td>
   </tr>
   <tr>
@@ -1721,8 +1722,8 @@ Here is an experimental comparison against a baseline implementation without ten
     <td>(0.01, 0.0001)</td>
     <td>NO</td>
     <td>0.99984</td>
-    <td>45.53</td>
-    <td>0.99997</td>
+    <td>102.32</td>
+    <td>0.99967</td>
     <td>1295.06</td>
   </tr>
 </tbody>
