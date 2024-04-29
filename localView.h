@@ -68,7 +68,7 @@ public slots:
     void on_radioButton_depolarizing_clicked();
     void on_radioButton_phaseflip_clicked();
     void on_radioButton_mixednoise_clicked();
-    void on_radioButton_importops_clicked();
+    void on_radioButton_importkraus_clicked();
     void on_slider_prob_sliderMoved(int);
     void on_doubleSpinBox_prob_valueChanged(double);
 
@@ -102,10 +102,16 @@ private:
     QString output_line_;
 
     QString noise_types[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
+    QString noise_type_;
+    double noise_prob_;
     QStringList mixed_noises_;
-    QString noise_type_ = "";
-    double noise_prob_ = 0.0;
     QFileInfo kraus_file_;  // 当前选择的kraus operators file
+
+    std::map<QString, QString> noise_name_map = {
+        {"BitFlip", "bit_flip"},
+        {"Depolarizing", "depolarizing"},
+        {"PhaseFlip", "phase_flip"},
+    };
 
     bool showed_svg = false;
     bool showed_pdf = false;
@@ -117,12 +123,6 @@ private:
         {"excitation", "excitation_model.pdf"},
         // {"mnist", "mnist_model.pdf"},
         {"phaseRecog", "phaseRecog.pdf"},
-    };
-
-    std::map<QString, QString> noise_name_map = {
-        {"BitFlip", "bit_flip"},
-        {"Depolarizing", "depolarizing"},
-        {"PhaseFlip", "phase_flip"},
     };
 };
 

@@ -26,7 +26,7 @@ def mat_m(qubit_num):
     return M_0 - M_1
 
 
-M = mat_m(8)
+M = mat_m(10)
 
 
 def logistic(x):
@@ -383,7 +383,7 @@ class Main():
 
 
 if __name__ == '__main__':
-    QUBIT_NUM = 8
+    QUBIT_NUM = 10
     BLOCK_NUM = 2
     BATCH_SIZE = 100
     LR = 0.01

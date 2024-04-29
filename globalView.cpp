@@ -29,7 +29,8 @@ GlobalView::GlobalView(QWidget *parent):
     connect(ui->radioButton_phaseflip, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_phaseflip_clicked()));
     connect(ui->radioButton_bitflip, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_bitflip_clicked()));
     connect(ui->radioButton_depolarizing, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_depolarize_clicked()));
-    connect(ui->radioButton_mixednoise, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_mixed_clicked()));
+    connect(ui->radioButton_mixednoise, SIGNAL(toggled(bool)), this, SLOT(on_radioButton_mixednoise_clicked()));
+    connect(ui->radioButton_custom_noise, SIGNAL(pressed()), this, SLOT(on_radioButton_importkraus_clicked()));
     connect(ui->slider_prob, SIGNAL(valueChanged(int)), this, SLOT(on_slider_prob_sliderMoved(int)));
     connect(ui->doubleSpinBox_prob, SIGNAL(valueChanged(double)), this, SLOT(on_doubleSpinBox_prob_valueChanged(double)));
     connect(ui->pushButton_run, SIGNAL(pressed()), this, SLOT(run_calculate_k()));
@@ -264,7 +265,7 @@ void GlobalView::importModel()
    if (!file.open(QIODevice::ReadOnly)) {
        QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
        return;
-   }else if(model_file_.suffix() != "qasm"){
+   }else if(!fileName.endsWith(".qasm")){
        QMessageBox::warning(this, "Warning", "VeriQR only supports .qasm model files.");
        return;
    }
@@ -291,10 +292,32 @@ void GlobalView::on_radioButton_depolarize_clicked()
     qDebug() << noise_type_;
 }
 
-void GlobalView::on_radioButton_mixed_clicked()
+void GlobalView::on_radioButton_mixednoise_clicked()
 {
     noise_type_ = noise_types[3];
     qDebug() << noise_type_;
+}
+
+void GlobalView::on_radioButton_importkraus_clicked()
+{
+    noise_type_ = "custom";
+    QString fileName = QFileDialog::getOpenFileName(this, "Open file", globalDir+"/kraus");
+    QFile file(fileName);
+    kraus_file_ = QFileInfo(fileName);
+
+    if (!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
+        return;
+    }else if(kraus_file_.suffix() != "npz"){
+        QMessageBox::warning(this, "Warning", "VeriQR only supports .npz kraus files.");
+        return;
+    }
+
+    ui->lineEdit_custom_noise->setText(kraus_file_.filePath());
+
+    file.close();
+
+    ui->radioButton_custom_noise->setChecked(true);
 }
 
 void GlobalView::model_change_to_ui(){
@@ -333,39 +356,37 @@ void GlobalView::run_calculate_k()
 
     noise_prob_ = ui->doubleSpinBox_prob->value();
 
-    if (!pyfile_.isEmpty())  // has selected a existing model file
+    if (model_file_.fileName().isEmpty())  // has not selected a .qasm file
     {
-        QString model_name = pyfile_.mid(pyfile_.lastIndexOf("_") + 1); // 去掉evaluate_finance_model_前缀
-
         QStringList list;
-        list << model_name << noise_type_ << QString::number(noise_prob_);
-        file_name_ = list.join("_");   // like: gc_phase_flip_0.0001
+        list << model_name_ << noise_type_ << QString::number(noise_prob_);
+        file_name_ = list.join("_");   // like: cr_phase_flip_0.0001
         qDebug() << "file_name_: " << file_name_;
 
         QString cmd = "python";
         QStringList args;
-        args << pyfile_+".py" << noise_type_ << QString::number(noise_prob_);
+        args << pyfile_ << noise_type_ << QString::number(noise_prob_);
 
         QString paramsList = cmd + " " + args.join(" ");
         qDebug() << paramsList;
 
         exec_calculation(cmd, args);
     }
-    else  // has selected another .qasm file
+    else  // has selected a .qasm file
     {
-        QString model_name = model_file_.fileName();  // like: hf_6_0_5.qasm
+        QString model_name = model_file_.fileName();  // like: ehc_6.qasm
         model_name.chop(5);   // 去掉.qasm
         qDebug() << "model_name: " << model_name;
 
         QStringList list;
         list << model_name << noise_type_ << QString::number(noise_prob_);
-        file_name_ = list.join("_");   // like: hf_6_0_5_bit_flip_0.01
+        file_name_ = list.join("_");   // like: hf_6_bit_flip_0.01
         qDebug() << "file_name_: " << file_name_;
 
         // python qlipschitz.py qasmfile phase_flip 0.0001
         QString cmd = "python";
         QStringList args;
-        args << "qlipschitz.py" << model_file_.filePath() << noise_type_ << QString::number(noise_prob_);
+        args << pyfile_ << model_file_.filePath() << noise_type_ << QString::number(noise_prob_);
         QString paramsList = cmd + " " + args.join(" ");
         qDebug() << paramsList;
 

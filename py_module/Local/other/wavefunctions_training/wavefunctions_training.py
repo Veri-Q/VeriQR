@@ -431,7 +431,7 @@ M = M_12qubit
 measure_on = [5, 11]
 
 if __name__ == '__main__':
-    qubits = 16
+    qubits = 12
     opt = True
     qc = QCNN(qubits, learning_rate=0.01, opt=opt)
     # print(qc.circ.summary())
@@ -574,7 +574,7 @@ if __name__ == '__main__':
     print(M.shape)
     print(data.shape)
     print(label.shape)
-    np.savez('./TFIchain{}_data.npz'.format(qubits), O=M, data=data, label=label)
+    np.savez('./tfi{}_data.npz'.format(qubits), O=M, data=data, label=label)
 
     # plt.figure()
     # plt.plot(accu.acc)

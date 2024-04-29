@@ -7,7 +7,8 @@ from matplotlib.ticker import MaxNLocator
 import os
 import gc
 import time
-from qlipschitz import *
+# from qlipschitz import *
+import csv
 
 
 def calculate_lipschitz_(model_circuit, qubits):
@@ -57,9 +58,9 @@ def fileTest(file):
             # for noise_type in ["mixed"]:
             noise_op_ = noise_ops[noise_type]
             noise_op_mq_ = noise_op_mq[noise_type]
-            p = choice([0.0001, 0.0005, 0.001, 0.005, 0.01, 0.025, 0.05, 0.075])
-            epsilon = choice([0.0001, 0.0003, 0.0005, 0.001, 0.003, 0.005, 0.01, 0.03, 0.05, 0.075])
-            delta = choice([0.0001, 0.0003, 0.0005, 0.001, 0.003, 0.005, 0.0075])
+            p = random.choice([0.0001, 0.0005, 0.001, 0.005, 0.01, 0.025, 0.05, 0.075])
+            epsilon = random.choice([0.0001, 0.0003, 0.0005, 0.001, 0.003, 0.005, 0.01, 0.03, 0.05, 0.075])
+            delta = random.choice([0.0001, 0.0003, 0.0005, 0.001, 0.003, 0.005, 0.0075])
             # circuit_cirq_ = cirq.circuits.Circuit()
             # circuit_cirq_ += circuit_cirq
             circuit_cirq_ = circuit_cirq
@@ -120,3 +121,49 @@ def fileTest(file):
 #     for d1 in range(d0+1, 10):
 #         digits = str(d0) + str(d1)
 #         fileTest('./qasm_models/mnist{}.qasm'.format(digits))
+
+
+def plot_results_figure():
+    with open("./results/global_results.csv") as f:
+        model_name = 'cr'
+        x = np.arange(0, 0.201, 0.002)
+        y_bf, y_dp, y_pf, y_mixed = [], [], [], []
+        for row in csv.reader(f, skipinitialspace=True):
+            if row == [] or row[0] != model_name or row[1] == 'c_1':
+                continue
+
+            if row[1] == 'c_0':
+                k = float(row[5])
+                y_bf, y_dp, y_pf, y_mixed = [k], [k], [k], [k]
+                continue
+
+            noise_type = row[3]
+            k = float(row[5])
+            if noise_type == "bit flip":
+                y_bf.append(k)
+            elif noise_type == "depolarizing":
+                y_dp.append(k)
+            elif noise_type == "phase flip":
+                y_pf.append(k)
+            elif noise_type == "mixed":
+                y_mixed.append(k)
+
+        # print(y_bf)
+        lines = plt.plot(x, y_bf, x, y_dp, x, y_pf, x, y_mixed, 'o')
+        plt.setp(lines[0])
+        plt.setp(lines[1])
+        plt.setp(lines[2], linestyle='-')
+        plt.setp(lines[3], linestyle='-', marker='^', markersize=1)
+        # plt.xlim((0, 0.2))
+        # plt.ylim((0, 1))
+        # plt.xticks(np.arange(0, 0.2, 0.02))
+        # plt.yticks(np.arange(0, 1, 0.1))
+        plt.xlabel('p')
+        plt.ylabel('K*')
+        plt.legend(('${bit flip}$ noise', '${depolarizing}$ noise',
+                    '${phase flip}$ noise', '${mixed}$ noise'), loc='upper right')
+        plt.title('The Lipschitz constant K* of the ${}$ model'.format(model_name))
+        plt.show()
+        plt.savefig('./results/figures/{}.pdf'.format(model_name))
+
+plot_results_figure()

@@ -49,7 +49,7 @@ LocalView::LocalView(QWidget *parent):
     connect(ui->radioButton_depolarizing, SIGNAL(pressed()), this, SLOT(on_radioButton_depolarizing_clicked()));
     connect(ui->radioButton_phaseflip, SIGNAL(pressed()), this, SLOT(on_radioButton_phaseflip_clicked()));
     connect(ui->radioButton_mixednoise, SIGNAL(pressed()), this, SLOT(on_radioButton_mixednoise_clicked()));
-    connect(ui->radioButton_custom_noise, SIGNAL(pressed()), this, SLOT(on_radioButton_importops_clicked()));
+    connect(ui->radioButton_custom_noise, SIGNAL(pressed()), this, SLOT(on_radioButton_importkraus_clicked()));
     connect(ui->slider_prob, SIGNAL(valueChanged(int)), this, SLOT(on_slider_prob_sliderMoved(int)));
     connect(ui->doubleSpinBox_prob, SIGNAL(valueChanged(double)), this, SLOT(on_doubleSpinBox_prob_valueChanged(double)));
 }
@@ -88,6 +88,31 @@ void LocalView::on_radioButton_mixednoise_clicked()
     kraus_file_.fileName().clear();
     ui->lineEdit_custom_noise->clear();
     ui->radioButton_custom_noise->setChecked(false);
+}
+
+void LocalView::on_radioButton_importkraus_clicked()
+{
+    noise_type_ = "custom";
+    QString fileName = QFileDialog::getOpenFileName(this, "Open file", localDir+"/kraus");
+    QFile file(fileName);
+    kraus_file_ = QFileInfo(fileName);
+
+    // model_name_ = fileName.mid(fileName.lastIndexOf("/")+1, fileName.indexOf(".")-fileName.lastIndexOf("/")-1);
+    // qDebug() << "model_name_: " << model_name_;
+
+    if (!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
+        return;
+    }else if(kraus_file_.suffix() != "npz"){
+        QMessageBox::warning(this, "Warning", "VeriQR only supports .npz kraus files.");
+        return;
+    }
+
+    ui->lineEdit_custom_noise->setText(kraus_file_.filePath());
+
+    file.close();
+
+    ui->radioButton_custom_noise->setChecked(true);
 }
 
 void LocalView::on_slider_prob_sliderMoved(int pos)
@@ -152,31 +177,6 @@ void LocalView::init()
     noiseList << "bit flip" << "depolarizing" << "phase flip";
     comboBox_mixednoise->setMaxSelectNum(3);
     comboBox_mixednoise->addItems_for_noise(noiseList);
-}
-
-void LocalView::on_radioButton_importops_clicked()
-{
-    noise_type_ = "custom";
-    QString fileName = QFileDialog::getOpenFileName(this, "Open file", localDir+"/kraus");
-    QFile file(fileName);
-    kraus_file_ = QFileInfo(fileName);
-
-    // model_name_ = fileName.mid(fileName.lastIndexOf("/")+1, fileName.indexOf(".")-fileName.lastIndexOf("/")-1);
-    // qDebug() << "model_name_: " << model_name_;
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
-        return;
-    }else if(kraus_file_.suffix() != "npz"){
-        QMessageBox::warning(this, "Warning", "VeriQR only supports .npz kraus files.");
-        return;
-    }
-
-    ui->lineEdit_custom_noise->setText(kraus_file_.filePath());
-
-    file.close();
-
-    ui->radioButton_custom_noise->setChecked(true);
 }
 
 void LocalView::resizeEvent(QResizeEvent *)

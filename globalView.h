@@ -43,7 +43,8 @@ public slots:
     void on_radioButton_phaseflip_clicked();
     void on_radioButton_bitflip_clicked();
     void on_radioButton_depolarize_clicked();
-    void on_radioButton_mixed_clicked();
+    void on_radioButton_mixednoise_clicked();
+    void on_radioButton_importkraus_clicked();
     void on_slider_prob_sliderMoved(int pos);
     void on_doubleSpinBox_prob_valueChanged(double pos);
     void run_calculate_k();
@@ -64,17 +65,23 @@ private:
     QProcess* process_veri;
 
     QString globalDir;
-
-    QString noise_types[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
+    QString pyfile_ = "qlipschitz.py";
 
     QFileInfo model_file_; // 当前选择的qasm模型文件
-    QString file_name_;   // txt结果文件命名: dice_phase_flip_0.0001
+    QString file_name_;    // txt结果文件命名: dice_phase_flip_0.0001
     QString model_name_;
 
-    QString noise_type_ = noise_types[3];
-    double noise_prob_ = 0.0;
+    QString noise_types[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
+    QString noise_type_;
+    double noise_prob_;
+    QStringList mixed_noises_;
+    QFileInfo kraus_file_;  // 当前选择的kraus operators file
 
-    QString pyfile_;  // evaluate_finance_model_gc
+    std::map<QString, QString> noise_name_map = {
+        {"BitFlip", "bit_flip"},
+        {"Depolarizing", "depolarizing"},
+        {"PhaseFlip", "phase_flip"},
+    };
 
     double lipschitz_;
     double veri_time_;
@@ -84,7 +91,6 @@ private:
     QString output_;
     QString output_line_;
 
-    // bool showed_loss = false;
     bool showed_svg = false;
 
     SvgWidget *svgWidget;

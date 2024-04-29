@@ -1,16 +1,15 @@
 import numpy as np
-from mindquantum.core.gates import H, X, RZ, RY, I, Z, DepolarizingChannel
+from mindquantum.core.gates import H, X, RZ, RY, I, Z, DepolarizingChannel, BitFlipChannel, PhaseFlipChannel
 
 # import mindquantum.core.gates as gate
 
 import numpy as np
 from numpy import load
+import random
 
-data = load("./model_and_data/binary_cav.npz")
-kraus = data["kraus"]
-np.savez('./kraus/kraus_1qubit.npz', kraus=kraus)
-
-
+data = load("../model_and_data/iris_data.npz")
+print(data["data"].shape)
+# np.savez('./kraus/kraus_1qubit.npz', kraus=kraus)
 
 # I = gate.I.matrix()
 # Z = gate.Z.matrix()
@@ -79,24 +78,57 @@ np.savez('./kraus/kraus_1qubit.npz', kraus=kraus)
 #
 # return M_0 - M_1
 
-data_file = "../model_and_data/binary_cav.npz"  # 6 qubit
-DATA = np.load(data_file)
-kraus = DATA['kraus']
-O = DATA['O']
-data = DATA['data']
-label = DATA['label']
+noise_ops = ["phase_flip", "depolarizing", "bit_flip"]
+noise_op_map = {
+    "bit_flip": BitFlipChannel,
+    "depolarizing": DepolarizingChannel,
+    "phase_flip": PhaseFlipChannel,
+}
 
-p = 0.001
-kraus_ = []
-E = DepolarizingChannel(p).matrix()
-print(E)
-for e in E:
-    kraus_.append(e @ kraus[0])
 
-kraus_ = np.array(kraus_)
-print(kraus_.shape)
+def qubit_add_noise():
+    data_file = "../model_and_data/qubit_cav.npz"  # 6 qubit
+    DATA = np.load(data_file)
+    kraus = DATA['kraus']
+    O = DATA['O']
+    data = DATA['data']
+    label = DATA['label']
 
-np.savez('../model_and_data/binary{}_cav.npz'.format(p), O=O, data=data, label=label, kraus = kraus_)
+    p = float(round(random.uniform(0, 0.001), 5))
+    E = noise_op_map[random.choice(noise_ops)](p).matrix()
+    kraus_ = []
+    for e in E:
+        kraus_.append(e @ kraus[0])
+    kraus_ = np.array(kraus_)
+    print(kraus_.shape)
+    np.savez('../model_and_data/qubitRandom_cav.npz', O=O, data=data, label=label, kraus=kraus_)
+
+    p = 0.001
+    new_kraus_1 = []
+    E = DepolarizingChannel(p).matrix()
+    print(E)
+    for k in kraus_:
+        for e in E:
+            new_kraus_1.append(e @ k)
+
+    new_kraus_1 = np.array(new_kraus_1)
+    print(new_kraus_1.shape)
+    np.savez('../model_and_data/qubitDepolarizing{}_cav.npz'.format(p), O=O, data=data, label=label, kraus=new_kraus_1)
+
+    p = 0.005
+    new_kraus_2 = []
+    E = DepolarizingChannel(p).matrix()
+    print(E)
+    for k in kraus_:
+        for e in E:
+            new_kraus_2.append(e @ k)
+
+    new_kraus_2 = np.array(new_kraus_2)
+    print(new_kraus_2.shape)
+    np.savez('../model_and_data/qubitDepolarizing{}_cav.npz'.format(p), O=O, data=data, label=label, kraus=new_kraus_2)
+
+
+qubit_add_noise()
 
 
 # print(data.shape)
@@ -193,22 +225,11 @@ def printdata():
     # data_file = "binary_cav.npz"         # 1 qubit
     # data_file = "mnist_cav.npz"          # 8 qubit
     # data_file = "excitation_cav.npz"     # 6 qubit
-    data_file = "../model_and_data/TFIchain8_data.npz"  # 6 qubit
+    data_file = "../model_and_data/tfi8_data.npz"  # 6 qubit
     DATA = np.load(data_file)
     data = DATA['data']
-    for rho in data:
-        print(np.real(np.trace(rho @ rho)))
-    # print("kraus")
-    # print(DATA['kraus'].shape)
-    # print(DATA['kraus'])
-    # print()
-    # print("O")
-    # print(DATA['O'])
-    # print()
-    # print("data")
-    # print(DATA['data'].shape)
-    # print(DATA['data'])
-    # print()
-    # print("label")
-    # print(len(DATA['label']))
-    # print(DATA['label'])
+    # for rho in data:
+    #     print(np.real(np.trace(rho @ rho)))
+    print(data.shape)
+
+# printdata()

@@ -1,5 +1,4 @@
 import cirq
-import numpy as np
 from baseline import fileTest
 
 NUM_QUBITS = 9
