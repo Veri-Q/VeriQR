@@ -24,16 +24,6 @@ from mindspore.common.initializer import initializer
 from mindspore.common.parameter import Parameter
 
 
-class MyLoss(SoftmaxCrossEntropyWithLogits):
-    def __init__(self, sparse=True, reduction='mean'):
-        super(MyLoss, self).__init__(sparse, reduction)
-        self.abs = ops.Abs()
-
-    def construct(self, logits, label):
-        out = self.abs(logits - label)
-        return self.get_loss(out)
-
-
 class AnsatzOnlyOps(nn.Cell):
     def __init__(self, expectation_with_grad: GradOpsWrapper):
         """Initialize a MQAnsatzOnlyOps object."""
@@ -86,6 +76,16 @@ class AnsatzOnlyLayer(nn.Cell):
     #     return self.evolution(self.weight, init_state)
 
 
+class MyLoss(SoftmaxCrossEntropyWithLogits):
+    def __init__(self, sparse=True, reduction='mean'):
+        super(MyLoss, self).__init__(sparse, reduction)
+        self.abs = ops.Abs()
+
+    def construct(self, logits, label):
+        out = self.abs(logits - label)
+        return self.get_loss(out)
+
+
 class MyWithLossCell(nn.Cell):
     def __init__(self, expectation_with_grad, loss_fn, weight='normal'):
         """Initialize a MQAnsatzOnlyLayer object."""
@@ -99,7 +99,7 @@ class MyWithLossCell(nn.Cell):
         self.weight = Parameter(initializer(weight, weight_size, dtype=ms.float32), name='ansatz_weight')
         self._loss_fn = loss_fn
 
-    def construct(self, x, label):  # 新增参数 init_state
+    def construct(self, x, label):
         """Construct a MQAnsatzOnlyLayer node."""
         out = self.evolution(self.weight)
         return self._loss_fn(out, label)
@@ -131,138 +131,172 @@ def logistic(x):
     return 1 / (1 + np.exp(-x))
 
 
+# def retrain_using_density_matrix():
+#     circ = 'c0'
+#     DATA = np.load('../model_and_data/iris_newdata_{}.npz'.format(circ))
+#     # X_train = Tensor(DATA['data'][:60], ms.complex128)
+#     # y_train = Tensor(DATA['label'][:60], ms.int32)
+#     # X_test = Tensor(DATA['data'][:20], ms.complex128)
+#     # y_test = Tensor(DATA['label'][:20], ms.int32)
+#     X_train = np.array(DATA['data'][:60]).astype(np.float32)
+#     y_train = np.array(DATA['label'][:60]).astype(np.int32)
+#     X_test = np.array(DATA['data'][60:]).astype(np.float32)
+#     y_test = np.array(DATA['label'][60:]).astype(np.int32)
+#     print(type(X_train))
+#     print(type(y_train))
+#     print(X_train.shape)  # 打印训练集中样本的数据类型
+#     print(y_train.shape)  # 打印训练集中样本的数据类型
+#     print(X_test.shape)
+#     print(y_test.shape)  # 打印训练集中样本的数据类型
+#
+#     # 搭建Ansatz
+#     ansatz = HardwareEfficientAnsatz(4, single_rot_gate_seq=[RY], entangle_gate=X, depth=3).circuit
+#     # ansatz.summary()
+#     # print(ansatz)
+#     # print()
+#
+#     circuit = ansatz.as_ansatz()  # 完整的量子线路由Encoder和Ansatz组成
+#     circuit.summary()
+#     # print(circuit)
+#     # circuit.matrix()
+#
+#     # 搭建量子神经网络
+#     ms.set_context(mode=ms.PYNATIVE_MODE, device_target="CPU")
+#     ms.set_seed(1)  # 设置生成随机数的种子
+#     sim = Simulator('mqmatrix', circuit.n_qubits)
+#
+#     # 构建哈密顿量
+#     hams = [Hamiltonian(QubitOperator(f'Z{i}')) for i in [2, 3]]  # 分别对第2位和第3位量子比特执行泡利Z算符测量，且将系数都设为1，构建对应的哈密顿量
+#     grad_ops = sim.get_expectation_with_grad(hams, circuit, parallel_worker=5)
+#     # np.real(np.trace(U.conj().T @ M @ U @ rho))
+#
+#     # loss = SoftmaxCrossEntropyWithLogits(sparse=True, reduction='mean')  # 指定标签使用稀疏格式, 损失函数的降维方法为求平均值
+#     loss = MyLoss()
+#     # qnet = MyWithLossCell(grad_ops, loss_fn=loss)
+#     qnet = MyWithLossCell(grad_ops, loss_fn=loss)
+#     opti = Adam(qnet.trainable_params(), learning_rate=0.1)
+#     net = TrainOneStepCell(qnet, opti)
+#
+#     logits = []
+#     for i in range(len(X_train)):
+#         rho = X_train[i]
+#         # pr_ansatz = dict(zip(ansatz.params_name, qnet.weight.asnumpy()))  # 获取线路参数
+#         pr_ansatz = dict(zip(ansatz.params_name, [0] * len(ansatz.params_name)))  # 获取线路参数
+#         # print('pr_ansatz = ', pr_ansatz)
+#         ansatz_ = ansatz.apply_value(pr_ansatz)
+#         U = ansatz_.matrix()
+#         m1_ = np.real(np.trace(U.conj().T @ M_2 @ U @ rho))
+#         m2_ = np.real(np.trace(U.conj().T @ M_3 @ U @ rho))
+#         m = m2_ - m1_
+#         predict = 1 if m > 0 else 0
+#         # logit = Tensor(logistic(m), ms.float32)
+#         logit = logistic(m)
+#         logits.append(logit)
+#     labels = np.array([i for i in y_train])
+#     # labels = y_train
+#     logits = np.array(logits)
+#     # output = loss(logits, labels)
+#
+#     for i in range(200):
+#         res = net(Tensor(logits, ms.float32), Tensor(labels, ms.int32))
+#         if i % 20 == 0:
+#             print(i, ': ', res)
+#
+#     # loss_net = nn.WithLossCell(net, loss_fn)
+#
+#     # for i in range(len(X_train)):
+#     #     rho = X_train[i]
+#     # label = int(y_train[i])
+#     # model = Model(qnet, loss, opti, metrics={'Acc': Accuracy()})
+#     # model.train(20)
+#     # i = 0
+#     # rho = X_train[i]
+#     # label = int(y_train[i])
+#     # net = TrainOneStepCell(qnet, opti)
+#     # for j in range(200):
+#     #     res = net(Tensor(rho))  # 此处传入初态
+#     #     if j % 10 == 0:
+#     #         print(j, ': ', res)
+#     #
+#     # # print(qnet.weight.asnumpy())
+#     #
+#     # pr_ansatz = dict(zip(ansatz.params_name, qnet.weight.asnumpy()))  # 获取线路参数
+#     # # print('pr_ansatz = ', pr_ansatz)
+#     # ansatz_ = ansatz.apply_value(pr_ansatz)
+#     # U = ansatz_.matrix()
+#
+#     # predict = np.argmax(ops.Softmax()(qnet.predict(ms.Tensor(DATA['data'][1]))), axis=1)  #
+#     # 使用建立的模型和测试样本，得到测试样本预测的分类
+#
+#     def veri():
+#         correct = 0
+#         for i in range(len(X_train)):
+#             rho = X_train[i]
+#             label = int(y_train[i])
+#
+#             sim_ = Simulator('mqmatrix', circuit.n_qubits)
+#             sim_.apply_circuit(ansatz_)
+#             sim_.set_qs(rho)
+#             m1 = np.real(sim_.get_expectation(hams[0]))
+#             m2 = np.real(sim_.get_expectation(hams[1]))
+#             m = m2 - m1
+#             # res_1 = 0 if m1 - m2 > 0 else 1
+#             # m = np.real(sim_.get_expectation(hams))
+#             res_1 = 1 if m > 0 else 0
+#             # print('m: ', m)
+#             print('use expectation: ', res_1)
+#             # print('m1 = ', m1)
+#             # print('m2 = ', m2)
+#             # rho = sim_.get_qs(backend='mqmatrix')
+#
+#             m1_ = np.real(np.trace(U.conj().T @ M_2 @ U @ rho))
+#             m2_ = np.real(np.trace(U.conj().T @ M_3 @ U @ rho))
+#             m = m2_ - m1_
+#             res_2 = 1 if m > 0 else 0
+#             print('compute: ', res_2)
+#
+#             # if res_1 != res_2:
+#             #     print("error!")
+#             #     break
+#             print('real label: ', label)
+#             if res_1 == res_2 and res_1 == label:
+#                 correct += 1
+#         print("correct: ", correct / len(X_train))
+
 def retrain_using_density_matrix():
-    circ = 'c0'
-    DATA = np.load('../model_and_data/iris_newdata_{}.npz'.format(circ))
-    # X_train = Tensor(DATA['data'][:60], ms.complex128)
-    # y_train = Tensor(DATA['label'][:60], ms.int32)
-    # X_test = Tensor(DATA['data'][:20], ms.complex128)
-    # y_test = Tensor(DATA['label'][:20], ms.int32)
-    X_train = np.array(DATA['data'][:60]).astype(np.float32)
-    y_train = np.array(DATA['label'][:60]).astype(np.int32)
-    X_test = np.array(DATA['data'][60:]).astype(np.float32)
-    y_test = np.array(DATA['label'][60:]).astype(np.int32)
+    DATA = np.load('../model_and_data/iris_newdata_c0.npz')
+    X_train = Tensor(DATA['data'][:60], ms.complex128)
+    y_train = Tensor(DATA['label'][:60], ms.int32)
+    X_test = Tensor(DATA['data'][:20], ms.complex128)
+    y_test = Tensor(DATA['label'][:20], ms.int32)
+    print('数据集信息：')
     print(type(X_train))
     print(type(y_train))
     print(X_train.shape)  # 打印训练集中样本的数据类型
     print(X_test.shape)
+    print('')
 
     # 搭建Ansatz
     ansatz = HardwareEfficientAnsatz(4, single_rot_gate_seq=[RY], entangle_gate=X, depth=3).circuit
-    # ansatz.summary()
-    # print(ansatz)
-    # print()
-
-    circuit = ansatz.as_ansatz()  # 完整的量子线路由Encoder和Ansatz组成
-    circuit.summary()
-    # print(circuit)
-    # circuit.matrix()
+    circuit = ansatz.as_ansatz()
 
     # 搭建量子神经网络
-    ms.set_context(mode=ms.PYNATIVE_MODE, device_target="CPU")
-    ms.set_seed(1)  # 设置生成随机数的种子
     sim = Simulator('mqmatrix', circuit.n_qubits)
-
     # 构建哈密顿量
-    hams = [Hamiltonian(QubitOperator(f'Z{i}')) for i in [2, 3]]  # 分别对第2位和第3位量子比特执行泡利Z算符测量，且将系数都设为1，构建对应的哈密顿量
-    grad_ops = sim.get_expectation_with_grad(hams, circuit, parallel_worker=5)
-    # np.real(np.trace(U.conj().T @ M @ U @ rho))
-
-    # loss = SoftmaxCrossEntropyWithLogits(sparse=True, reduction='mean')  # 指定标签使用稀疏格式, 损失函数的降维方法为求平均值
+    hams = Hamiltonian(QubitOperator('Z0'))
+    grad_ops = sim.get_expectation_with_grad(hams, circuit)
     loss = MyLoss()
-    # qnet = MyWithLossCell(grad_ops, loss_fn=loss)
-    qnet = MyWithLossCell(grad_ops, loss_fn=loss)
-    opti = Adam(qnet.trainable_params(), learning_rate=0.1)
-    net = TrainOneStepCell(qnet, opti)
+    qnet = AnsatzOnlyLayer(grad_ops)
+    net = MyWithLossCell(qnet, loss)
+    opti = Adam(qnet.trainable_params(), learning_rate=0.05)
+    train_one_step = TrainOneStepCell(net, opti)
 
-    logits = []
     for i in range(len(X_train)):
-        rho = X_train[i]
-        # pr_ansatz = dict(zip(ansatz.params_name, qnet.weight.asnumpy()))  # 获取线路参数
-        pr_ansatz = dict(zip(ansatz.params_name, [0] * len(ansatz.params_name)))  # 获取线路参数
-        # print('pr_ansatz = ', pr_ansatz)
-        ansatz_ = ansatz.apply_value(pr_ansatz)
-        U = ansatz_.matrix()
-        m1_ = np.real(np.trace(U.conj().T @ M_2 @ U @ rho))
-        m2_ = np.real(np.trace(U.conj().T @ M_3 @ U @ rho))
-        m = m2_ - m1_
-        predict = 1 if m > 0 else 0
-        logit = Tensor(logistic(m), ms.float32)
-        # logit = logistic(m)
-        logits.append(logit)
-    labels = np.array([i for i in y_train])
-    # labels = y_train
-    logits = np.array(logits)
-    # output = loss(logits, labels)
-
-    for i in range(200):
-        res = net(Tensor(logits, ms.float32), Tensor(labels, ms.int32))
-        if i % 20 == 0:
-            print(i, ': ', res)
-
-    # loss_net = nn.WithLossCell(net, loss_fn)
-
-    # for i in range(len(X_train)):
-    #     rho = X_train[i]
-    # label = int(y_train[i])
-    # model = Model(qnet, loss, opti, metrics={'Acc': Accuracy()})
-    # model.train(20)
-    # i = 0
-    # rho = X_train[i]
-    # label = int(y_train[i])
-    # net = TrainOneStepCell(qnet, opti)
-    # for j in range(200):
-    #     res = net(Tensor(rho))  # 此处传入初态
-    #     if j % 10 == 0:
-    #         print(j, ': ', res)
-    #
-    # # print(qnet.weight.asnumpy())
-    #
-    # pr_ansatz = dict(zip(ansatz.params_name, qnet.weight.asnumpy()))  # 获取线路参数
-    # # print('pr_ansatz = ', pr_ansatz)
-    # ansatz_ = ansatz.apply_value(pr_ansatz)
-    # U = ansatz_.matrix()
-
-    # predict = np.argmax(ops.Softmax()(qnet.predict(ms.Tensor(DATA['data'][1]))), axis=1)  #
-    # 使用建立的模型和测试样本，得到测试样本预测的分类
-
-    def veri():
-        correct = 0
-        for i in range(len(X_train)):
-            rho = X_train[i]
-            label = int(y_train[i])
-
-            sim_ = Simulator('mqmatrix', circuit.n_qubits)
-            sim_.apply_circuit(ansatz_)
-            sim_.set_qs(rho)
-            m1 = np.real(sim_.get_expectation(hams[0]))
-            m2 = np.real(sim_.get_expectation(hams[1]))
-            m = m2 - m1
-            # res_1 = 0 if m1 - m2 > 0 else 1
-            # m = np.real(sim_.get_expectation(hams))
-            res_1 = 1 if m > 0 else 0
-            # print('m: ', m)
-            print('use expectation: ', res_1)
-            # print('m1 = ', m1)
-            # print('m2 = ', m2)
-            # rho = sim_.get_qs(backend='mqmatrix')
-
-            m1_ = np.real(np.trace(U.conj().T @ M_2 @ U @ rho))
-            m2_ = np.real(np.trace(U.conj().T @ M_3 @ U @ rho))
-            m = m2_ - m1_
-            res_2 = 1 if m > 0 else 0
-            print('compute: ', res_2)
-
-            # if res_1 != res_2:
-            #     print("error!")
-            #     break
-            print('real label: ', label)
-            if res_1 == res_2 and res_1 == label:
-                correct += 1
-        print("correct: ", correct / len(X_train))
+        res = train_one_step(X_train[i], y_train[i])
+        print(i, ': ', res)
 
 
-retrain_using_density_matrix()
+# retrain_using_density_matrix()
 
 
 # retrain_using_density_matrix()
@@ -500,21 +534,21 @@ def train():
     # print("实际类别：", y_test)  # 对于测试样本，打印实际分类结果
     # print(correct)
 
-    data = prepare_data()
-    # data = DATA['data']
-    # print(predict_by_compute)
-    label = [1 - i for i in predict_train]
-    label = np.array(label)
-    # print(label)
-
-    # print(kraus.shape)
-    print(M.shape)
-    print(data.shape)
-    print(label.shape)
+    # data = prepare_data()
+    # # data = DATA['data']
+    # # print(predict_by_compute)
+    # label = [1 - i for i in predict_train]
+    # label = np.array(label)
+    # # print(label)
+    #
+    # # print(kraus.shape)
+    # print(M.shape)
+    # print(data.shape)
+    # print(label.shape)
     # np.savez('../model_and_data/iris_data_{}.npz'.format(circ), O=M, data=data, label=label)
 
 
-# train()
+train()
 
 
 def custom_training(encoder):

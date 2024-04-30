@@ -212,7 +212,7 @@ For *global-robustness*, we also add different levels of noise to each quantum m
 - The model named $qaoa$ is used for hardware grid problems in [the paper](https://www.nature.com/articles/s41567-020-01105-y).
 - The models $iris$ and $fashion$ are same as the one in **Local-robustness Verification**. 
 
-The full experimental results are shown in the [global_results](https://github.com/Veri-Q/VeriQR/blob/main/py_module/Global/results/global_results.csv) table: 
+The full experimental results are shown in the [global_results](https://github.com/Veri-Q/VeriQR/blob/main/py_module/Global/results/global_results.csv) table. 
 
 ### Experimental Comparison
 
@@ -744,4 +744,3 @@ Here is an experimental comparison against a baseline implementation without ten
     </tr>
 </tbody>
 </table>
-
