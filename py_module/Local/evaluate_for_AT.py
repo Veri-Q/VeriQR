@@ -1,4 +1,4 @@
-from VeriQ import RobustnessVerifier, PureRobustnessVerifier
+from VeriL import RobustnessVerifier, PureRobustnessVerifier
 from common_interface import *
 from numpy import load
 from sys import argv
@@ -311,13 +311,13 @@ def adversarial_training_evaluate():
                 data_c1, label_c1 = copy.deepcopy(new_data_c1), copy.deepcopy(new_labels_c1)
                 data_c2_1, label_c2_1 = copy.deepcopy(new_data_c2_1), copy.deepcopy(new_labels_c2_1)
                 data_c2_2, label_c2_2 = copy.deepcopy(new_data_c2_2), copy.deepcopy(new_labels_c2_2)
-                np.savez('./model_and_data/for_adversarial_training/iris_newdata_c0.npz', O=O, data=new_data_c0,
+                np.savez('model_and_data/by_adversarial_training/iris_newdata_c0.npz', O=O, data=new_data_c0,
                          label=new_labels_c0)
-                np.savez('./model_and_data/for_adversarial_training/iris_newdata_c1.npz', O=O, data=new_data_c1,
+                np.savez('model_and_data/by_adversarial_training/iris_newdata_c1.npz', O=O, data=new_data_c1,
                          label=new_labels_c1)
-                np.savez('./model_and_data/for_adversarial_training/iris_newdata_c21.npz', O=O, data=new_data_c2_1,
+                np.savez('model_and_data/by_adversarial_training/iris_newdata_c21.npz', O=O, data=new_data_c2_1,
                          label=new_labels_c2_1)
-                np.savez('./model_and_data/for_adversarial_training/iris_newdata_c22.npz', O=O, data=new_data_c2_2,
+                np.savez('model_and_data/by_adversarial_training/iris_newdata_c22.npz', O=O, data=new_data_c2_2,
                          label=new_labels_c2_2)
 
                 origin_ac_1 = origin_ac_temp[0] * 100

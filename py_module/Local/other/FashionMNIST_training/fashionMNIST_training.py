@@ -26,7 +26,8 @@ def mat_m(qubit_num):
     return M_0 - M_1
 
 
-M = mat_m(10)
+QUBIT_NUM = 8
+M = mat_m(QUBIT_NUM)
 
 
 def logistic(x):
@@ -355,14 +356,14 @@ class Main():
                         predict_by_prob.append(1)
 
                 for j in range(len(y_train_)):
-                    if predict_by_measure[j + i * 100] != y_train_[j]:
-                        print("the {}th sample prediction error".format(j + 1 + i * 100))
-                        print('(measure) predict: ', predict_by_measure[j + i * 100])
+                    if predict_by_measure[j + i * BATCH_SIZE] != y_train_[j]:
+                        print("the {}th sample prediction error".format(j + 1 + i * BATCH_SIZE))
+                        print('(measure) predict: ', predict_by_measure[j + i * BATCH_SIZE])
                         print('actual: ', y_train_[j])
                         count_error += 1
-                    if predict_by_prob[j + i * 100] != y_train_[j]:
-                        print("the {}th sample prediction error".format(j + 1 + i * 100))
-                        print('(prob) predict: ', predict_by_prob[j + i * 100])
+                    if predict_by_prob[j + i * BATCH_SIZE] != y_train_[j]:
+                        print("the {}th sample prediction error".format(j + 1 + i * BATCH_SIZE))
+                        print('(prob) predict: ', predict_by_prob[j + i * BATCH_SIZE])
                         print('actual: ', y_train_[j])
                         print()
 
@@ -373,6 +374,7 @@ class Main():
             label = [1 - i for i in predict_by_measure]
             label = np.array(label)
             print('count_error:', count_error)
+            print('acc:', 1 - count_error/len(label))
             print(U.shape)
             print(M.shape)
             print(data.shape)
@@ -382,15 +384,14 @@ class Main():
         veri()
 
 
-if __name__ == '__main__':
-    QUBIT_NUM = 10
-    BLOCK_NUM = 2
-    BATCH_SIZE = 100
-    LR = 0.01
-    STEP_NUM = 30  # 60
-    WORKER = 5
-    TRAIN_SET_NUM = 1000
-    TEST_SET_NUM = 200
+# if __name__ == '__main__':
+BLOCK_NUM = 2
+BATCH_SIZE = 100
+LR = 0.01
+STEP_NUM = 30  # 60
+WORKER = 5
+TRAIN_SET_NUM = 1000
+TEST_SET_NUM = 200
 
-    main = Main('FashionMNIST', 'Ent1')
-    main.training()
+main = Main('FashionMNIST', 'Ent1')
+main.training()

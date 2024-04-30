@@ -1,4 +1,4 @@
-from VeriQ import RobustnessVerifier, PureRobustnessVerifier
+from VeriL import RobustnessVerifier, PureRobustnessVerifier
 from common_interface import *
 from numpy import load
 from sys import argv

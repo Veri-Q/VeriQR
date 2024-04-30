@@ -7,9 +7,6 @@ import jax.numpy as jnp
 from jax import jit
 import numpy as np
 import gc
-import os
-import sys
-import csv
 import signal
 from contextlib import contextmanager
 from numpy import load
@@ -24,9 +21,6 @@ import random
 
 jax.config.update('jax_platform_name', 'cpu')
 tn.set_default_backend("jax")
-os.environ["XLA_PYTHON_CLIENT_PREALLOCATE"] = "false"
-os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"] = ".XX"
-os.environ["XLA_PYTHON_CLIENT_ALLOCATOR"] = "platform"
 
 
 class TimeoutException(Exception): pass
@@ -141,20 +135,21 @@ def qasm2cirq_by_qiskit(file):
     return qubits, circuit, qasm_str
 
 
-def get_origin_circuit(qasm_file_):
+def get_origin_circuit(qasm_file_, to_save_figure=False):
     cirq_qubits, cirq_circuit, qasm_str = qasm2cirq_by_qiskit(qasm_file_)
 
     mq_circuit = qasm2mq(qasm_str)
 
     model_name_ = qasm_file_[qasm_file_.rfind('/') + 1:-5]
-    file_name_ = "{}_origin.svg".format(model_name_)
-    mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
-    print(file_name_ + " saved successfully! ")
+    if to_save_figure:
+        file_name_ = "{}_origin.svg".format(model_name_)
+        mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
+        print(file_name_ + " saved successfully! ")
 
     return mq_circuit, cirq_circuit, cirq_qubits
 
 
-def generate_model_circuit(variables, qubits_num, model_name_):
+def generate_model_circuit(variables, qubits_num, model_name_, to_save_figure=False):
     cirq_qubits = cirq.GridQubit.rect(1, qubits_num)
     symbols = iter(variables)
     cirq_circuit = cirq.Circuit()
@@ -217,9 +212,10 @@ def generate_model_circuit(variables, qubits_num, model_name_):
     mq_circuit += RZ(next(symbols)).on(mq_qubits[-1])
     mq_circuit += RX(next(symbols)).on(mq_qubits[-1])
 
-    # file_name_ = "{}_origin.svg".format(model_name_)
-    # mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
-    # print(file_name_ + " saved successfully! ")
+    if to_save_figure:
+        file_name_ = "{}_origin.svg".format(model_name_)
+        mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
+        print(file_name_ + " saved successfully! ")
 
     return mq_circuit, cirq_circuit, cirq_qubits
 
@@ -271,25 +267,14 @@ def random_insert_ops(mq_circuit: mindquantum.Circuit, cirq_circuit: cirq.Circui
 
     mq_random_circuit = Circuit()
     cirq_random_circuit = cirq.Circuit()
-    qubits_num = mq_circuit.n_qubits
+    # qubits_num = mq_circuit.n_qubits
     # cirq_qubits = cirq.GridQubit.rect(1, qubits_num)
     # cirq_qubits = cirq.num_qubits(qubits_num)
     cirq_qubits = sorted(cirq_circuit.all_qubits())
     selected_qubits = []
-    # print(cirq_circuit)
-    # for g in cirq_circuit:
-    #     print(g)
-    #     print()
     for (i, mq_gate), cirq_gate in zip(enumerate(mq_circuit), cirq_circuit.all_operations()):
-        # cirq_circuit.all_operations()
-        print(i)
-        print(mq_gate)
-        # cirq_gate = enumerate(cirq_circuit)[i]
-        print(cirq_gate)
-        if ((isinstance(mq_gate, Measure) or isinstance(cirq_gate, Measure))
-                and not after_measure):
+        if ((isinstance(mq_gate, Measure) or isinstance(cirq_gate, Measure)) and not after_measure):
             continue
-
         mq_random_circuit += mq_gate
         cirq_random_circuit += cirq_gate
         for j, tem_indexs in enumerate(indexes):
@@ -299,7 +284,6 @@ def random_insert_ops(mq_circuit: mindquantum.Circuit, cirq_circuit: cirq.Circui
                     qubit = int(np.random.choice(qubits))
                     if qubit in selected_qubits:  # the `qubit` has been selected.
                         continue
-                    # mq_noise_op = mq_ops[j]
                     mq_random_circuit += mq_ops[j].on(qubit)
                     cirq_random_circuit += cirq_ops[j].on(cirq_qubits[qubit])
                     selected_qubits.append(qubit)
@@ -307,9 +291,9 @@ def random_insert_ops(mq_circuit: mindquantum.Circuit, cirq_circuit: cirq.Circui
     return mq_random_circuit, cirq_random_circuit
 
 
-def generating_circuit_with_random_noise(mq_circ: mindquantum.Circuit, cirq_circ: cirq.Circuit, model_name_):
+def generating_circuit_with_random_noise(mq_circ: mindquantum.Circuit, cirq_circ: cirq.Circuit,
+                                         model_name_, to_save_figure=False):
     # generate random noise
-    # noise_num = random.randint(1, len(circ))
     noise_num = mq_circ.n_qubits
     print('add {} noise'.format(noise_num))
     mq_ops, cirq_ops = [], []
@@ -341,15 +325,16 @@ def generating_circuit_with_random_noise(mq_circ: mindquantum.Circuit, cirq_circ
     for m in all_measures:
         mq_circ += m
 
-    file_name_ = '{}_random.svg'.format(model_name_)
-    mq_circ.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
-    print(file_name_ + " saved successfully! ")
+    if to_save_figure:
+        file_name_ = '{}_random.svg'.format(model_name_)
+        mq_circ.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
+        print(file_name_ + " saved successfully! ")
     return mq_circ, cirq_circ
 
 
 def generating_circuit_with_specified_noise(mq_circuit: mindquantum.Circuit, cirq_circuit: cirq.Circuit,
-                                            noise_type_, noise_list_, kraus_file_, noise_p_: float,
-                                            model_name_):
+                                            noise_type_, noise_list_, kraus_file_, noise_p_,
+                                            model_name_, to_save_figure=False):
     all_measures = []
     for gate in mq_circuit:
         # print(type(gate))
@@ -392,9 +377,10 @@ def generating_circuit_with_specified_noise(mq_circuit: mindquantum.Circuit, cir
     for m in all_measures:
         mq_circuit += m
 
-    file_name_ = '{}_{}_{}.svg'.format(model_name_, noise_name_, noise_p_)
-    mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
-    print(file_name_ + " saved successfully! ")
+    if to_save_figure:
+        file_name_ = '{}_{}_{}.svg'.format(model_name_, noise_name_, noise_p_)
+        mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
+        print(file_name_ + " saved successfully! ")
     return mq_circuit, cirq_circuit
 
 
@@ -586,7 +572,6 @@ def calculate_lipschitz(cirq_circuit: cirq.Circuit, cirq_qubits):
 
 
 def verification(k, epsilon, delta):
-    print("===========The Global Verification Start============")
     if delta >= k * epsilon:
         print('This model is ({}, {})-robust.'.format(epsilon, delta))
         # print('YES')
@@ -594,156 +579,4 @@ def verification(k, epsilon, delta):
 
     print('This model is not ({}, {})-robust.'.format(epsilon, delta))
     # print('NO')
-    print("===========The Global Verification End============")
     return False
-
-
-if str(sys.argv[1]) != "verify":
-    # python qlipschitz.py ./qasm_models/HFVQE/ehc_6.qasm phase_flip 0.0001
-    if '.qasm' in sys.argv[1]:
-        qasm_file = str(sys.argv[1])
-        model_name = qasm_file[qasm_file.rfind("/") + 1:-5]
-    else:
-        model_name = str(sys.argv[1])
-    arg_num = len(sys.argv)
-    noise_list = []
-    kraus_file = ''
-    if arg_num <= 2:  # random noise
-        noise_type = random.choice(noise_ops)
-        noise = noise_op_mq[noise_type].__name__
-        noise = noise[0: noise.index("Channel")]
-        noise_p = float(round(random.uniform(0, 0.2), 5))  # 随机数的精度round(数值，精度)
-        file_name = "{}_{}_{}".format(model_name, noise, str(noise_p))
-    else:
-        noise_type = str(sys.argv[2])
-        noise_p = float(sys.argv[arg_num - 1])
-        if noise_type == 'mixed':
-            noise_list = [i for i in sys.argv[3: arg_num - 1]]
-        elif noise_type == 'custom':
-            kraus_file = sys.argv[3]
-
-    if '.qasm' in sys.argv[1]:  # qasm_file
-        origin_mq_circuit, origin_cirq_circuit, cirq_qubits = get_origin_circuit(qasm_file)
-        origin_mq_circuit_ = mindquantum.Circuit(origin_mq_circuit)
-        origin_cirq_circuit_ = cirq.Circuit(origin_cirq_circuit)
-        random_mq_circuit, random_cirq_circuit = generating_circuit_with_random_noise(origin_mq_circuit_,
-                                                                                      origin_cirq_circuit_, model_name)
-    else:  # case
-        variables, qubits_num = case_params[model_name]
-        origin_mq_circuit, origin_cirq_circuit, cirq_qubits = generate_model_circuit(variables, qubits_num, model_name)
-        origin_mq_circuit_ = mindquantum.Circuit(origin_mq_circuit)
-        origin_cirq_circuit_ = cirq.Circuit(origin_cirq_circuit)
-        random_mq_circuit, random_cirq_circuit = generating_circuit_with_random_noise(origin_mq_circuit_,
-                                                                                      origin_cirq_circuit_, model_name)
-
-    random_mq_circuit_ = mindquantum.Circuit(random_mq_circuit)
-    random_cirq_circuit_ = cirq.Circuit(random_cirq_circuit)
-    final_mq_circuit, final_cirq_circuit = generating_circuit_with_specified_noise(
-        random_mq_circuit_, random_cirq_circuit_, noise_type, noise_list, kraus_file, noise_p, model_name)
-
-    # origin_k, origin_time, origin_bias_kernel = calculate_lipschitz(origin_cirq_circuit, cirq_qubits)
-    random_k, random_time, random_bias_kernel = calculate_lipschitz(random_cirq_circuit, cirq_qubits)
-    final_k, final_time, final_bias_kernel = calculate_lipschitz(final_cirq_circuit, cirq_qubits)
-
-    with (open("./results/global_results.csv", "a+") as csvfile):
-        w = csv.writer(csvfile)
-        # for epsilon, delta in [(0.003, 0.0001), (0.03, 0.0005),]
-        # epsilon, delta = 0.003, 0.0001
-        # epsilon, delta = 0.03, 0.0005
-        # epsilon, delta = 0.05, 0.001
-        # epsilon, delta = 0.005, 0.005
-
-        # epsilon, delta = 0.075, 0.003
-        # epsilon, delta = 0.0003, 0.0001
-        # epsilon, delta = 0.01, 0.0075
-        # epsilon, delta = 0.075, 0.0075
-
-        # epsilon, delta = 0.01, 0.0005
-        # epsilon, delta = 0.075, 0.005
-        # epsilon, delta = 0.0003, 0.0001
-        # epsilon, delta = 0.0001, 0.0001
-
-        # epsilon, delta = 0.05, 0.0005
-        # epsilon, delta = 0.01, 0.003
-        # epsilon, delta = 0.075, 0.0075
-        # epsilon, delta = 0.03, 0.0075
-
-        epsilon = random.choice([0.0001, 0.0003, 0.0005, 0.001, 0.003, 0.005, 0.01, 0.03, 0.05, 0.075])
-        delta = random.choice([0.0001, 0.0003, 0.0005, 0.001, 0.003, 0.005, 0.0075])
-
-        # start = time.time()
-        # res = 'YES' if verification(origin_k, epsilon, delta) else 'NO'
-        # origin_time += time.time() - start
-
-        start = time.time()
-        res = 'YES' if verification(random_k, epsilon, delta) else 'NO'
-        random_time += time.time() - start
-
-        # start = time.time()
-        # res = 'YES' if verification(final_k, epsilon, delta) else 'NO'
-        # final_time += time.time() - start
-
-        noise_ = noise_type.replace('_', ' ')
-        # Tensor-based
-        # c0
-        try:
-            with time_limit():
-                origin_k, origin_time, origin_bias_kernel = calculate_lipschitz(origin_cirq_circuit, cirq_qubits)
-                start = time.time()
-                res = 'YES' if verification(origin_k, epsilon, delta) else 'NO'
-                origin_time += time.time() - start
-                w.writerow([model_name, 'c_0', '-', '-', (epsilon, delta),
-                            '%.5f' % origin_k, '%.2f' % origin_time, res])
-        except TimeoutException:
-            print('Time out!')
-            w.writerow([model_name, 'c_0', '-', '-', (epsilon, delta),
-                        '-', 'TO', '-'])
-        except Exception:
-            if model_name in ['inst_4x4', 'qaoa_20']:
-                w.writerow([model_name, 'c_0', '-', '-', (epsilon, delta),
-                            '-', 'OOM', '-'])
-            raise
-
-        # c1
-        try:
-            with time_limit():
-                random_k, random_time, random_bias_kernel = calculate_lipschitz(random_cirq_circuit, cirq_qubits)
-                start = time.time()
-                res = 'YES' if verification(random_k, epsilon, delta) else 'NO'
-                random_time += time.time() - start
-                w.writerow([model_name, 'c_1', '-', '-', (epsilon, delta),
-                            '%.5f' % random_k, '%.2f' % random_time, res])
-        except TimeoutException:
-            print('Time out!')
-            w.writerow([model_name, 'c_1', '-', '-', (epsilon, delta),
-                        '-', 'TO', '-'])
-        except Exception:
-            if model_name in ['inst_4x4', 'qaoa_20']:
-                w.writerow([model_name, 'c_1', '-', '-', (epsilon, delta),
-                            '-', 'OOM', '-'])
-            raise
-
-        # c2
-        try:
-            with time_limit():
-                final_k, final_time, final_bias_kernel = calculate_lipschitz(final_cirq_circuit, cirq_qubits)
-                start = time.time()
-                res = 'YES' if verification(final_k, epsilon, delta) else 'NO'
-                final_time += time.time() - start
-                w.writerow([model_name, 'c_2', noise_, noise_p, (epsilon, delta),
-                            '%.5f' % final_k, '%.2f' % final_time, res])
-        except TimeoutException:
-            print('Time out!')
-            w.writerow([model_name, 'c_2', noise_, noise_p, (epsilon, delta),
-                        '-', 'TO', '-'])
-        except Exception:
-            w.writerow([model_name, 'c_2', noise_, noise_p, (epsilon, delta),
-                        '-', 'OOM', '-'])
-            raise
-else:
-    # python qlipschitz.py verify k epsilon delta
-    k = float(sys.argv[2])
-    epsilon = float(sys.argv[3])
-    delta = float(sys.argv[4])
-    # flag, k, bias_kernel, total_time = verification(epsilon, delta)
-    flag = verification(k, epsilon, delta)

@@ -1,4 +1,4 @@
-from VeriQ import RobustnessVerifier, PureRobustnessVerifier
+from VeriL import RobustnessVerifier, PureRobustnessVerifier
 from common_interface import *
 from prettytable import PrettyTable
 from sys import argv
