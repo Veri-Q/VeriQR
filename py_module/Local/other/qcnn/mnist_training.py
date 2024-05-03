@@ -13,12 +13,8 @@ m = np.array([[1. + 0.j, 0. + 0.j],
               [0. + 0.j, 0. + 0.j]])
 
 
-def mat_m(qubit_num):
-    M_0 = I.matrix()
-    for i in range(qubit_num - 2):
-        M_0 = np.kron(M_0, I.matrix())
-
-    M_0 = np.kron(M_0, m)
+def mat_m(qubits_num):
+    M_0 = np.kron(np.eye(2 ** (qubits_num - 1)), m)
     return M_0
 
 
@@ -34,7 +30,7 @@ def qasm2mq(qasm_str):
             val_list.append(float(param))
         pr = dict(zip(circuit.params_name, val_list))  # 获取线路参数
         circuit = circuit.apply_value(pr)
-        return circuit
+    return circuit
 
 
 def convert_to_qcnn_data(data):
@@ -63,9 +59,11 @@ for d1 in range(1, 10):
 
     x_train = convert_to_qcnn_data(np.vstack((x0[ind0[:n_train]], x1[ind1[:n_train]])))
     y_train = jnp.array(np.hstack((y0[ind0[:n_train]], y1[ind1[:n_train]])))
-    # print(x_train.shape)
-    # print(x_train)
-    # print(y_train.shape)
+    print(x_train.shape)
+    print(type(x_train))
+    print(x_train[0])
+    print(y_train.shape)
+    print(type(y_train))
     # print(y_train)
     x_test = convert_to_qcnn_data(np.vstack((x0[ind0[n_train:n_all]], x1[ind1[n_train:n_all]])))
     y_test = jnp.array(np.hstack((y0[ind0[n_train:n_all]], y1[ind1[n_train:n_all]])))

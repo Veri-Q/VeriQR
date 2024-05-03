@@ -156,7 +156,7 @@ class qcnn(object):
     def predict(self, x: jnp.DeviceArray):
         return self.__eval__(self.parameters, x)
 
-    def train(self, x_train, y_train, x_test, y_test, epochs: int = 100):
+    def train(self, x_train, y_train, x_test=None, y_test=None, epochs: int = 100):
         batched_predict = vmap(self.__eval__, (None, 0))
         accuracy = lambda p, x, y: jnp.mean((batched_predict(p, x) > 0.5) == y)
         loss = lambda p, x, y: jnp.mean((batched_predict(p, x) - y) ** 2)
@@ -165,12 +165,12 @@ class qcnn(object):
             tt = time.time()
             t, dt = loss_vg(self.parameters, x_train, y_train)
             a_train = accuracy(self.parameters, x_train, y_train)
-            a_test = accuracy(self.parameters, x_test, y_test)
+            # a_test = accuracy(self.parameters, x_test, y_test)
             self.parameters += self.opt(dt[0])
             print(f"Epoch {j} in {time.time() - tt:.2f} sec")
             print("loss: ", t)
             print("train accuracy: ", a_train)
-            print("test accuracy: ", a_test)
+            # print("test accuracy: ", a_test)
 
     def to_qasm(self):
         qasm = """OPENQASM 2.0;\ninclude "qelib1.inc";"""

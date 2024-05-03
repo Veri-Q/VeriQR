@@ -14,15 +14,15 @@ ms.set_seed(1)  # 设置生成随机数的种子
 
 
 class AnsatzOnlyOps(nn.Cell):
-    def __init__(self, expectation_with_grad:GradOpsWrapper):
+    def __init__(self, expectation_with_grad: GradOpsWrapper):
         """Initialize a MQAnsatzOnlyOps object."""
         super().__init__()
         self.expectation_with_grad = expectation_with_grad
         self.shape_ops = operations.Shape()
         self.g = None
 
-    def construct(self, arg, init_state:ms.Tensor): # 此处新增参数 init_state 用以传入初始态
-        self.expectation_with_grad.sim.set_qs(init_state.asnumpy()) # 此处将模拟器初态设置为 init_state
+    def construct(self, arg, init_state: ms.Tensor):  # 此处新增参数 init_state 用以传入初始态
+        self.expectation_with_grad.sim.set_qs(init_state.asnumpy())  # 此处将模拟器初态设置为 init_state
         fval, g_ans = self.expectation_with_grad(arg.asnumpy())
         self.g = np.real(g_ans[0])
         return ms.Tensor(np.real(fval[0]), dtype=ms.float32)
@@ -78,53 +78,87 @@ class MyWithLossCell(nn.Cell):
 
 
 # training
-def training(X_train: Tensor, y_train: Tensor, epochs: int):
-    print('training...')
-    res = 0.
-    for epoch in range(epochs):
-        for i in range(len(X_train)):
-            res = train_one_step(X_train[i], y_train[i])
-        # print('epoch {}: {}'.format(epoch, res))
-        validating(X_test, y_test, qnet)
 
 
-def validating(x: Tensor, y: Tensor, qnet):
-    loss = 0
-    acc = 0
-    for i in range(len(x)):
-        expectation = qnet(x[i])
-        loss += float(myloss(expectation, y[i]))
-        predict = 1 if expectation > 0 else 0
-        acc += int(predict == y[i])
+def retaining(data_file):
+    DATA = np.load('../../model_and_data/newdata_for_AT/{}'.format(data_file))
+    X_train = Tensor(DATA['data'], ms.complex128)
+    y_train = Tensor(DATA['label'], ms.int32)
 
-    loss /= len(x)
-    acc /= len(x)
-    print('loss:', loss)
-    print('acc:', acc)
-    return loss, acc
+    ansatz = HardwareEfficientAnsatz(4, single_rot_gate_seq=[RY], entangle_gate=X, depth=3).circuit
+    circuit = ansatz.as_ansatz()
+
+    # 搭建量子神经网络
+    sim = Simulator('mqmatrix', circuit.n_qubits)
+    hams = Hamiltonian(QubitOperator('Z2'))
+    grad_ops = sim.get_expectation_with_grad(hams, circuit)
+    myloss = MyLoss()
+    qnet = AnsatzOnlyLayer(grad_ops)
+    net = MyWithLossCell(qnet, myloss)
+    opti = Adam(qnet.trainable_params(), learning_rate=0.1)
+    train_one_step = TrainOneStepCell(net, opti)
+
+    def training(X_train: Tensor, y_train: Tensor, epochs: int):
+        print('training...')
+        res = 0.
+        for epoch in range(epochs):
+            for i in range(len(X_train)):
+                res = train_one_step(X_train[i], y_train[i])
+            # print('epoch {}: {}'.format(epoch, res))
+            validating(X_train, y_train, qnet)
+
+    def validating(x: Tensor, y: Tensor, qnet):
+        loss = 0
+        acc = 0
+        for i in range(len(x)):
+            expectation = qnet(x[i])
+            loss += float(myloss(expectation, y[i]))
+            predict = 1 if expectation > 0 else 0
+            acc += int(predict == y[i])
+
+        loss /= len(x)
+        acc /= len(x)
+        print('loss:', loss)
+        print('acc:', acc)
+        return loss, acc
+
+    training(X_train, y_train, 20)
+
+    def get_trained_ansatz():
+        pr_ansatz = dict(zip(ansatz.params_name, qnet.weight.asnumpy()))  # 获取线路参数
+        # print('pr_ansatz = ', pr_ansatz)
+
+        ansatz_ = ansatz.apply_value(pr_ansatz)
+        U = ansatz_.matrix()
+        # print(ansatz_)
+
+        file_name = data_file[:-4]
+        ansatz_ += Measure('Z2').on(2)
+        ansatz_ += Measure('Z3').on(3)
+        # ansatz_ += Measure('Z{}'.format(QUBIT_NUM - 1)).on(QUBIT_NUM - 1)
+        ansatz_.svg().to_file('../../model_and_data/newmodel_by_AT/{}.svg'.format(file_name))
+
+        # print(ansatz_)
+        ansatz_str = OpenQASM().to_string(ansatz_)
+        f = open('../../model_and_data/newmodel_by_AT/{}.qasm'.format(file_name), 'w')
+        f.write(ansatz_str)
+        f.close()
+
+        np.savez('../../model_and_data/newmodel_by_AT/{}.npz'.format(file_name), kraus=np.array([U]))
+        # return ansatz_, U
+
+    get_trained_ansatz()
 
 
-DATA = np.load('../../model_and_data/newdata_for_AT/iris_newdata_c0.npz')
-X_train = Tensor(DATA['data'][:60], ms.complex128)
-y_train = Tensor(DATA['label'][:60], ms.int32)
-X_test = Tensor(DATA['data'][:20], ms.complex128)
-y_test = Tensor(DATA['label'][:20], ms.int32)
-print('数据集信息：')
-print(X_train.shape)  # 打印训练集中样本的数据类型
-print(X_test.shape)
-print('')
-
-ansatz = HardwareEfficientAnsatz(4, single_rot_gate_seq=[RY], entangle_gate=X, depth=3).circuit
-circuit = ansatz.as_ansatz()
-
-# 搭建量子神经网络
-sim = Simulator('mqmatrix', circuit.n_qubits)
-hams = Hamiltonian(QubitOperator('Z2'))
-grad_ops = sim.get_expectation_with_grad(hams, circuit)
-myloss = MyLoss()
-qnet = AnsatzOnlyLayer(grad_ops)
-net = MyWithLossCell(qnet, myloss)
-opti = Adam(qnet.trainable_params(), learning_rate=0.1)
-train_one_step = TrainOneStepCell(net, opti)
-
-training(X_train, y_train, 20)
+retaining('iris_c0_by_0.01.npz')
+retaining('iris_c0_by_0.05.npz')
+retaining('iris_c1_by_0.01.npz')
+retaining('iris_c1_by_0.05.npz')
+retaining('iris_c2_BitFlip_0.005_by_0.01.npz')
+retaining('iris_c2_BitFlip_0.005_by_0.05.npz')
+retaining('iris_c2_Depolarizing_0.0005_by_0.01.npz')
+retaining('iris_c2_Depolarizing_0.0005_by_0.05.npz')
+retaining('iris_c2_PhaseFlip_0.005_by_0.01.npz')
+retaining('iris_c2_PhaseFlip_0.005_by_0.05.npz')
+retaining('iris_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.0005_by_0.01.npz')
+retaining('iris_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.0005_by_0.05.npz')

@@ -328,7 +328,7 @@ def generate_newdata_from_randomModel(model_name, qubits_num, state_flag, epss):
     kraus_file = None
     probs = [0.0001, 0.0005, 0.001, 0.005, 0.01, 0.02]
     noise_types = ["bit_flip", "depolarizing", "phase_flip", "mixed"]
-    noise_types = ["mixed"]
+    # noise_types = ["mixed"]
     for noise_type in noise_types:
         gc.collect()
         noise_list = ["bit_flip", "depolarizing", "phase_flip"] if noise_type == 'mixed' else []
@@ -441,11 +441,15 @@ def verify_new_model(model_name, state_flag):
         final_ac_2 = final_acc[1] * 100
         with open("./results/adversarial_training.csv", "a+") as csvfile:
             w = csv.writer(csvfile)
-            w.writerow([model_name, circ_type, noise_set, c_eps, 'after',
+            w.writerow([model_name, circ_type.replace('c', 'c_'), noise_set, c_eps, 'after',
                         non_robust_num_c2[0], '%.2f' % final_ac_1, '%.4f' % final_time[0],
                         non_robust_num_c2[1], '%.2f' % final_ac_2, '%.4f' % final_time[1]])
 
 
-# generate_newdata_for_adversarial_training()
+generate_newdata_for_adversarial_training()
+# generate_newdata_from_randomModel('iris', 4, 'pure', [0.01, 0.05])
 # generate_newdata_from_randomModel('fashion8', 8, 'pure', [0.001, 0.003])
-verify_new_model('fashion8', 'pure')
+# generate_newdata_from_randomModel('mnist13', 8, 'pure', [0.003, 0.005])
+# verify_new_model('iris', 'mixed')
+# verify_new_model('fashion8', 'pure')
+# verify_new_model('mnist13', 'pure')
