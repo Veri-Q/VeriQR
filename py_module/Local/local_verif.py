@@ -63,7 +63,8 @@ else:
     #     noise_p = float(round(random.uniform(0, 0.2), 5))  # 随机数的精度round(数值，精度)
     circuit = qasm2mq(qasm_file)
     circuit, kraus = generating_circuit_with_random_noise(circuit, model_name)
-    kraus, noise_name = generating_circuit_with_specified_noise(circuit, kraus, noise_type, noise_list,
+    noise_name = noise_name_map[noise_type]
+    kraus = generating_circuit_with_specified_noise(circuit, kraus, noise_type, noise_list,
                                                                 kraus_file, noise_p, model_name)
 
     DATA = load(data_file)
@@ -86,11 +87,11 @@ time.add_column('epsilon', ['Robust Bound', 'Robustness Algorithm'])
 for j in range(n):
     c_eps = eps * (j + 1)
     if 'mnist' in data_file:
-        ac_temp, time_temp, new_data, new_labels = verifier(kraus, O, data, label, c_eps, type,
+        ac_temp, time_temp, _, new_data, new_labels = verifier(kraus, O, data, label, c_eps, type,
                                                             GET_NEW_DATASET, 0, ADVERSARY_EXAMPLE,
                                                             digits, 'mnist')
     else:
-        ac_temp, time_temp, new_data, new_labels = verifier(kraus, O, data, label, c_eps, type,
+        ac_temp, time_temp, _, new_data, new_labels = verifier(kraus, O, data, label, c_eps, type,
                                                             GET_NEW_DATASET, origin_dataset_size)
 
     ac.add_column('{:e}'.format(c_eps),

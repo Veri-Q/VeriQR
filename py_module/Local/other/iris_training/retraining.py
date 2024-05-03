@@ -61,7 +61,8 @@ class MyLoss(LossBase):
 
     def construct(self, logits, label):
         # out = self.abs(logits / 2 + 0.5 - label)
-        out = self.abs(logistic(logits) / 2 + 0.5 - label)
+        # out = self.abs(logistic(logits) / 2 + 0.5 - label)
+        out = self.abs(logistic(logits) - label)
         return self.get_loss(out)
 
 
@@ -74,30 +75,6 @@ class MyWithLossCell(nn.Cell):
     def construct(self, x, label):
         out = self._backbone(x)
         return self._loss_fn(out, label)
-
-
-DATA = np.load('../../model_and_data/iris_newdata_c0.npz')
-X_train = Tensor(DATA['data'][:60], ms.complex128)
-y_train = Tensor(DATA['label'][:60], ms.int32)
-X_test = Tensor(DATA['data'][:20], ms.complex128)
-y_test = Tensor(DATA['label'][:20], ms.int32)
-print('数据集信息：')
-print(X_train.shape)  # 打印训练集中样本的数据类型
-print(X_test.shape)
-print('')
-
-ansatz = HardwareEfficientAnsatz(4, single_rot_gate_seq=[RY], entangle_gate=X, depth=3).circuit
-circuit = ansatz.as_ansatz()
-
-# 搭建量子神经网络
-sim = Simulator('mqmatrix', circuit.n_qubits)
-hams = Hamiltonian(QubitOperator('Z3'))
-grad_ops = sim.get_expectation_with_grad(hams, circuit)
-myloss = MyLoss()
-qnet = AnsatzOnlyLayer(grad_ops)
-net = MyWithLossCell(qnet, myloss)
-opti = Adam(qnet.trainable_params(), learning_rate=0.05)
-train_one_step = TrainOneStepCell(net, opti)
 
 
 # training
@@ -126,5 +103,28 @@ def validating(x: Tensor, y: Tensor, qnet):
     print('acc:', acc)
     return loss, acc
 
+
+DATA = np.load('../../model_and_data/newdata_for_AT/iris_newdata_c0.npz')
+X_train = Tensor(DATA['data'][:60], ms.complex128)
+y_train = Tensor(DATA['label'][:60], ms.int32)
+X_test = Tensor(DATA['data'][:20], ms.complex128)
+y_test = Tensor(DATA['label'][:20], ms.int32)
+print('数据集信息：')
+print(X_train.shape)  # 打印训练集中样本的数据类型
+print(X_test.shape)
+print('')
+
+ansatz = HardwareEfficientAnsatz(4, single_rot_gate_seq=[RY], entangle_gate=X, depth=3).circuit
+circuit = ansatz.as_ansatz()
+
+# 搭建量子神经网络
+sim = Simulator('mqmatrix', circuit.n_qubits)
+hams = Hamiltonian(QubitOperator('Z2'))
+grad_ops = sim.get_expectation_with_grad(hams, circuit)
+myloss = MyLoss()
+qnet = AnsatzOnlyLayer(grad_ops)
+net = MyWithLossCell(qnet, myloss)
+opti = Adam(qnet.trainable_params(), learning_rate=0.1)
+train_one_step = TrainOneStepCell(net, opti)
 
 training(X_train, y_train, 20)

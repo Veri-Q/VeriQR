@@ -2,7 +2,7 @@ py_module/Local/__pycache__/
 py_module/Local/.idea/
 py_module/Local/.DS_Store
 py_module/Local/printdata.py
-py_module/Local/other/FashionMNIST_training/.ipynb_checkpoints
+py_module/Local/other/fashion_training/.ipynb_checkpoints/
 py_module/Local/other/qcnn/__pycache__/
 py_module/Global/__pycache__/
 py_module/Global/.idea/

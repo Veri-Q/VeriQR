@@ -174,7 +174,6 @@ def RobustnessVerifier(E, O, data, label, e, type, GET_NEW_DATASET=False, origin
 
     for i in range(NKraus):
         OO += E[i, :, :].conj().T @ O @ E[i, :, :]
-        # sum_E += E[i, :, :].conj().T @ E[i, :, :]
 
     ex = np.zeros((n,))
     for i in range(n):
@@ -186,8 +185,9 @@ def RobustnessVerifier(E, O, data, label, e, type, GET_NEW_DATASET=False, origin
     non_robust_num[0] = np.sum(non_robust_index)
     check_time[0] = time.time() - time_start
 
-    non_robust_num_1 = np.sum(non_robust_index[:origin_dataset_size])
-    non_robust_num_2 = 0
+    non_robust_num_in_origin_dataset = np.zeros([2, ], dtype=int)
+    non_robust_num_in_origin_dataset[0] = np.sum(non_robust_index[:origin_dataset_size])
+    non_robust_num_in_origin_dataset[1] = 0
 
     non_robust_num[1] = non_robust_num[0]
     if non_robust_num[1] > 0:
@@ -203,12 +203,12 @@ def RobustnessVerifier(E, O, data, label, e, type, GET_NEW_DATASET=False, origin
             print('origin data.shape=', data_.shape)
             print('origin label.shape', label_.shape)
             print('non_robust_index_.shape', non_robust_index_.shape)
-            non_robust_num_2, _, _ = StateRobustnessVerifier(OO,
+            non_robust_num_in_origin_dataset[1], _, _ = StateRobustnessVerifier(OO,
                                                              data_[non_robust_index_, :, :],
                                                              label_[non_robust_index_],
                                                              e)
-            print('non_robust_num_1 =', non_robust_num_1)
-            print('non_robust_num_2 =', non_robust_num_2)
+            print('non_robust_num_1 =', non_robust_num_in_origin_dataset[0])
+            print('non_robust_num_2 =', non_robust_num_in_origin_dataset[1])
             new_datas = np.zeros([n + len(new_label), dim, dim], dtype=complex)
             new_labels = np.zeros([n + len(new_label)], dtype=complex)
             # new_datas[:n, :, :] = data
@@ -231,7 +231,7 @@ def RobustnessVerifier(E, O, data, label, e, type, GET_NEW_DATASET=False, origin
     print('Verification time: {:.2f}s'.format(check_time[1]))
     print('=' * 45)
     if GET_NEW_DATASET:
-        return robust_ac, check_time, new_datas, new_labels, non_robust_num_1, non_robust_num_2
+        return robust_ac, check_time, non_robust_num_in_origin_dataset, new_datas, new_labels
     else:
         return robust_ac, check_time
 
@@ -257,7 +257,6 @@ def PureRobustnessVerifier(E, O, data, label, e, type, GET_NEW_DATASET=False, or
     Returns:
 
     """
-
     time_start = time.time()
     print('=' * 45 + '\nStarting Pure Robustness Verifier\n' + '-' * 45)
     print('Checking {:g}-robustness\n'.format(e) + '-' * 40)
@@ -280,9 +279,9 @@ def PureRobustnessVerifier(E, O, data, label, e, type, GET_NEW_DATASET=False, or
     non_robust_num[0] = np.sum(non_robust_index)
     check_time[0] = time.time() - time_start
 
-    non_robust_num_1 = np.sum(non_robust_index[:origin_dataset_size])
-    non_robust_num_2 = 0
-    # print('non_robust_num_1 =', non_robust_num_1)
+    non_robust_num_in_origin_dataset = np.zeros([2, ], dtype=int)
+    non_robust_num_in_origin_dataset[0] = np.sum(non_robust_index[:origin_dataset_size])
+    non_robust_num_in_origin_dataset[1] = 0
 
     non_robust_num[1] = non_robust_num[0]
     if non_robust_num[1] > 0:
@@ -297,13 +296,13 @@ def PureRobustnessVerifier(E, O, data, label, e, type, GET_NEW_DATASET=False, or
             data_ = data[:, :origin_dataset_size]
             label_ = label[:origin_dataset_size]
             non_robust_index_ = non_robust_index[:origin_dataset_size]
-            non_robust_num_2, _, _ = PureStateRobustnessVerifier(OO,
+            non_robust_num_in_origin_dataset[1], _, _ = PureStateRobustnessVerifier(OO,
                                                                  data_[:, non_robust_index_],
                                                                  label_[non_robust_index_],
                                                                  e,
                                                                  GET_ADVERSARY_EXAMPLE,
                                                                  digits)
-            print('non_robust_num_2 =', non_robust_num_2)
+            print('non_robust_num_2 =', non_robust_num_in_origin_dataset[1])
             new_datas = np.zeros([dim, n + len(new_label)], dtype=complex)
             new_labels = np.zeros([n + len(new_label)], dtype=complex)
             # new_datas[:, :n] = data
@@ -328,6 +327,6 @@ def PureRobustnessVerifier(E, O, data, label, e, type, GET_NEW_DATASET=False, or
     print('Verification time: {:.2f}s'.format(check_time[1]))
     print('=' * 45)
     if GET_NEW_DATASET:
-        return robust_ac, check_time, new_datas, new_labels, non_robust_num_1, non_robust_num_2
+        return robust_ac, check_time, non_robust_num_in_origin_dataset, new_datas, new_labels
     else:
         return robust_ac, check_time

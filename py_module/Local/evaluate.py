@@ -12,11 +12,10 @@ def evaluate():
 
     if '.npz' in str(argv[1]):
         # for example:
-        # python3 batch_check.py binary_cav.npz 0.001 1 mixed
+        # python batch_check.py binary_cav.npz 0.001 mixed
         data_file = str(argv[1])
         eps = float(argv[2])
-        # n = int(argv[3])
-        state_flag = str(argv[4])
+        state_flag = str(argv[3])
 
         DATA = load(data_file)
         kraus = DATA['kraus']
@@ -30,7 +29,7 @@ def evaluate():
 
         verifier = RobustnessVerifier if state_flag == 'mixed' else PureRobustnessVerifier
 
-        with open("./results/adversarial_training.csv", "a+") as csvfile:
+        with open("./results/local_results.csv", "a+") as csvfile:
             w = csv.writer(csvfile)
             c_eps = eps
             for i in range(iter_num):
@@ -74,8 +73,6 @@ def evaluate():
         qasm_file = str(argv[1])
         data_file = str(argv[2])
         state_flag = str(argv[3])
-        # noise_type = argv[5]
-        # n = 1
 
         DATA = load(data_file)
         O = DATA['O']
@@ -182,7 +179,7 @@ def evaluate():
                         random_kraus = load('./fashion10_random_kraus.npz')['random_kraus']
                         final_kraus = load('./fashion10_final_kraus.npz')['final_kraus']
                     else:
-                        final_kraus, noise_name = generating_circuit_with_specified_noise(random_circuit, random_kraus,
+                        final_kraus = generating_circuit_with_specified_noise(random_circuit, random_kraus,
                                                                                           noise_type, noise_list,
                                                                                           kraus_file, noise_p,
                                                                                           model_name)
@@ -265,7 +262,7 @@ def evaluate_mnist(digits):
         # eps = choice([0.0001, 0.0003, 0.0005, 0.001, 0.003, 0.005, 0.01, 0.03, 0.05, 0.075])
         noise_p = random.choice(probs)
         print('*' * 40 + "verifying {} with {}_{}".format(model_name, noise_type, noise_p) + '*' * 40)
-        final_kraus, noise_name = generating_circuit_with_specified_noise(random_circuit, random_kraus,
+        final_kraus = generating_circuit_with_specified_noise(random_circuit, random_kraus,
                                                                           noise_type, noise_list,
                                                                           kraus_file, noise_p, model_name)
         final_ac_temp, final_time_temp = verifier(final_kraus, O, data, label, c_eps, type,

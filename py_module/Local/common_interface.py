@@ -15,10 +15,24 @@ noise_op_map = {
     "phase_flip": PhaseFlipChannel,
 }
 
+noise_name_map = {
+    'bit_flip': 'BitFlip',
+    'depolarizing': 'Depolarizing',
+    'phase_flip': 'PhaseFlip',
+    'mixed': 'mixed_BitFlip_Depolarizing_PhaseFlip'
+}
+
+noise_name_map_reverse = {
+    'BitFlip': 'bit_flip',
+    'Depolarizing': 'depolarizing',
+    'PhaseFlip': 'phase_flip',
+    # 'mixed_BitFlip_Depolarizing_PhaseFlip': 'mixed'
+}
+
 I_matrix = I.matrix()
 
 
-def qasm2mq(qasm_file, to_save_figure=False):
+def qasm2mq(qasm_file, to_save_figure=False, filepath=''):
     f = open(qasm_file)
     qasm = f.read()
     f.close()
@@ -32,9 +46,14 @@ def qasm2mq(qasm_file, to_save_figure=False):
         circuit = circuit.apply_value(pr)
 
     if to_save_figure:
-        model_name = "{}_origin.svg".format(qasm_file[qasm_file.rfind('/') + 1:-5])
-        circuit.svg().to_file("./figures/" + model_name)  # qasm_file chop '.qasm'
-        print(model_name + " saved successfully! ")
+        if filepath != '':
+            circuit.svg().to_file(filepath)  # qasm_file chop '.qasm'
+            print(filepath + " saved successfully! ")
+        else:
+            model_name = "{}_origin.svg".format(qasm_file[qasm_file.rfind('/') + 1:-5])
+            circuit.svg().to_file("./figures/" + model_name)  # qasm_file chop '.qasm'
+            print(model_name + " saved successfully! ")
+
     # if circuit.has_measure_gate:
     #     circuit = circuit.remove_measure()
     #
@@ -43,7 +62,7 @@ def qasm2mq(qasm_file, to_save_figure=False):
     return circuit
 
 
-def qasm2mq_with_kraus(qasm_file, to_save_figure=False):
+def qasm2mq_with_kraus(qasm_file, to_save_figure=False, filepath=''):
     f = open(qasm_file)
     qasm = f.read()
     f.close()
@@ -57,9 +76,13 @@ def qasm2mq_with_kraus(qasm_file, to_save_figure=False):
         circuit = circuit.apply_value(pr)
 
     if to_save_figure:
-        model_name = "{}_origin.svg".format(qasm_file[qasm_file.rfind('/') + 1:-5])
-        circuit.svg().to_file("./figures/" + model_name)  # qasm_file chop '.qasm'
-        print(model_name + " saved successfully! ")
+        if filepath != '':
+            circuit.svg().to_file(filepath)  # qasm_file chop '.qasm'
+            print(filepath + " saved successfully! ")
+        else:
+            model_name = "{}_origin.svg".format(qasm_file[qasm_file.rfind('/') + 1:-5])
+            circuit.svg().to_file("./figures/" + model_name)  # qasm_file chop '.qasm'
+            print(model_name + " saved successfully! ")
 
     origin_circ = circuit
     all_measures = []
@@ -172,7 +195,7 @@ def random_insert_ops(origin_circuit, nums_and_ops, with_ctrl=True, after_measur
     return Circuit(final_circuit[0]), np.array(kraus_)
 
 
-def generating_circuit_with_random_noise(circ, model_name_, to_save_figure=False):
+def generating_circuit_with_random_noise(circ, model_name_, to_save_figure=False, filepath=''):
     # generate random noise
     # noise_num = random.randint(1, len(circ))
     noise_num = circ.n_qubits
@@ -207,14 +230,18 @@ def generating_circuit_with_random_noise(circ, model_name_, to_save_figure=False
         circ += m
 
     if to_save_figure:
-        circ.svg().to_file("./figures/" + file_name_)  # qasm_file chop '.qasm'
-        print(file_name_ + " saved successfully! ")
+        if filepath != '':
+            circ.svg().to_file(filepath)  # qasm_file chop '.qasm'
+            print(filepath + " saved successfully! ")
+        else:
+            circ.svg().to_file("./figures/" + file_name_)  # qasm_file chop '.qasm'
+            print(file_name_ + " saved successfully! ")
 
     return circ, kraus_
 
 
 def generating_circuit_with_specified_noise(circ, origin_kraus_, noise, noise_list_, kraus_file_, noise_p_: float,
-                                            model_name_, to_save_figure=False):
+                                            model_name_, to_save_figure=False, filepath=''):
     all_measures = []
     for gate in circ:
         if isinstance(gate, Measure):
@@ -302,10 +329,14 @@ def generating_circuit_with_specified_noise(circ, origin_kraus_, noise, noise_li
         circ += m
 
     if to_save_figure:
-        file_name_ = '{}_{}_{}.svg'.format(model_name_, noise_name_, noise_p_)
-        circ.svg().to_file("./figures/" + file_name_)  # qasm_file chop '.qasm'
-        print(file_name_ + " saved successfully! ")
+        if filepath != '':
+            circ.svg().to_file(filepath)  # qasm_file chop '.qasm'
+            print(filepath + " saved successfully! ")
+        else:
+            file_name_ = '{}_{}_{}.svg'.format(model_name_, noise_name_, noise_p_)
+            circ.svg().to_file("./figures/" + file_name_)  # qasm_file chop '.qasm'
+            print(file_name_ + " saved successfully! ")
 
     new_kraus_ = np.array(new_kraus_)
     print(new_kraus_.shape)
-    return new_kraus_, noise_name_
+    return new_kraus_
