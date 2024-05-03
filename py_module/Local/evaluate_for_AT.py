@@ -390,27 +390,45 @@ def verify_new_model(model_name, state_flag):
     model_list = os.listdir(model_path)
     model_list = sorted(model_list, key=lambda x: os.path.getmtime(os.path.join(model_path, x)))
     for file_name in model_list:
-        if os.path.isfile(os.path.join(model_path, file_name)) or not file_name.startswith(model_name):
+        if os.path.isfile(os.path.join(model_path, file_name)):
             pass
+        if not file_name.startswith(model_name) or os.path.splitext(file_name)[-1] != '.npz':
+            continue
         # 'fashion8_c0_by_0.001.npz'
         # 'fashion8_c1_by_0.001.npz'
         # 'fashion8_c2_BitFlip_0.001_by_0.001.npz'
         # 'fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.001.npz'
         # file_name = os.path.basename(file_name)
         print(file_name)
-        kraus = load(model_path + file_name)['kraus']
-        DATA = load(data_path + file_name)
+        MODEL = load(os.path.join(model_path, file_name))
+        kraus = MODEL['kraus']
+        DATA = load(os.path.join(data_path, file_name))
         O = DATA['O']
         data = DATA['data']
         label = DATA['label']
         args = file_name[:-4].split('_')
         # model_name = args[0]
         circ_type = args[1]
-        c_eps = args[len(args) - 1]
-        if circ_type == 'c2':
+        c_eps = float(args[len(args) - 1])
+        if circ_type == 'c0':
+            noise_set = 'noiseless'
+        elif circ_type == 'c1':
+            noise_set = 'random'
+        elif circ_type == 'c2':
             noise_type = noise_name_map_reverse[args[2]] if args[2] != 'mixed' else args[2]
-            p = args[len(args) - 3]
+            p = float(args[len(args) - 3])
+            noise_ = noise_type.replace('_', '-')
+            noise_set = '{}_{}'.format(noise_, p)
+            print('noise type: ', noise_type)
+            print('noise p: ', p)
+        print('circ_type: ', circ_type)
+        print('c_eps: ', c_eps)
+        print('noise setting: ', noise_set)
 
+        print('kraus.shape: ', kraus.shape)
+        print('data.shape: ', data.shape)
+        print('label.shape: ', label.shape)
+        print('O.shape: ', O.shape)
         if TEST_MNIST:
             final_acc, final_time, non_robust_num_c2, _, _ = \
                 verifier(kraus, O, data, label, c_eps, type_,
@@ -421,14 +439,13 @@ def verify_new_model(model_name, state_flag):
                          origin_dataset_size)
         final_ac_1 = final_acc[0] * 100
         final_ac_2 = final_acc[1] * 100
-        noise_ = noise_type.replace('_', '-')
         with open("./results/adversarial_training.csv", "a+") as csvfile:
             w = csv.writer(csvfile)
-            w.writerow([model_name, 'c_2', '{}_{}'.format(noise_, p), c_eps, 'after',
+            w.writerow([model_name, circ_type, noise_set, c_eps, 'after',
                         non_robust_num_c2[0], '%.2f' % final_ac_1, '%.4f' % final_time[0],
                         non_robust_num_c2[1], '%.2f' % final_ac_2, '%.4f' % final_time[1]])
 
 
 # generate_newdata_for_adversarial_training()
-generate_newdata_from_randomModel('fashion8', 8, 'pure', [0.001, 0.003])
-# verify_new_model('fashion8', 'pure')
+# generate_newdata_from_randomModel('fashion8', 8, 'pure', [0.001, 0.003])
+verify_new_model('fashion8', 'pure')

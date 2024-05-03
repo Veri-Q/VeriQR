@@ -223,17 +223,18 @@ def retaining(data_file):
         U = ansatz_.matrix()
         # print(ansatz_)
 
+        file_name = data_file[:-4]
         ansatz_ += Measure('Z{}'.format(QUBIT_NUM - 2)).on(QUBIT_NUM - 2)
         ansatz_ += Measure('Z{}'.format(QUBIT_NUM - 1)).on(QUBIT_NUM - 1)
-        ansatz_.svg().to_file('../../model_and_data/newmodel_by_AT/{}.svg'.format(data_file))
+        ansatz_.svg().to_file('../../model_and_data/newmodel_by_AT/{}.svg'.format(file_name))
 
         # print(ansatz_)
         ansatz_str = OpenQASM().to_string(ansatz_)
-        f = open('../../model_and_data/newmodel_by_AT/{}.qasm'.format(data_file), 'w')
+        f = open('../../model_and_data/newmodel_by_AT/{}.qasm'.format(file_name), 'w')
         f.write(ansatz_str)
         f.close()
 
-        np.savez('../../model_and_data/newmodel_by_AT/{}.npz'.format(data_file), kraus=np.array(U))
+        np.savez('../../model_and_data/newmodel_by_AT/{}.npz'.format(file_name), kraus=np.array([U]))
         # return ansatz_, U
 
     get_trained_ansatz()
@@ -251,3 +252,39 @@ retaining('fashion8_c2_PhaseFlip_0.01_by_0.001.npz')
 retaining('fashion8_c2_PhaseFlip_0.01_by_0.003.npz')
 retaining('fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.001.npz')
 retaining('fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.003.npz')
+
+# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c0_by_0.001.npz')['kraus']
+# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c0_by_0.001.npz', kraus=np.array([k]))
+#
+# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c0_by_0.003.npz')['kraus']
+# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c0_by_0.003.npz', kraus=np.array([k]))
+#
+# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c1_by_0.001.npz')['kraus']
+# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c1_by_0.001.npz', kraus=np.array([k]))
+#
+# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c1_by_0.003.npz')['kraus']
+# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c1_by_0.003.npz', kraus=np.array([k]))
+#
+# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_BitFlip_0.001_by_0.001.npz')['kraus']
+# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_BitFlip_0.001_by_0.001.npz', kraus=np.array([k]))
+#
+# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_BitFlip_0.001_by_0.003.npz')['kraus']
+# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_BitFlip_0.001_by_0.003.npz', kraus=np.array([k]))
+#
+# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_Depolarizing_0.005_by_0.001.npz')['kraus']
+# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_Depolarizing_0.005_by_0.001.npz', kraus=np.array([k]))
+#
+# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_Depolarizing_0.005_by_0.003.npz')['kraus']
+# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_Depolarizing_0.005_by_0.003.npz', kraus=np.array([k]))
+#
+# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_PhaseFlip_0.01_by_0.001.npz')['kraus']
+# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_PhaseFlip_0.01_by_0.001.npz', kraus=np.array([k]))
+#
+# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_PhaseFlip_0.01_by_0.003.npz')['kraus']
+# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_PhaseFlip_0.01_by_0.003.npz', kraus=np.array([k]))
+#
+# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.001.npz')['kraus']
+# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.001.npz', kraus=np.array([k]))
+#
+# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.003.npz')['kraus']
+# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.003.npz', kraus=np.array([k]))
