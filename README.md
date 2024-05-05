@@ -183,7 +183,7 @@ See [veriqr_manual.pdf](https://github.com/Veri-Q/VeriQR/blob/main/veriqr_manual
 
 # Experimental Results
 
-## Local Raobustness Verification
+## Local Robustness Verification
 
 VeriQR provides several labeled datasets, all of which are encoded into quantum data by different quantum encoders and trained on Mindspore or Tensorflow Quantum platforms to generate QML models for verification. In total, we verify the local-robustness of 50 quantum classifiers, including: 
 
@@ -197,9 +197,979 @@ We conducted numerous experiments on different circuits for each model as outlin
 
 - The noiseless ideal QML model with quantum circuit $c_0$; 
 - Circuit $c_1$ created by introducing random noise at various random points in circuit $c_0$ to simulate noise effects on NISQ devices; 
-- Circuit $c_2$ modified by adding specific noise with a noise level $0 \leq p \leq 1$ of four types: *depolarizing*, *phase flip*, *bit flip*, and *mixed* (a combination of the three) noise (referred to as "noisename\_p" below $c_2$), applied to each qubit after the random noise manipulation on circuit $c_1$. 
+- Circuit $c_2$ modified by adding specific noise with a noise level $0 \leq p \leq 1$ of four types: *depolarizing*, *phase flip*, *bit flip*, and *mixed* (a combination of the three) noise (referred to as "noise_p" below $c_2$), applied to each qubit after the random noise manipulation on circuit $c_1$. 
 
 Where $RA$ indicates the robust accuracy of classifiers, and $VT$ is the verification time in seconds. 
+
+Here are some of the experimental results: 
+
+<table>
+<thead>
+  <tr>
+    <th rowspan="2">Model</th>
+    <th rowspan="2">#Qubits</th>
+    <th rowspan="2">ε</th>
+    <th rowspan="2">Circuit</th>
+    <th rowspan="2">Noise Setting (noise_p)</th>
+    <th colspan="2">Rough Verif</th>
+    <th colspan="2">Accurate Verif</th>
+  </tr>
+  <tr>
+    <td>RA (%)</td>
+    <td>VT (sec.)</td>
+    <td>RA (%)</td>
+    <td>VT (sec.)</td>
+  </tr>
+</thead>
+<tbody>
+    <tr>
+        <td rowspan="4">qubit</td>
+        <td rowspan="4">1</td>
+        <td rowspan="4">0.001</td>
+        <td>c_0</td>
+        <td>noiseless</td>
+        <td>88.12</td>
+        <td>0.0038</td>
+        <td>90</td>
+        <td>2.4226</td>
+    </tr>
+    <tr>
+        <td>c_1</td>
+        <td>random</td>
+        <td>88.12</td>
+        <td>0.0039</td>
+        <td>90</td>
+        <td>2.4623</td>
+    </tr>
+    <tr>
+        <td>c_2</td>
+        <td>depolarizing_0.001</td>
+        <td>88.00</td>
+        <td>0.0038</td>
+        <td>90</td>
+        <td>2.4873</td>
+    </tr>
+    <tr>
+        <td>c_2</td>
+        <td>depolarizing_0.005</td>
+        <td>87.62</td>
+        <td>0.0053</td>
+        <td>90</td>
+        <td>2.7140</td>
+    </tr>
+    <tr>
+        <td rowspan="4">iris</td>
+        <td rowspan="4">4</td>
+        <td rowspan="4">0.005</td>
+        <td>c_0</td>
+        <td>noiseless</td>
+        <td>98.75</td>
+        <td>0.0013</td>
+        <td>100</td>
+        <td>0.4924</td>
+    </tr>
+    <tr>
+        <td>c_1</td>
+        <td>random</td>
+        <td>97.50</td>
+        <td>0.0009</td>
+        <td>100</td>
+        <td>0.8876</td>
+    </tr>
+    <tr>
+        <td>c_2</td>
+        <td>mixed_0.01</td>
+        <td>97.50</td>
+        <td>0.0019</td>
+        <td>100</td>
+        <td>0.8808</td>
+    </tr>
+    <tr>
+        <td>c_2</td>
+        <td>mixed_0.05</td>
+        <td>96.25</td>
+        <td>0.0021</td>
+        <td>100</td>
+        <td>3.1675</td>
+    </tr>
+    <tr>
+        <td rowspan="4">tfi</td>
+        <td rowspan="4">4</td>
+        <td rowspan="4">0.005</td>
+        <td>c_0</td>
+        <td>noiseless</td>
+        <td>86.41</td>
+        <td>0.0039</td>
+        <td>100</td>
+        <td>6.5220</td>
+    </tr>
+    <tr>
+        <td>c_1</td>
+        <td>random</td>
+        <td>85.94</td>
+        <td>0.0038</td>
+        <td>100</td>
+        <td>6.6438</td>
+    </tr>
+    <tr>
+        <td>c_2</td>
+        <td>mixed_0.01</td>
+        <td>85.78</td>
+        <td>0.0061</td>
+        <td>100</td>
+        <td>6.7117</td>
+    </tr>
+    <tr>
+        <td>c_2</td>
+        <td>mixed_0.05</td>
+        <td>85.16</td>
+        <td>0.0063</td>
+        <td>100</td>
+        <td>7.0374</td>
+    </tr>
+    <tr>
+        <td rowspan="4">tfi</td>
+        <td rowspan="4">8</td>
+        <td rowspan="4">0.005</td>
+        <td>c_0</td>
+        <td>noiseless</td>
+        <td>98.44</td>
+        <td>0.0372</td>
+        <td>100</td>
+        <td>2.3004</td>
+    </tr>
+    <tr>
+        <td>c_1</td>
+        <td>random</td>
+        <td>96.56</td>
+        <td>0.1061</td>
+        <td>100</td>
+        <td>3.9492</td>
+    </tr>
+    <tr>
+        <td>c_2</td>
+        <td>bit-flip_0.01</td>
+        <td>96.56</td>
+        <td>37.0965</td>
+        <td>100</td>
+        <td>42.1246</td>
+    </tr>
+    <tr>
+        <td>c_2</td>
+        <td>bit-flip_0.05</td>
+        <td>95.94</td>
+        <td>32.7195</td>
+        <td>100</td>
+        <td>38.8139</td>
+    </tr>
+    <tr>
+        <td rowspan="4">fashion</td>
+        <td rowspan="4">8</td>
+        <td rowspan="4">0.001</td>
+        <td>c_0</td>
+        <td>noiseless</td>
+        <td>90.60</td>
+        <td>0.0420</td>
+        <td>97.40</td>
+        <td>25.3777</td>
+    </tr>
+    <tr>
+        <td>c_1</td>
+        <td>random</td>
+        <td>90.30</td>
+        <td>0.0934</td>
+        <td>97.30</td>
+        <td>27.4964</td>
+    </tr>
+    <tr>
+        <td>c_2</td>
+        <td>bit-flip_0.01</td>
+        <td>89.90</td>
+        <td>15.6579</td>
+        <td>97.20</td>
+        <td>42.1063</td>
+    </tr>
+    <tr>
+        <td>c_2</td>
+        <td>bit-flip_0.05</td>
+        <td>87.60</td>
+        <td>14.0342</td>
+        <td>96.70</td>
+        <td>48.5805</td>
+    </tr>
+    <tr>
+        <td rowspan="4">mnist (1&3)</td>
+        <td rowspan="4">8</td>
+        <td rowspan="4">0.003</td>
+        <td>c_0</td>
+        <td>noiseless</td>
+        <td>93.80</td>
+        <td>0.0543</td>
+        <td>96.00</td>
+        <td>18.5063</td>
+    </tr>
+    <tr>
+        <td>c_1</td>
+        <td>random</td>
+        <td>92.60</td>
+        <td>0.0785</td>
+        <td>95.70</td>
+        <td>23.2905</td>
+    </tr>
+    <tr>
+        <td>c_2</td>
+        <td>phase-flip_0.001</td>
+        <td>92.60</td>
+        <td>12.9728</td>
+        <td>95.70</td>
+        <td>36.2348</td>
+    </tr>
+    <tr>
+        <td>c_2</td>
+        <td>phase-flip_0.01</td>
+        <td>92.60</td>
+        <td>11.6704</td>
+        <td>95.70</td>
+        <td>33.7894</td>
+    </tr>
+</tbody>
+</table>
+
+### Adversarial Training for Improving Robustness
+
+*VeriQR* empowers users with adversarial training capabilities, an extension of traditional machine learning. When the $\epsilon$-local robustness of $\rho$ with label $l$ is compromised, our robustness verification algorithms embedded in *VeriQR* automatically generate an adversarial example $\sigma$. By incorporating a number of states and their ground truth labels $(\sigma, l)$ into the training dataset, we retrained several QML model to enhance their local robustness against the adversarial examples. The results are shown as followed, demonstrating the effectiveness of adversarial training in boosting the local robustness of QMLs, where $NRN$ represents the number of non-robust states in the original dataset  for each model. In particular, since most of our experimental models achieved 100% RA, we use "`-`" entries here to indicate that these models do not need adversarial training after initial validation. 
+
+<table>
+<thead>
+  <tr>
+    <th rowspan="2">Model</th>
+    <th rowspan="2">#Qubits</th>
+    <th rowspan="2">Circuit</th>
+    <th rowspan="2">Noise&nbsp;&nbsp;&nbsp;Setting<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(noise_p)</th>
+    <th rowspan="2">ε</th>
+    <th rowspan="2">Traning</th>
+    <th colspan="3">Rough Verif</th>
+    <th colspan="3">Accurate Verif</th>
+  </tr>
+  <tr>
+    <th>NRN</th>
+    <th>RA (%)</th>
+    <th>VT (sec.)</th>
+    <th>NRN</th>
+    <th>RA (%)</th>
+    <th>VT (sec.)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td rowspan="24">fashion</td>
+    <td rowspan="24">8</td>
+    <td rowspan="4">c_0</td>
+    <td rowspan="4">noiseless</td>
+    <td rowspan="2">0.001</td>
+    <td>before</td>
+    <td>94</td>
+    <td>90.60 </td>
+    <td>0.0471 </td>
+    <td>26</td>
+    <td>97.40 </td>
+    <td>19.9476 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>90</td>
+    <td>90.06 </td>
+    <td>0.0450 </td>
+    <td>15</td>
+    <td>98.54 </td>
+    <td>27.0747 </td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.005</td>
+    <td>before</td>
+    <td>187</td>
+    <td>81.30 </td>
+    <td>0.0207 </td>
+    <td>44</td>
+    <td>95.60 </td>
+    <td>38.1464 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>56</td>
+    <td>93.10 </td>
+    <td>0.0331 </td>
+    <td>27</td>
+    <td>97.41 </td>
+    <td>17.0312 </td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_1</td>
+    <td rowspan="4">random</td>
+    <td rowspan="2">0.001</td>
+    <td>before</td>
+    <td>111</td>
+    <td>88.90 </td>
+    <td>1.5387 </td>
+    <td>30</td>
+    <td>97.00 </td>
+    <td>24.2540 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>33</td>
+    <td>95.92 </td>
+    <td>0.0310 </td>
+    <td>10</td>
+    <td>99.03 </td>
+    <td>10.5288 </td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.005</td>
+    <td>before</td>
+    <td>215</td>
+    <td>78.50 </td>
+    <td>1.5210 </td>
+    <td>50</td>
+    <td>95.00 </td>
+    <td>54.8998 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>70</td>
+    <td>91.62 </td>
+    <td>0.0329 </td>
+    <td>38</td>
+    <td>96.38 </td>
+    <td>21.5003 </td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_2</td>
+    <td rowspan="4">bit-flip_0.01</td>
+    <td rowspan="2">0.001</td>
+    <td>before</td>
+    <td>120</td>
+    <td>88.00 </td>
+    <td>19.0693 </td>
+    <td>24</td>
+    <td>97.60 </td>
+    <td>44.5314 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>143</td>
+    <td>85.35 </td>
+    <td>0.0380 </td>
+    <td>13</td>
+    <td>98.73 </td>
+    <td>41.7078 </td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.005</td>
+    <td>before</td>
+    <td>263</td>
+    <td>73.70 </td>
+    <td>25.1982 </td>
+    <td>41</td>
+    <td>95.90 </td>
+    <td>81.4979 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>88</td>
+    <td>90.01 </td>
+    <td>0.0316 </td>
+    <td>34</td>
+    <td>96.73 </td>
+    <td>26.1886 </td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_2</td>
+    <td rowspan="4">depolarizing_0.001</td>
+    <td rowspan="2">0.001</td>
+    <td>before</td>
+    <td>121</td>
+    <td>87.90 </td>
+    <td>18.4088 </td>
+    <td>24</td>
+    <td>97.60 </td>
+    <td>50.5345 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>135</td>
+    <td>86.04 </td>
+    <td>0.0355 </td>
+    <td>12</td>
+    <td>98.83 </td>
+    <td>39.0603 </td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.005</td>
+    <td>before</td>
+    <td>266</td>
+    <td>73.40 </td>
+    <td>22.2503 </td>
+    <td>41</td>
+    <td>95.90 </td>
+    <td>93.6130 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>88</td>
+    <td>90.01 </td>
+    <td>0.0341 </td>
+    <td>34</td>
+    <td>96.73 </td>
+    <td>24.0009 </td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_2</td>
+    <td rowspan="4">phase-flip_0.001</td>
+    <td rowspan="2">0.001</td>
+    <td>before</td>
+    <td>120</td>
+    <td>88.00 </td>
+    <td>21.1309 </td>
+    <td>24</td>
+    <td>97.60 </td>
+    <td>52.8487 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>134</td>
+    <td>86.13 </td>
+    <td>0.0237 </td>
+    <td>12</td>
+    <td>98.83 </td>
+    <td>29.8855 </td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.005</td>
+    <td>before</td>
+    <td>262</td>
+    <td>73.80 </td>
+    <td>21.1185 </td>
+    <td>41</td>
+    <td>95.90 </td>
+    <td>78.1674 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>67</td>
+    <td>92.12 </td>
+    <td>0.0224 </td>
+    <td>25</td>
+    <td>97.60 </td>
+    <td>15.3171 </td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_2</td>
+    <td rowspan="4">mixed_0.01</td>
+    <td rowspan="2">0.001</td>
+    <td>before</td>
+    <td>120</td>
+    <td>88.00 </td>
+    <td>171.4938 </td>
+    <td>24</td>
+    <td>97.60 </td>
+    <td>203.8980 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>135</td>
+    <td>86.04 </td>
+    <td>0.0233 </td>
+    <td>12</td>
+    <td>98.83 </td>
+    <td>29.9190 </td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.005</td>
+    <td>before</td>
+    <td>263</td>
+    <td>73.70 </td>
+    <td>174.0630 </td>
+    <td>41</td>
+    <td>95.90 </td>
+    <td>246.1607 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>87</td>
+    <td>90.11 </td>
+    <td>0.0221 </td>
+    <td>35</td>
+    <td>96.64 </td>
+    <td>19.6066 </td>
+  </tr>
+  <tr>
+    <td rowspan="24">iris</td>
+    <td rowspan="24">4</td>
+    <td rowspan="4">c_0</td>
+    <td rowspan="4">noiseless</td>
+    <td rowspan="2">0.01</td>
+    <td>before</td>
+    <td>5</td>
+    <td>93.75 </td>
+    <td>0.0020 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>9.2720 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.05</td>
+    <td>before</td>
+    <td>42</td>
+    <td>47.50 </td>
+    <td>0.0009 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>137.7165 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_1</td>
+    <td rowspan="4">random</td>
+    <td rowspan="2">0.01</td>
+    <td>before</td>
+    <td>20</td>
+    <td>75.00 </td>
+    <td>0.0011 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>46.0594 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.05</td>
+    <td>before</td>
+    <td>47</td>
+    <td>41.25 </td>
+    <td>0.0011 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>208.1525 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_2</td>
+    <td rowspan="4">bit-flip_0.005</td>
+    <td rowspan="2">0.01</td>
+    <td>before</td>
+    <td>20</td>
+    <td>75.00 </td>
+    <td>0.0028 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>46.2143 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.05</td>
+    <td>before</td>
+    <td>47</td>
+    <td>41.25 </td>
+    <td>0.0031 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>208.8100 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_2</td>
+    <td rowspan="4">depolarizing_0.0005</td>
+    <td rowspan="2">0.01</td>
+    <td>before</td>
+    <td>20</td>
+    <td>75.00 </td>
+    <td>0.0028 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>46.0320 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.05</td>
+    <td>before</td>
+    <td>47</td>
+    <td>41.25 </td>
+    <td>0.0033 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>208.6576 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_2</td>
+    <td rowspan="4">phase-flip_0.005</td>
+    <td rowspan="2">0.01</td>
+    <td>before</td>
+    <td>20</td>
+    <td>75.00 </td>
+    <td>0.0029 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>46.0522 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.05</td>
+    <td>before</td>
+    <td>47</td>
+    <td>41.25 </td>
+    <td>0.0031 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>208.6859 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_2</td>
+    <td rowspan="4">mixed_0.0005</td>
+    <td rowspan="2">0.01</td>
+    <td>before</td>
+    <td>20</td>
+    <td>75.00 </td>
+    <td>0.0050 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>45.7089 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.05</td>
+    <td>before</td>
+    <td>47</td>
+    <td>41.25 </td>
+    <td>0.0055 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>211.5529 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="22">tfi</td>
+    <td rowspan="22">4</td>
+    <td rowspan="2">c_0</td>
+    <td rowspan="2">noiseless</td>
+    <td rowspan="2">0.1</td>
+    <td>before</td>
+    <td>558</td>
+    <td>12.81 </td>
+    <td>0.0036 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>42.4537 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_1</td>
+    <td rowspan="4">random</td>
+    <td rowspan="2">0.05</td>
+    <td>before</td>
+    <td>333</td>
+    <td>47.97 </td>
+    <td>0.0038 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>24.5601 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.1</td>
+    <td>before</td>
+    <td>551</td>
+    <td>13.91 </td>
+    <td>0.0037 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>41.0691 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_2</td>
+    <td rowspan="4">bit-flip_0.02</td>
+    <td rowspan="2">0.05</td>
+    <td>before</td>
+    <td>354</td>
+    <td>44.69 </td>
+    <td>0.0038 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>26.0638 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.1</td>
+    <td>before</td>
+    <td>571</td>
+    <td>10.78 </td>
+    <td>0.0039 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>42.6273 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_2</td>
+    <td rowspan="4">depolarizing_0.005</td>
+    <td rowspan="2">0.05</td>
+    <td>before</td>
+    <td>335</td>
+    <td>47.66 </td>
+    <td>0.0038 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>24.7343 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.1</td>
+    <td>before</td>
+    <td>553</td>
+    <td>13.59 </td>
+    <td>0.0039 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>41.2738 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_2</td>
+    <td rowspan="4">phase-flip_0.0001</td>
+    <td rowspan="2">0.05</td>
+    <td>before</td>
+    <td>333</td>
+    <td>47.97 </td>
+    <td>0.0039 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>24.5491 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.1</td>
+    <td>before</td>
+    <td>551</td>
+    <td>13.91 </td>
+    <td>0.0039 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>41.0684 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="4">c_2</td>
+    <td rowspan="4">mixed_0.01</td>
+    <td rowspan="2">0.05</td>
+    <td>before</td>
+    <td>338</td>
+    <td>47.19 </td>
+    <td>0.0041 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>25.0071 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td rowspan="2">0.1</td>
+    <td>before</td>
+    <td>555</td>
+    <td>13.28 </td>
+    <td>0.0043 </td>
+    <td>0</td>
+    <td>100.00 </td>
+    <td>41.4739 </td>
+  </tr>
+  <tr>
+    <td>after</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  </tr>
+</tbody>
+</table>
 
 ## Global Robustness Verification
 

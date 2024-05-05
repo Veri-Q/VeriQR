@@ -1,8 +1,8 @@
 Model,Circuit,Noise Setting (noise_p),ε,Traning,non-robust states,RA(%),VT(s),non-robust states,RA(%),VT(s)
 iris,c_0,noiseless,0.01,before,5,93.75,0.0020,0,100.00,9.2720
 iris,c_0,noiseless,0.01,after,19,76.25,0.0009,0,100.00,22.6675
-iris,c_0,noiseless,0.05,after,75,6.25,0.0008,0,100.00,65.2650
 iris,c_0,noiseless,0.05,before,42,47.50,0.0009,0,100.00,137.7165
+iris,c_0,noiseless,0.05,after,75,6.25,0.0008,0,100.00,65.2650
 iris,c_1,random,0.01,before,20,75.00,0.0011,0,100.00,46.0594
 iris,c_1,random,0.01,after,15,81.25,0.0008,0,100.00,142.2395
 iris,c_1,random,0.05,before,47,41.25,0.0011,0,100.00,208.1525
@@ -23,6 +23,17 @@ iris,c_2,mixed_0.0005,0.01,before,20,75.00,0.0050,0,100.00,45.7089
 iris,c_2,mixed_0.0005,0.01,after,11,86.25,0.0008,0,100.00,4.7231
 iris,c_2,mixed_0.0005,0.05,before,47,41.25,0.0055,0,100.00,211.5529
 iris,c_2,mixed_0.0005,0.05,after,75,6.25,0.0008,0,100.00,63.6182
+tfi4,c_0,noiseless,0.1,before,558,12.81,0.0036,0,100.00,42.4537
+tfi4,c_1,random,0.05,before,333,47.97,0.0038,0,100.00,24.5601
+tfi4,c_1,random,0.1,before,551,13.91,0.0037,0,100.00,41.0691
+tfi4,c_2,bit-flip_0.02,0.05,before,354,44.69,0.0038,0,100.00,26.0638
+tfi4,c_2,bit-flip_0.02,0.1,before,571,10.78,0.0039,0,100.00,42.6273
+tfi4,c_2,depolarizing_0.005,0.05,before,335,47.66,0.0038,0,100.00,24.7343
+tfi4,c_2,depolarizing_0.005,0.1,before,553,13.59,0.0039,0,100.00,41.2738
+tfi4,c_2,phase-flip_0.0001,0.05,before,333,47.97,0.0039,0,100.00,24.5491
+tfi4,c_2,phase-flip_0.0001,0.1,before,551,13.91,0.0039,0,100.00,41.0684
+tfi4,c_2,mixed_0.01,0.05,before,338,47.19,0.0041,0,100.00,25.0071
+tfi4,c_2,mixed_0.01,0.1,before,555,13.28,0.0043,0,100.00,41.4739
 fashion8,c_0,noiseless,0.001,before,94,90.60,0.0471,26,97.40,19.9476
 fashion8,c_0,noiseless,0.001,after,90,90.06,0.0450,15,98.54,27.0747
 fashion8,c_0,noiseless,0.003,before,187,81.30,0.0207,44,95.60,38.1464
