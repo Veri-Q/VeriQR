@@ -130,7 +130,7 @@ def generate_newdata_for_adversarial_training():
             noise_list = ["bit_flip", "depolarizing", "phase_flip"] if noise_type == 'mixed' else []
             p = random.choice(probs)
             noise_name = noise_name_map[noise_type]
-            final_kraus = generating_circuit_with_specified_noise(Circuit(), kraus,
+            final_kraus, _ = generating_circuit_with_specified_noise(Circuit(), kraus,
                                                                   noise_type, noise_list,
                                                                   kraus_file, p, model_name)
             np.savez('./model_and_data/origin_model/{}_c2_{}_{}.npz'.format(model_name, noise_name, p),
@@ -186,21 +186,6 @@ def generate_newdata_for_adversarial_training():
         file_name = file_path + '{}_c0'.format(model_name)
         origin_circuit, origin_kraus = qasm2mq_with_kraus(qasm_file, True, file_name + '.svg')
         np.savez(file_name + '.npz', kraus=origin_kraus)  # iris_c0
-        # ansatz_str = OpenQASM().to_string(origin_circuit)
-        # f = open(file_name + '.qasm', 'w')
-        # f.write(ansatz_str)
-        # f.close()
-
-        file_name = file_path + '{}_c1'.format(model_name)
-        random_circuit, random_kraus = generating_circuit_with_random_noise(origin_circuit, model_name,
-                                                                            True, file_name + '.svg')
-        np.savez(file_name + '.npz', kraus=random_kraus)  # iris_c1
-        # ansatz_str = OpenQASM().to_string()
-        # f = open(file_name + '.qasm', 'w')
-        # f.write(ansatz_str)
-        # f.close()
-        # data_c0, label_c0 = copy.deepcopy(data), copy.deepcopy(label)
-        # data_c1, label_c1 = copy.deepcopy(data), copy.deepcopy(label)
         for c_eps in epss:
             gc.collect()
             if TEST_MNIST:
@@ -229,6 +214,10 @@ def generate_newdata_for_adversarial_training():
                             non_robust_num_c0[0], '%.2f' % origin_ac_1, '%.4f' % origin_time[0],
                             non_robust_num_c0[1], '%.2f' % origin_ac_2, '%.4f' % origin_time[1]])
 
+        file_name = file_name.replace('c0', 'c1')
+        random_circuit, random_kraus = generating_circuit_with_random_noise(origin_circuit, model_name,
+                                                                            True, file_name + '.svg')
+        np.savez(file_name + '.npz', kraus=random_kraus)  # iris_c1
         for c_eps in epss:
             gc.collect()
             if TEST_MNIST:
@@ -266,7 +255,7 @@ def generate_newdata_for_adversarial_training():
             p = random.choice(probs)
             noise_name = noise_name_map[noise_type]
             file_name = file_path + '{}_c2_{}_{}'.format(model_name, noise_name, p)
-            final_kraus = generating_circuit_with_specified_noise(random_circuit, random_kraus,
+            final_kraus, _ = generating_circuit_with_specified_noise(random_circuit, random_kraus,
                                                                   noise_type, noise_list,
                                                                   kraus_file, p, model_name,
                                                                   True, file_name + '.svg')
@@ -335,11 +324,11 @@ def generate_newdata_from_randomModel(model_name, qubits_num, state_flag, epss):
         p = random.choice(probs)
         noise_name = noise_name_map[noise_type]
         file_name = file_path + '{}_c2_{}_{}'.format(model_name, noise_name, p)
-        # final_kraus = generating_circuit_with_specified_noise(random_circuit, random_kraus,
+        # final_kraus, _ = generating_circuit_with_specified_noise(random_circuit, random_kraus,
         #                                                       noise_type, noise_list,
         #                                                       kraus_file, p, model_name,
         #                                                       True, file_name + '.svg')
-        final_kraus = generating_circuit_with_specified_noise(random_circuit, random_kraus,
+        final_kraus, _ = generating_circuit_with_specified_noise(random_circuit, random_kraus,
                                                               noise_type, noise_list,
                                                               kraus_file, p, model_name)
         np.savez(file_name + '.npz', kraus=final_kraus)  # iris_c1
@@ -392,7 +381,9 @@ def verify_new_model(model_name, state_flag):
     for file_name in model_list:
         if os.path.isfile(os.path.join(model_path, file_name)):
             pass
-        if not file_name.startswith(model_name) or os.path.splitext(file_name)[-1] != '.npz':
+        if (not file_name.startswith(model_name) or os.path.splitext(file_name)[-1] != '.npz'
+                or file_name.startswith(model_name + '_c0') or file_name.startswith(model_name + '_c1')
+                or file_name.startswith(model_name + '_c1_Bit')):
             continue
         # 'fashion8_c0_by_0.001.npz'
         # 'fashion8_c1_by_0.001.npz'

@@ -2,9 +2,13 @@ from common_interface import *
 import numpy as np
 import random
 
+# data_file = '../model_and_data/origin_model/mnist13_c1.npz'  # 6 qubit
+# DATA = np.load(data_file)
+# print(DATA['kraus'].shape)
+
 
 def qubit_add_noise():
-    data_file = '../model_and_data/qubit_cav.npz' # 6 qubit
+    data_file = '../model_and_data/qubit.npz'  # 6 qubit
     DATA = np.load(data_file)
     kraus = DATA['kraus']
     O = DATA['O']
@@ -18,7 +22,7 @@ def qubit_add_noise():
         kraus_.append(e @ kraus[0])
     kraus_ = np.array(kraus_)
     print(kraus_.shape)
-    np.savez('../model_and_data/qubitRandom_cav.npz', O=O, data=data, label=label, kraus=kraus_)
+    np.savez('../model_and_data/qubitRandom.npz', O=O, data=data, label=label, kraus=kraus_)
 
     p = 0.001
     new_kraus_1 = []
@@ -30,7 +34,7 @@ def qubit_add_noise():
 
     new_kraus_1 = np.array(new_kraus_1)
     print(new_kraus_1.shape)
-    np.savez('../model_and_data/qubitDepolarizing{}_cav.npz'.format(p), O=O, data=data, label=label, kraus=new_kraus_1)
+    np.savez('../model_and_data/qubitDepolarizing{}.npz'.format(p), O=O, data=data, label=label, kraus=new_kraus_1)
 
     p = 0.005
     new_kraus_2 = []
@@ -42,10 +46,10 @@ def qubit_add_noise():
 
     new_kraus_2 = np.array(new_kraus_2)
     print(new_kraus_2.shape)
-    np.savez('../model_and_data/qubitDepolarizing{}_cav.npz'.format(p), O=O, data=data, label=label, kraus=new_kraus_2)
+    np.savez('../model_and_data/qubitDepolarizing{}.npz'.format(p), O=O, data=data, label=label, kraus=new_kraus_2)
 
 
-qubit_add_noise()
+# qubit_add_noise()
 
 
 def printdata(data_file):

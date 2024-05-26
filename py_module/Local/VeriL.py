@@ -16,7 +16,7 @@ def StateRobustnessVerifier(OO, data, label, e):
     new_data = []
     new_labels = []
     # non_robust_index = []
-    print('=' * 35 + '\nStarting state robustness verifier\n' + '-' * 35)
+    print('Starting state robustness verifier...')
     for i in range(n):
         rho = data[i, :, :]
         # For convenience, only find real entries state
@@ -48,10 +48,6 @@ def StateRobustnessVerifier(OO, data, label, e):
         print('{:d}/{:d} states checked: {:d} unrobust state'.format(i + 1, n, non_robust_num), end='\r')
 
     print('{:d}/{:d} states checked: {:d} unrobust state'.format(i + 1, n, non_robust_num))
-    print('=' * 35)
-    # print('origin labels:', label)
-    # print('correct labels:', correct_labels)
-    # return non_robust_num, non_robust_index, new_data, new_labels
     return non_robust_num, new_data, new_labels
 
 
@@ -64,7 +60,7 @@ def PureStateRobustnessVerifier(OO, data, label, e, ADVERSARY_EXAMPLE=False, dig
     data = np.real(data)
     new_data = []
     new_labels = []
-    print('=' * 35 + '\nStarting pure state robustness verifier\n' + '-' * 35)
+    print('Starting pure state robustness verifier...')
     for i in range(n):
         psi = C(data[:, i])
         A = psi @ psi.conj().T
@@ -136,7 +132,6 @@ def PureStateRobustnessVerifier(OO, data, label, e, ADVERSARY_EXAMPLE=False, dig
         print('{:d}/{:d} states checked: {:d} unrobust state'.format(i + 1, n, non_robust_num), end='\r')
 
     print('{:d}/{:d} states checked: {:d} unrobust state'.format(i + 1, n, non_robust_num))
-    print('=' * 35)
     return non_robust_num, new_data, new_labels
 
 
@@ -164,8 +159,8 @@ def RobustnessVerifier(E, O, data, label, e, type, GET_NEW_DATASET=False, origin
     """
 
     time_start = time.time()
-    print('=' * 45 + '\nStarting Robustness Verifier\n' + '-' * 45)
-    print('Checking {:g}-robustness\n'.format(e) + '-' * 40)
+    print('=' * 45 + '\nStarting Robustness Verifier...')
+    print('-' * 45 + '\nChecking {:g}-robustness'.format(e))
 
     NKraus, dim, n = E.shape[0], data.shape[1], data.shape[0]
     OO = np.zeros([dim, dim], dtype=complex)
@@ -226,10 +221,10 @@ def RobustnessVerifier(E, O, data, label, e, type, GET_NEW_DATASET=False, origin
     check_time[1] = time.time() - time_start
 
     robust_ac = 1. - non_robust_num / np.double(n)
-    print('Verification over\n' + '-' * 40)
+    print('-' * 45 + '\nVerification over')
     print('Robust accuracy: {:.2f}%,'.format(robust_ac[1] * 100), end=' ')
     print('Verification time: {:.2f}s'.format(check_time[1]))
-    print('=' * 45)
+    print('=' * 45 + '\n')
     if GET_NEW_DATASET:
         return robust_ac, check_time, non_robust_num_in_origin_dataset, new_datas, new_labels
     else:
@@ -258,8 +253,8 @@ def PureRobustnessVerifier(E, O, data, label, e, type, GET_NEW_DATASET=False, or
 
     """
     time_start = time.time()
-    print('=' * 45 + '\nStarting Pure Robustness Verifier\n' + '-' * 45)
-    print('Checking {:g}-robustness\n'.format(e) + '-' * 40)
+    print('=' * 45 + '\nStarting Pure Robustness Verifier...')
+    print('-' * 45 + '\nChecking {:g}-robustness'.format(e))
 
     NKraus, dim, n = E.shape[0], data.shape[0], data.shape[1]
     OO = np.zeros([dim, dim], dtype=complex)
@@ -322,10 +317,10 @@ def PureRobustnessVerifier(E, O, data, label, e, type, GET_NEW_DATASET=False, or
     check_time[1] = time.time() - time_start
 
     robust_ac = 1. - non_robust_num / np.double(n)
-    print('Verification over\n' + '-' * 40)
+    print('-' * 45 + '\nVerification over')
     print('Robust accuracy: {:.2f}%,'.format(robust_ac[1] * 100), end=' ')
     print('Verification time: {:.2f}s'.format(check_time[1]))
-    print('=' * 45)
+    print('=' * 45 + '\n')
     if GET_NEW_DATASET:
         return robust_ac, check_time, non_robust_num_in_origin_dataset, new_datas, new_labels
     else:

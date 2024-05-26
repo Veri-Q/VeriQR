@@ -48,11 +48,11 @@ def qasm2mq(qasm_file, to_save_figure=False, filepath=''):
     if to_save_figure:
         if filepath != '':
             circuit.svg().to_file(filepath)  # qasm_file chop '.qasm'
-            print(filepath + " saved successfully! ")
+            print(filepath + "was saved successfully! ")
         else:
             model_name = "{}_origin.svg".format(qasm_file[qasm_file.rfind('/') + 1:-5])
             circuit.svg().to_file("./figures/" + model_name)  # qasm_file chop '.qasm'
-            print(model_name + " saved successfully! ")
+            print(model_name + " was saved successfully! ")
 
     # if circuit.has_measure_gate:
     #     circuit = circuit.remove_measure()
@@ -78,11 +78,11 @@ def qasm2mq_with_kraus(qasm_file, to_save_figure=False, filepath=''):
     if to_save_figure:
         if filepath != '':
             circuit.svg().to_file(filepath)  # qasm_file chop '.qasm'
-            print(filepath + " saved successfully! ")
+            print(filepath + " was saved successfully! ")
         else:
             model_name = "{}_origin.svg".format(qasm_file[qasm_file.rfind('/') + 1:-5])
             circuit.svg().to_file("./figures/" + model_name)  # qasm_file chop '.qasm'
-            print(model_name + " saved successfully! ")
+            print(model_name + " was saved successfully! ")
 
     origin_circ = circuit
     all_measures = []
@@ -124,8 +124,6 @@ def random_insert_ops(origin_circuit, nums_and_ops, with_ctrl=True, after_measur
     returns:
         An iterator of the new circuit generated after inserting the operators.
     """
-    print(nums_and_ops)
-
     origin_circuit = origin_circuit.remove_barrier()  # 去掉栅栏门
     available_indexes = []
     if after_measure:
@@ -188,10 +186,10 @@ def random_insert_ops(origin_circuit, nums_and_ops, with_ctrl=True, after_measur
                                     new_kraus.append(e_ @ u)
                             kraus_ = new_kraus
                             selected_qubits.append(qubit)
-                            print('len(selected_qubits) =', len(selected_qubits))
-                            print('kraus_.shape =', np.array(kraus_).shape)
+                            # print('len(selected_qubits) =', len(selected_qubits))
+                            # print('kraus_.shape =', np.array(kraus_).shape)
         final_circuit.append(random_circit)
-        print(np.array(kraus_).shape)
+        print('random_kraus.shape =', np.array(kraus_).shape)
     return Circuit(final_circuit[0]), np.array(kraus_)
 
 
@@ -199,7 +197,6 @@ def generating_circuit_with_random_noise(circ, model_name_, to_save_figure=False
     # generate random noise
     # noise_num = random.randint(1, len(circ))
     noise_num = circ.n_qubits
-    print('add {} noise'.format(noise_num))
     ops = []
     left_noise_num = noise_num
     while left_noise_num > 0:
@@ -222,9 +219,10 @@ def generating_circuit_with_random_noise(circ, model_name_, to_save_figure=False
     if circ.has_measure_gate:
         circ = circ.remove_measure()
 
+    print('add {} noise: {}'.format(noise_num, ops))
+
     # insert random noise
     circ, kraus_ = random_insert_ops(circ, ops)
-    file_name_ = '{}_random.svg'.format(model_name_)
 
     for m in all_measures:
         circ += m
@@ -232,10 +230,11 @@ def generating_circuit_with_random_noise(circ, model_name_, to_save_figure=False
     if to_save_figure:
         if filepath != '':
             circ.svg().to_file(filepath)  # qasm_file chop '.qasm'
-            print(filepath + " saved successfully! ")
+            print(filepath + "was saved successfully! ")
         else:
+            file_name_ = '{}_random.svg'.format(model_name_)
             circ.svg().to_file("./figures/" + file_name_)  # qasm_file chop '.qasm'
-            print(file_name_ + " saved successfully! ")
+            print(file_name_ + " was saved successfully! ")
 
     return circ, kraus_
 
@@ -274,11 +273,11 @@ def generating_circuit_with_specified_noise(circ, origin_kraus_, noise, noise_li
     elif noise == "custom":
         data = load(kraus_file_)
         kraus_ = data['kraus']
+        dim = 2 ** circ.n_qubits
         for i in range(kraus_.shape[0]):
-            if kraus_[i].shape[0] != circ.n_qubits or kraus_[i].shape[1] != circ.n_qubits:
+            if kraus_[i].shape[0] != dim or kraus_[i].shape[1] != dim:
                 raise RuntimeError("The dimension of the kraus operator is {}, not consistent with "
-                                   "the circuit's ({}, {})! ".format(kraus_[i].shape, 2 ** circ.n_qubits,
-                                                                     2 ** circ.n_qubits))
+                                   "the circuit's ({}, {})! ".format(kraus_[i].shape, dim, dim))
         noise_name_ = "custom_{}".format(kraus_file_[kraus_file_.rfind('/') + 1:-4])
     else:
         noise_op = noise_op_map[noise]
@@ -331,12 +330,12 @@ def generating_circuit_with_specified_noise(circ, origin_kraus_, noise, noise_li
     if to_save_figure:
         if filepath != '':
             circ.svg().to_file(filepath)  # qasm_file chop '.qasm'
-            print(filepath + " saved successfully! ")
+            print(filepath + "was saved successfully! ")
         else:
             file_name_ = '{}_{}_{}.svg'.format(model_name_, noise_name_, noise_p_)
             circ.svg().to_file("./figures/" + file_name_)  # qasm_file chop '.qasm'
-            print(file_name_ + " saved successfully! ")
+            print(file_name_ + " was saved successfully! ")
 
     new_kraus_ = np.array(new_kraus_)
-    print(new_kraus_.shape)
-    return new_kraus_
+    print('final_kraus.shape = {}\n'.format(new_kraus_.shape))
+    return new_kraus_, noise_name_

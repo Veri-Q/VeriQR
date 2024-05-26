@@ -1,0 +1,210 @@
+mnist01_origin.svg was saved successfully!
+add 8 noise: [[4, BFC(p=0.0651)], [2, PFC(p=0.1359)], [1, BFC(p=0.1123)], [1, BFC(p=0.0897)]]
+random_kraus.shape = (128, 256, 256)
+mnist01_random.svg was saved successfully!
+The noise type is: phase_flip
+add phase_flip with probability 0.001
+mnist01_PhaseFlip_0.001.svg was saved successfully!
+final_kraus.shape = (32768, 256, 256)
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.001-robustness...
+Filted by robust bound, 71 states left for QCQP method
+Starting pure state robustness verifier...
+71/71 states checked: 58 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 95.40%, Verification time: 10.61s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.001-robustness...
+Filted by robust bound, 71 states left for QCQP method
+Starting pure state robustness verifier...
+71/71 states checked: 58 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 94.20%, Verification time: 14.03s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.001-robustness...
+Filted by robust bound, 71 states left for QCQP method
+Starting pure state robustness verifier...
+71/71 states checked: 58 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 94.20%, Verification time: 61.02s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.002-robustness...
+Filted by robust bound, 98 states left for QCQP method
+Starting pure state robustness verifier...
+98/98 states checked: 87 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 92.40%, Verification time: 21.17s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.002-robustness...
+Filted by robust bound, 98 states left for QCQP method
+Starting pure state robustness verifier...
+98/98 states checked: 87 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 91.30%, Verification time: 22.13s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.002-robustness...
+Filted by robust bound, 98 states left for QCQP method
+Starting pure state robustness verifier...
+98/98 states checked: 87 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 91.30%, Verification time: 69.17s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.003-robustness...
+Filted by robust bound, 126 states left for QCQP method
+Starting pure state robustness verifier...
+126/126 states checked: 101 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 88.90%, Verification time: 31.33s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.003-robustness...
+Filted by robust bound, 126 states left for QCQP method
+Starting pure state robustness verifier...
+126/126 states checked: 101 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 89.90%, Verification time: 29.06s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.003-robustness...
+Filted by robust bound, 126 states left for QCQP method
+Starting pure state robustness verifier...
+126/126 states checked: 101 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 89.90%, Verification time: 114.01s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.004-robustness...
+Filted by robust bound, 146 states left for QCQP method
+Starting pure state robustness verifier...
+146/146 states checked: 122 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 85.70%, Verification time: 41.02s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.004-robustness...
+Filted by robust bound, 146 states left for QCQP method
+Starting pure state robustness verifier...
+146/146 states checked: 122 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 87.80%, Verification time: 34.71s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.004-robustness...
+Filted by robust bound, 146 states left for QCQP method
+Starting pure state robustness verifier...
+146/146 states checked: 122 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 87.80%, Verification time: 79.80s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.005-robustness...
+Filted by robust bound, 165 states left for QCQP method
+Starting pure state robustness verifier...
+165/165 states checked: 137 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 82.50%, Verification time: 49.52s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.005-robustness...
+Filted by robust bound, 165 states left for QCQP method
+Starting pure state robustness verifier...
+165/165 states checked: 137 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 86.30%, Verification time: 141.95s
+=============================================
+
+=============================================
+Starting Pure Robustness Verifier...
+---------------------------------------------
+Checking 0.005-robustness...
+Filted by robust bound, 165 states left for QCQP method
+Starting pure state robustness verifier...
+165/165 states checked: 137 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 86.30%, Verification time: 82.20s
+=============================================
+
+Got the result table: 
++--------------+--------------------------+-------------------+-------------------+----------------------+----------------------+
+|   epsilon    |         Circuit          | Rough Verif RA(%) | Rough Verif VT(s) | Accurate Verif RA(%) | Accurate Verif VT(s) |
++--------------+--------------------------+-------------------+-------------------+----------------------+----------------------+
+| 1.000000e-03 |        noiseless         |       94.40       |       0.0569      |        95.40         |       10.6099        |
+| 1.000000e-03 |       random noise       |       91.60       |       0.2309      |        94.20         |       14.0259        |
+| 1.000000e-03 | random & specified noise |       91.60       |      45.0407      |        94.20         |       61.0181        |
+| 2.000000e-03 |        noiseless         |       89.40       |       0.0372      |        92.40         |       21.1714        |
+| 2.000000e-03 |       random noise       |       88.30       |       0.2731      |        91.30         |       22.1347        |
+| 2.000000e-03 | random & specified noise |       88.30       |      46.7507      |        91.30         |       69.1732        |
+| 3.000000e-03 |        noiseless         |       84.60       |       0.0363      |        88.90         |       31.3292        |
+| 3.000000e-03 |       random noise       |       85.60       |       0.2759      |        89.90         |       29.0643        |
+| 3.000000e-03 | random & specified noise |       85.60       |      45.4986      |        89.90         |       114.0097       |
+| 4.000000e-03 |        noiseless         |       79.90       |       0.0382      |        85.70         |       41.0226        |
+| 4.000000e-03 |       random noise       |       83.00       |       0.2603      |        87.80         |       34.7147        |
+| 4.000000e-03 | random & specified noise |       83.00       |      46.8175      |        87.80         |       79.7954        |
+| 5.000000e-03 |        noiseless         |       75.60       |       0.0387      |        82.50         |       49.5249        |
+| 5.000000e-03 |       random noise       |       80.40       |       0.2736      |        86.30         |       141.9478       |
+| 5.000000e-03 | random & specified noise |       80.40       |      43.4418      |        86.30         |       82.2040        |
++--------------+--------------------------+-------------------+-------------------+----------------------+----------------------+
+mnist01_0.001×5_pure_PhaseFlip_0.001.csv was saved successfully! 

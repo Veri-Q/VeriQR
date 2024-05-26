@@ -64,9 +64,15 @@ for d1 in range(1, 10):
     print(x_train[0])
     print(y_train.shape)
     print(type(y_train))
+    print(y_train[0])
+    print(type(y_train[0]))
     # print(y_train)
     x_test = convert_to_qcnn_data(np.vstack((x0[ind0[n_train:n_all]], x1[ind1[n_train:n_all]])))
     y_test = jnp.array(np.hstack((y0[ind0[n_train:n_all]], y1[ind1[n_train:n_all]])))
+    print(x_test.shape)
+    print(type(x_test))
+    print(y_test.shape)
+    print(type(y_test))
 
     model = qcnn(8)
 

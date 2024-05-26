@@ -1,10 +1,16 @@
 py_module/Local/__pycache__/
 py_module/Local/.idea/
 py_module/Local/.DS_Store
-py_module/Local/printdata.py
+py_module/Local/test.py
+py_module/Local/other/test.py
 py_module/Local/other/fashion_training/.ipynb_checkpoints/
 py_module/Local/other/qcnn/__pycache__/
 py_module/Local/model_and_data/origin_model/
+py_module/Local/results/local_results_v1.csv
+py_module/Local/results/local_results_v2.csv
+py_module/Local/results/adversarial_training_v1.csv
+py_module/Local/results/adversarial_training_v2.csv
+py_module/Local/results/adversarial_training_v3.csv
 py_module/Global/__pycache__/
 py_module/Global/.idea/
 py_module/Global/adult.zip

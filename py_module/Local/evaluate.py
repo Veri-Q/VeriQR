@@ -179,7 +179,7 @@ def evaluate():
                         random_kraus = load('./fashion10_random_kraus.npz')['random_kraus']
                         final_kraus = load('./fashion10_final_kraus.npz')['final_kraus']
                     else:
-                        final_kraus = generating_circuit_with_specified_noise(random_circuit, random_kraus,
+                        final_kraus, _ = generating_circuit_with_specified_noise(random_circuit, random_kraus,
                                                                                           noise_type, noise_list,
                                                                                           kraus_file, noise_p,
                                                                                           model_name)
@@ -262,7 +262,7 @@ def evaluate_mnist(digits):
         # eps = choice([0.0001, 0.0003, 0.0005, 0.001, 0.003, 0.005, 0.01, 0.03, 0.05, 0.075])
         noise_p = random.choice(probs)
         print('*' * 40 + "verifying {} with {}_{}".format(model_name, noise_type, noise_p) + '*' * 40)
-        final_kraus = generating_circuit_with_specified_noise(random_circuit, random_kraus,
+        final_kraus, _ = generating_circuit_with_specified_noise(random_circuit, random_kraus,
                                                                           noise_type, noise_list,
                                                                           kraus_file, noise_p, model_name)
         final_ac_temp, final_time_temp = verifier(final_kraus, O, data, label, c_eps, type,

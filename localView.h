@@ -32,38 +32,38 @@ public:
     void init();
     void resizeEvent(QResizeEvent *) override;
     void openFile();
-    void model_change_to_ui();
     void saveFile();
     void saveasFile();
-    void show_result_tables();
-    void show_adversary_examples();
-    void delete_all_adversary_examples();
+    void show_adversarial_examples();
+    void delete_all_adversarial_examples();
     void show_circuit_diagram_svg(QString filename);
-    void show_circuit_diagram_pdf(QString filename);
+    void show_circuit_diagram_pdf();
     void close_circuit_diagram();
     void close_circuit_diagram_svg();
     void close_circuit_diagram_pdf();
+    void setItem(QStandardItem *newItem);
+    void show_result_tables();
+    void get_table_data(QString op);
+    void clear_output();
+    void reset_all();
 
 public slots:
     void importModel();
     void on_radioButton_importfile_clicked();
     void importData();
-    void on_radioButton_binary_clicked();
+    void on_radioButton_qubit_clicked();
     void on_radioButton_phaseRecog_clicked();
     void on_radioButton_excitation_clicked();
     void on_radioButton_mnist_clicked();
     void on_radioButton_pure_clicked();
     void on_radioButton_mixed_clicked();
-    void on_checkBox_clicked(int state);
+    void on_checkBox_show_AE_stateChanged(int state);
+    void on_checkBox_get_newdata_stateChanged(int state);
     void on_slider_unit_sliderMoved(int position);
-    void on_slider_exptnum_sliderMoved(int position);
+    void on_slider_batchnum_sliderMoved(int position);
     void on_spinBox_unit_valueChanged(int arg1);
-    void on_spinBox_exptnum_valueChanged(int arg1);
-    void run_localVeri();
-    void stopProcess();
-    void on_read_output();
-    void get_table_data(QString op);
-    void stateChanged(QProcess::ProcessState state);
+    void on_spinBox_batchnum_valueChanged(int arg1);
+    void on_process_stateChanged(QProcess::ProcessState state);
     void on_radioButton_bitflip_clicked();
     void on_radioButton_depolarizing_clicked();
     void on_radioButton_phaseflip_clicked();
@@ -71,59 +71,59 @@ public slots:
     void on_radioButton_importkraus_clicked();
     void on_slider_prob_sliderMoved(int);
     void on_doubleSpinBox_prob_valueChanged(double);
+    void run_localVeri();
+    void on_read_output();
+    void stopProcess();
 
 private:
-    PdfView *pdfView;
-
-    SvgWidget *svgWidget;
-
-    MultiSelectComboBox *comboBox_digits;
-    MultiSelectComboBox *comboBox_mixednoise;
-
-    QProcess *process;
-
-    QStandardItemModel *accuracy_model;
-    QStandardItemModel *times_model;
-    QStandardItem *item;
-
     QString localDir;
-    QFileInfo model_file_;  // 当前选择的qasm模型文件
-    QFileInfo data_file_;  // 当前选择的npz数据文件
-    QString file_name_;   // txt和csv结果文件命名格式: binary_0.001_3_mixed
-    QString model_name_;  // binary
-    QString csvfile_;     // ../VeriQR/py_module/Local/results/result_tables/binary_0.001_3_mixed.csv
-    QString npzfile_;     // binary_cav.npz
+
+    /* Variables about setting parameters */
+    QString npzfile_;       // qubit.npz
+    QFileInfo model_file_;  // The currently selected qasm file
+    QFileInfo data_file_;   // The currently selected npz file, containing the model and dataset
+    QString model_name_;    // e.g. mnist
+    QString filename_;  // Used to specify the name of the resulting file for the current model
+                        // e.g. qubit_0.001×5_mixed, fashion8_0.001×5_pure_Depolarizing_0.001
+    QStringList case_list_ = QStringList(QStringList()<< "qubit"<< "excitation"<< "phaseRecog");
+    MultiSelectComboBox *comboBox_digits;
 
     QString state_type_ = "mixed";
+    bool need_to_visualize_AE_ = false;
+    bool need_new_dataset_ = false;
     double robustness_unit_ = 1e-5;
-    int experiment_number_ = 5;
-    bool need_adversary_examples_ = false;
+    int bacth_num_ = 5;
+
+    // QString noise_types[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
+    QString noise_type_;
+    double noise_prob_;
+    std::map<QString, QString> noise_name_map = {
+                                                 {"BitFlip", "bit_flip"},
+                                                 {"Depolarizing", "depolarizing"},
+                                                 {"PhaseFlip", "phase_flip"},
+                                                 };
+    QStringList mixed_noises_;
+    MultiSelectComboBox *comboBox_mixednoise;
+    QFileInfo kraus_file_;  // The currently selected Kraus operators file
+
+    /* Variables about verification program */
+    QProcess *process;
+
+    /* Variables about visualization */
     QString output_;
     QString output_line_;
 
-    QString noise_types[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
-    QString noise_type_;
-    double noise_prob_;
-    QStringList mixed_noises_;
-    QFileInfo kraus_file_;  // 当前选择的kraus operators file
+    QString csvfile_;     // e.g. localDir/results/result_tables/mnist_0.001×5_pure_Depolarizing_0.001.csv
+    QStandardItemModel *res_model;
+    // QStandardItem *item;
 
-    std::map<QString, QString> noise_name_map = {
-        {"BitFlip", "bit_flip"},
-        {"Depolarizing", "depolarizing"},
-        {"PhaseFlip", "phase_flip"},
-    };
-
+    PdfView *pdfView;
+    // SvgWidget *svgWidget;
+    // Used to indicate whether the image was displayed
     bool showed_svg = false;
     bool showed_pdf = false;
-    bool showed_adexample = false;
-    QStringList adv_examples;
-
-    std::map<QString, QString> circuit_diagram_map = {
-        {"binary", "binary_model.pdf"},
-        {"excitation", "excitation_model.pdf"},
-        // {"mnist", "mnist_model.pdf"},
-        {"phaseRecog", "phaseRecog.pdf"},
-    };
+    bool showed_AE_ = false;
+    QStringList adv_examples_;
 };
 
 #endif // LOCALVIEW_H

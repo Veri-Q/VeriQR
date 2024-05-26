@@ -41,7 +41,7 @@ protected:
     virtual void keyPressEvent(QKeyEvent *event); //按键事件
 
 private slots:
-    void stateChange(int state); // 文本框文本变化
+    void stateChange(int state);  // 文本框文本变化
     void stateChange_0(int state);
     void stateChange_1(int state);
     void stateChange_2(int state);

@@ -19,6 +19,7 @@ from mindspore import ops, Tensor
 from mindspore.common.initializer import initializer
 from mindspore.common.parameter import Parameter
 from mindspore.ops import operations
+import os
 
 ms.set_context(mode=ms.PYNATIVE_MODE, device_target="CPU")
 ms.set_seed(1)
@@ -240,51 +241,25 @@ def retaining(data_file):
     get_trained_ansatz()
 
 
-retaining('fashion8_c0_by_0.001.npz')
-retaining('fashion8_c0_by_0.003.npz')
-retaining('fashion8_c1_by_0.001.npz')
-retaining('fashion8_c1_by_0.003.npz')
-retaining('fashion8_c2_BitFlip_0.001_by_0.001.npz')
-retaining('fashion8_c2_BitFlip_0.001_by_0.003.npz')
-retaining('fashion8_c2_Depolarizing_0.005_by_0.001.npz')
-retaining('fashion8_c2_Depolarizing_0.005_by_0.003.npz')
-retaining('fashion8_c2_PhaseFlip_0.01_by_0.001.npz')
-retaining('fashion8_c2_PhaseFlip_0.01_by_0.003.npz')
-retaining('fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.001.npz')
-retaining('fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.003.npz')
+model_name = 'fashion8'
+data_path = '../../model_and_data/newdata_for_AT/'
+data_list = os.listdir(data_path)
+data_list = sorted(data_list, key=lambda x: os.path.getmtime(os.path.join(data_path, x)))
+for file_name in data_list:
+    if not file_name.startswith(model_name) or os.path.splitext(file_name)[-1] != '.npz':
+        continue
 
-# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c0_by_0.001.npz')['kraus']
-# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c0_by_0.001.npz', kraus=np.array([k]))
-#
-# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c0_by_0.003.npz')['kraus']
-# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c0_by_0.003.npz', kraus=np.array([k]))
-#
-# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c1_by_0.001.npz')['kraus']
-# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c1_by_0.001.npz', kraus=np.array([k]))
-#
-# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c1_by_0.003.npz')['kraus']
-# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c1_by_0.003.npz', kraus=np.array([k]))
-#
-# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_BitFlip_0.001_by_0.001.npz')['kraus']
-# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_BitFlip_0.001_by_0.001.npz', kraus=np.array([k]))
-#
-# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_BitFlip_0.001_by_0.003.npz')['kraus']
-# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_BitFlip_0.001_by_0.003.npz', kraus=np.array([k]))
-#
-# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_Depolarizing_0.005_by_0.001.npz')['kraus']
-# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_Depolarizing_0.005_by_0.001.npz', kraus=np.array([k]))
-#
-# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_Depolarizing_0.005_by_0.003.npz')['kraus']
-# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_Depolarizing_0.005_by_0.003.npz', kraus=np.array([k]))
-#
-# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_PhaseFlip_0.01_by_0.001.npz')['kraus']
-# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_PhaseFlip_0.01_by_0.001.npz', kraus=np.array([k]))
-#
-# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_PhaseFlip_0.01_by_0.003.npz')['kraus']
-# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_PhaseFlip_0.01_by_0.003.npz', kraus=np.array([k]))
-#
-# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.001.npz')['kraus']
-# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.001.npz', kraus=np.array([k]))
-#
-# k = np.load('../../model_and_data/newmodel_by_AT/fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.003.npz')['kraus']
-# np.savez('../../model_and_data/newmodel_by_AT/fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.003.npz', kraus=np.array([k]))
+    retaining(file_name)
+
+# retaining('fashion8_c0_by_0.001.npz')
+# retaining('fashion8_c0_by_0.003.npz')
+# retaining('fashion8_c1_by_0.001.npz')
+# retaining('fashion8_c1_by_0.003.npz')
+# retaining('fashion8_c2_BitFlip_0.001_by_0.001.npz')
+# retaining('fashion8_c2_BitFlip_0.001_by_0.003.npz')
+# retaining('fashion8_c2_Depolarizing_0.005_by_0.001.npz')
+# retaining('fashion8_c2_Depolarizing_0.005_by_0.003.npz')
+# retaining('fashion8_c2_PhaseFlip_0.01_by_0.001.npz')
+# retaining('fashion8_c2_PhaseFlip_0.01_by_0.003.npz')
+# retaining('fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.001.npz')
+# retaining('fashion8_c2_mixed_BitFlip_Depolarizing_PhaseFlip_0.001_by_0.003.npz')

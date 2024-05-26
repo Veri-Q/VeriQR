@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1670</width>
-    <height>905</height>
+    <height>939</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -65,7 +65,7 @@
              <number>10</number>
             </property>
             <item row="0" column="0">
-             <widget class="QRadioButton" name="radioButton_binary">
+             <widget class="QRadioButton" name="radioButton_qubit">
               <property name="font">
                <font>
                 <pointsize>12</pointsize>
@@ -167,7 +167,7 @@
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,1">
+          <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,4">
            <property name="spacing">
             <number>18</number>
            </property>
@@ -196,14 +196,7 @@
              <property name="title">
               <string>Quantum Data Type</string>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_14">
-              <item>
-               <widget class="QRadioButton" name="radioButton_pure">
-                <property name="text">
-                 <string>Pure</string>
-                </property>
-               </widget>
-              </item>
+             <layout class="QVBoxLayout" name="verticalLayout_9">
               <item>
                <widget class="QRadioButton" name="radioButton_mixed">
                 <property name="text">
@@ -211,6 +204,13 @@
                 </property>
                 <property name="checked">
                  <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_pure">
+                <property name="text">
+                 <string>Pure</string>
                 </property>
                </widget>
               </item>
@@ -242,17 +242,24 @@
              <property name="title">
               <string>Adversarial Examples</string>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_16">
+             <layout class="QVBoxLayout" name="verticalLayout_7">
               <item>
-               <widget class="QCheckBox" name="checkBox">
+               <widget class="QCheckBox" name="checkBox_show_AE">
                 <property name="text">
-                 <string>Need to generate</string>
+                 <string>To visualize adversarial examples</string>
                 </property>
                 <property name="checked">
                  <bool>false</bool>
                 </property>
                 <property name="tristate">
-                 <bool>true</bool>
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="checkBox_get_newdata">
+                <property name="text">
+                 <string>To get new dataset for adversarial training</string>
                 </property>
                </widget>
               </item>
@@ -462,7 +469,7 @@
 }</string>
              </property>
              <property name="title">
-              <string>Unit of ε</string>
+              <string>Unit of Disturbance Parameter ε</string>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_15">
               <item>
@@ -507,7 +514,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_exptnum">
+            <widget class="QGroupBox" name="groupBox_batchnum">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
@@ -529,11 +536,11 @@
 }</string>
              </property>
              <property name="title">
-              <string>Number of Experiments</string>
+              <string>Experimental Batch</string>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_11">
               <item>
-               <widget class="QSlider" name="slider_exptnum">
+               <widget class="QSlider" name="slider_batchnum">
                 <property name="minimum">
                  <number>1</number>
                 </property>
@@ -549,7 +556,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="spinBox_exptnum">
+               <widget class="QSpinBox" name="spinBox_batchnum">
                 <property name="minimum">
                  <number>1</number>
                 </property>
@@ -708,7 +715,7 @@ background-color: rgb(238, 238, 238);
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>570</width>
+              <width>607</width>
               <height>107</height>
              </rect>
             </property>
@@ -755,7 +762,7 @@ QTabBar::tab:selected { font-size: 19px; font-weight: bold; }</string>
       <attribute name="title">
        <string>Experimental Results</string>
       </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,4,1">
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,10,1">
        <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
@@ -770,7 +777,7 @@ QTabBar::tab:selected { font-size: 19px; font-weight: bold; }</string>
         </spacer>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,2,1,2,1">
+        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,5,2">
          <property name="spacing">
           <number>50</number>
          </property>
@@ -794,7 +801,7 @@ QTabBar::tab:selected { font-size: 19px; font-weight: bold; }</string>
           </spacer>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_acc">
+          <widget class="QGroupBox" name="groupBox_res">
            <property name="font">
             <font>
              <family>Ubuntu</family>
@@ -808,7 +815,7 @@ QTabBar::tab:selected { font-size: 19px; font-weight: bold; }</string>
 </string>
            </property>
            <property name="title">
-            <string>Robust Accuracy (in Percent)</string>
+            <string>Local Robustness Verification Result</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -827,7 +834,7 @@ QTabBar::tab:selected { font-size: 19px; font-weight: bold; }</string>
              <number>0</number>
             </property>
             <item>
-             <widget class="QTableView" name="table_accuracy">
+             <widget class="QTableView" name="table_res">
               <property name="font">
                <font>
                 <family>Ubuntu</family>
@@ -840,10 +847,10 @@ QTabBar::tab:selected { font-size: 19px; font-weight: bold; }</string>
                <string notr="true">background-color: rgb(255, 255, 255);</string>
               </property>
               <attribute name="horizontalHeaderMinimumSectionSize">
-               <number>50</number>
+               <number>100</number>
               </attribute>
               <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>50</number>
+               <number>100</number>
               </attribute>
               <attribute name="verticalHeaderCascadingSectionResizes">
                <bool>false</bool>
@@ -851,63 +858,6 @@ QTabBar::tab:selected { font-size: 19px; font-weight: bold; }</string>
               <attribute name="verticalHeaderDefaultSectionSize">
                <number>100</number>
               </attribute>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="groupBox_time">
-           <property name="styleSheet">
-            <string notr="true">font: 13pt &quot;Ubuntu&quot;;
-</string>
-           </property>
-           <property name="title">
-            <string>Verification Times (in Seconds)</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_6" stretch="3">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QTableView" name="table_times">
-              <property name="font">
-               <font>
-                <family>Ubuntu</family>
-                <pointsize>13</pointsize>
-                <italic>false</italic>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: rgb(7, 7, 7);
-background-color: rgb(255, 255, 255);</string>
-              </property>
              </widget>
             </item>
            </layout>
@@ -959,6 +909,9 @@ background-color: rgb(255, 255, 255);</string>
       <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0">
        <item>
         <widget class="QScrollArea" name="scrollArea_circ">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -967,11 +920,26 @@ background-color: rgb(255, 255, 255);</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>962</width>
-            <height>819</height>
+            <width>925</width>
+            <height>853</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_circ"/>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QGroupBox::title{
+  font-size: 19px; font-weight: bold; 
+}</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_circ">
+           <property name="spacing">
+            <number>30</number>
+           </property>
+          </layout>
          </widget>
         </widget>
        </item>
@@ -986,23 +954,23 @@ background-color: rgb(255, 255, 255);</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
        <item>
-        <widget class="QScrollArea" name="scrollArea_ad">
+        <widget class="QScrollArea" name="scrollArea_AE">
          <property name="styleSheet">
           <string notr="true"/>
          </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents_ad">
+         <widget class="QWidget" name="scrollAreaWidgetContents_AE">
           <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>962</width>
-            <height>819</height>
+            <width>925</width>
+            <height>853</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_4"/>
+          <layout class="QVBoxLayout" name="verticalLayout_AE"/>
          </widget>
         </widget>
        </item>

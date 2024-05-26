@@ -3,9 +3,10 @@
 SvgWidget::SvgWidget(QWidget *parent)
 {
     svgRender = this->renderer();
-    this->resize(svgRender->defaultSize()); // 按照SVG文件的默认尺寸进行显示
+    this->resize(svgRender->defaultSize()); // Display the SVG file at its default size.
 }
 
+/* Respond to mouse scroll events, so that SVG images can be zoomed by mouse scrolling. */
 void SvgWidget::wheelEvent(QWheelEvent *e)
 {
     const double diff = 0.2; // 表示每次滚轮滚动一定的值, 图片大小改变的比例

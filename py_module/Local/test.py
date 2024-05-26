@@ -122,21 +122,62 @@ def random_insert_ops(circuit, nums_and_ops, with_ctrl=True, after_measure=False
 # print(label.shape)
 
 
-with open("./results/local_results_v2.csv") as f:
-    with open("./results/local_results.csv", 'a+') as csvfile:
-        w = csv.writer(csvfile)
-        for row in csv.reader(f, skipinitialspace=True):
-            if row == [] or row[0] == 'Model' or len(row) < 16:
-                continue
-            model_name = row[0]
-            noise_type = row[1].replace(' ', '-')
-            noise_p = row[2]
-            c_eps = row[3]
-            w.writerows([
-                [model_name, '{}_{}_{}'.format(noise_type, noise_p, c_eps), 'c_0',
-                 '%.2f' % float(row[4]), '%.4f' % float(row[5]), '%.2f' % float(row[6]), '%.4f' % float(row[7])],
-                [model_name, '{}_{}_{}'.format(noise_type, noise_p, c_eps), 'c_1',
-                 '%.2f' % float(row[8]), '%.4f' % float(row[9]), '%.2f' % float(row[10]), '%.4f' % float(row[11])],
-                [model_name, '{}_{}_{}'.format(noise_type, noise_p, c_eps), 'c_2',
-                 '%.2f' % float(row[12]), '%.4f' % float(row[13]), '%.2f' % float(row[14]), '%.4f' % float(row[15])]
-            ])
+# with open("./results/local_results_v2.csv") as f:
+#     with open("./results/local_results.csv", 'a+') as csvfile:
+#         w = csv.writer(csvfile)
+#         for row in csv.reader(f, skipinitialspace=True):
+#             if row == [] or row[0] == 'Model' or len(row) < 16:
+#                 continue
+#             model_name = row[0]
+#             noise_type = row[1].replace(' ', '-')
+#             noise_p = row[2]
+#             c_eps = row[3]
+#             w.writerows([
+#                 [model_name, '{}_{}_{}'.format(noise_type, noise_p, c_eps), 'c_0',
+#                  '%.2f' % float(row[4]), '%.4f' % float(row[5]), '%.2f' % float(row[6]), '%.4f' % float(row[7])],
+#                 [model_name, '{}_{}_{}'.format(noise_type, noise_p, c_eps), 'c_1',
+#                  '%.2f' % float(row[8]), '%.4f' % float(row[9]), '%.2f' % float(row[10]), '%.4f' % float(row[11])],
+#                 [model_name, '{}_{}_{}'.format(noise_type, noise_p, c_eps), 'c_2',
+#                  '%.2f' % float(row[12]), '%.4f' % float(row[13]), '%.2f' % float(row[14]), '%.4f' % float(row[15])]
+#             ])
+
+# from prettytable import PrettyTable
+#
+# res = PrettyTable(['epsilon',
+#                      'Rough Verif RA(%)', 'Rough Verif VT(s)',
+#                      'Accurate Verif RA(%)', 'Accurate Verif VT(s)'])
+# c_eps = 0.001
+# ac_temp = [95.3, 98.1]
+# time_temp = [1.34, 4.64]
+# res.add_row([c_eps, ac_temp[0], time_temp[0], ac_temp[1], time_temp[1]])
+# print(res)
+
+
+from prettytable import PrettyTable
+
+res_table = PrettyTable(['epsilon', 'Circuit',
+                         'Rough Verif RA(%)', 'Rough Verif VT(s)',
+                         'Accurate Verif RA(%)', 'Accurate Verif VT(s)'])
+
+with open("./results/result_tables/mnist01_0.001×5_pure_PhaseFlip_0.001.csv", 'r') as f:
+    for row in csv.reader(f, skipinitialspace=True):
+        if 'epsilon' in row: continue
+        # print(row)
+        res_table.add_row(['{:e}'.format(float(row[0])), row[1],
+                           '{:.2f}'.format(float(row[2])), '{:.4f}'.format(float(row[3])),
+                           '{:.2f}'.format(float(row[4])), '{:.4f}'.format(float(row[5]))])
+    print(res_table)
+# if row == [] or row[0] == 'Model' or len(row) < 16:
+#                 continue
+#             model_name = row[0]
+#             noise_type = row[1].replace(' ', '-')
+#             noise_p = row[2]
+#             c_eps = row[3]
+#             w.writerows([
+#                 [model_name, '{}_{}_{}'.format(noise_type, noise_p, c_eps), 'c_0',
+#                  '%.2f' % float(row[4]), '%.4f' % float(row[5]), '%.2f' % float(row[6]), '%.4f' % float(row[7])],
+#                 [model_name, '{}_{}_{}'.format(noise_type, noise_p, c_eps), 'c_1',
+#                  '%.2f' % float(row[8]), '%.4f' % float(row[9]), '%.2f' % float(row[10]), '%.4f' % float(row[11])],
+#                 [model_name, '{}_{}_{}'.format(noise_type, noise_p, c_eps), 'c_2',
+#                  '%.2f' % float(row[12]), '%.4f' % float(row[13]), '%.2f' % float(row[14]), '%.4f' % float(row[15])]
+#             ])
