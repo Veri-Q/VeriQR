@@ -171,8 +171,8 @@ for j in range(batch_num):
             res_table.add_row(['{:e}'.format(c_eps), 'random noise',
                                '{:.2f}'.format(acc[0] * 100), '{:.4f}'.format(time[0]),
                                '{:.2f}'.format(acc[1] * 100), '{:.4f}'.format(time[1])])
-        else:
-            res_table.add_row(['{:e}'.format(c_eps), 'random & specified noise',
+        else:  # 'random & specified noise'
+            res_table.add_row(['{:e}'.format(c_eps), 'random & {}_{}'.format(noise_type.replace('_', '-'), noise_p),
                                '{:.2f}'.format(acc[0] * 100), '{:.4f}'.format(time[0]),
                                '{:.2f}'.format(acc[1] * 100), '{:.4f}'.format(time[1])])
 

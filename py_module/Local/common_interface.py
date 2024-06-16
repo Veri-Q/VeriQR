@@ -48,7 +48,7 @@ def qasm2mq(qasm_file, to_save_figure=False, filepath=''):
     if to_save_figure:
         if filepath != '':
             circuit.svg().to_file(filepath)  # qasm_file chop '.qasm'
-            print(filepath + "was saved successfully! ")
+            print(filepath + " was saved successfully! ")
         else:
             model_name = "{}_origin.svg".format(qasm_file[qasm_file.rfind('/') + 1:-5])
             circuit.svg().to_file("./figures/" + model_name)  # qasm_file chop '.qasm'
@@ -230,7 +230,7 @@ def generating_circuit_with_random_noise(circ, model_name_, to_save_figure=False
     if to_save_figure:
         if filepath != '':
             circ.svg().to_file(filepath)  # qasm_file chop '.qasm'
-            print(filepath + "was saved successfully! ")
+            print(filepath + " was saved successfully! ")
         else:
             file_name_ = '{}_random.svg'.format(model_name_)
             circ.svg().to_file("./figures/" + file_name_)  # qasm_file chop '.qasm'
@@ -330,7 +330,7 @@ def generating_circuit_with_specified_noise(circ, origin_kraus_, noise, noise_li
     if to_save_figure:
         if filepath != '':
             circ.svg().to_file(filepath)  # qasm_file chop '.qasm'
-            print(filepath + "was saved successfully! ")
+            print(filepath + " was saved successfully! ")
         else:
             file_name_ = '{}_{}_{}.svg'.format(model_name_, noise_name_, noise_p_)
             circ.svg().to_file("./figures/" + file_name_)  # qasm_file chop '.qasm'

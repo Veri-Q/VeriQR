@@ -34,36 +34,30 @@ public:
     void openFile();
     void saveFile();
     void saveasFile();
-    void show_adversarial_examples();
-    void delete_all_adversarial_examples();
-    void show_circuit_diagram_svg(QString filename);
-    void show_circuit_diagram_pdf();
-    void close_circuit_diagram();
-    void close_circuit_diagram_svg();
-    void close_circuit_diagram_pdf();
-    void setItem(QStandardItem *newItem);
-    void show_result_tables();
+    void show_result_table();
     void get_table_data(QString op);
+    void show_circuit_diagram_svg(QString filename);
+    void close_circuit_diagram_svg();
+    void show_circuit_diagram_pdf();
+    void close_circuit_diagram_pdf();
+    void close_circuit_diagram();
+    void show_adversarial_examples();
+    void close_all_adversarial_examples();
     void clear_output();
     void reset_all();
 
 public slots:
-    void importModel();
-    void on_radioButton_importfile_clicked();
-    void importData();
     void on_radioButton_qubit_clicked();
     void on_radioButton_phaseRecog_clicked();
     void on_radioButton_excitation_clicked();
     void on_radioButton_mnist_clicked();
+    void on_radioButton_importfile_clicked();
+    void importModel();
+    void importData();
     void on_radioButton_pure_clicked();
     void on_radioButton_mixed_clicked();
     void on_checkBox_show_AE_stateChanged(int state);
     void on_checkBox_get_newdata_stateChanged(int state);
-    void on_slider_unit_sliderMoved(int position);
-    void on_slider_batchnum_sliderMoved(int position);
-    void on_spinBox_unit_valueChanged(int arg1);
-    void on_spinBox_batchnum_valueChanged(int arg1);
-    void on_process_stateChanged(QProcess::ProcessState state);
     void on_radioButton_bitflip_clicked();
     void on_radioButton_depolarizing_clicked();
     void on_radioButton_phaseflip_clicked();
@@ -71,7 +65,12 @@ public slots:
     void on_radioButton_importkraus_clicked();
     void on_slider_prob_sliderMoved(int);
     void on_doubleSpinBox_prob_valueChanged(double);
+    void on_slider_unit_sliderMoved(int position);
+    void on_spinBox_unit_valueChanged(int arg1);
+    void on_slider_batchnum_sliderMoved(int position);
+    void on_spinBox_batchnum_valueChanged(int arg1);
     void run_localVeri();
+    void on_process_stateChanged(QProcess::ProcessState state);
     void on_read_output();
     void stopProcess();
 
@@ -94,7 +93,7 @@ private:
     double robustness_unit_ = 1e-5;
     int bacth_num_ = 5;
 
-    // QString noise_types[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
+    QString noise_types[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
     QString noise_type_;
     double noise_prob_;
     std::map<QString, QString> noise_name_map = {

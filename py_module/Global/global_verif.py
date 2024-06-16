@@ -53,7 +53,7 @@ if str(argv[1]) != "verify":
     random_k, random_time, random_bias_kernel = calculate_lipschitz(random_cirq_circuit, cirq_qubits)
     final_k, final_time, final_bias_kernel = calculate_lipschitz(final_cirq_circuit, cirq_qubits)
 
-    with (open("./results/global_results.csv", "a+") as csvfile):
+    with (open("./results/result_tables/{}.csv".format(model_name), "a+") as csvfile):
         w = csv.writer(csvfile)
 
         epsilon = random.choice([0.0001, 0.0003, 0.0005, 0.001, 0.003, 0.005, 0.01, 0.03, 0.05, 0.075])
@@ -80,16 +80,13 @@ if str(argv[1]) != "verify":
                 start = time.time()
                 res = 'YES' if verification(origin_k, epsilon, delta) else 'NO'
                 origin_time += time.time() - start
-                w.writerow([model_name, 'c_0', '-', '-', (epsilon, delta),
-                            '%.5f' % origin_k, '%.2f' % origin_time, res])
+                w.writerow(['noiseless', (epsilon, delta), '%.5f' % origin_k, '%.2f' % origin_time, res])
         except TimeoutException:
             print('Time out!')
-            w.writerow([model_name, 'c_0', '-', '-', (epsilon, delta),
-                        '-', 'TO', '-'])
+            w.writerow(['noiseless', (epsilon, delta), '-', 'TO', '-'])
         except Exception:
             if model_name in ['inst_4x4', 'qaoa_20']:
-                w.writerow([model_name, 'c_0', '-', '-', (epsilon, delta),
-                            '-', 'OOM', '-'])
+                w.writerow(['noiseless', (epsilon, delta), '-', 'OOM', '-'])
             raise
 
         # c1
@@ -99,34 +96,29 @@ if str(argv[1]) != "verify":
                 start = time.time()
                 res = 'YES' if verification(random_k, epsilon, delta) else 'NO'
                 random_time += time.time() - start
-                w.writerow([model_name, 'c_1', '-', '-', (epsilon, delta),
-                            '%.5f' % random_k, '%.2f' % random_time, res])
+                w.writerow(['random noise', (epsilon, delta), '%.5f' % random_k, '%.2f' % random_time, res])
         except TimeoutException:
             print('Time out!')
-            w.writerow([model_name, 'c_1', '-', '-', (epsilon, delta),
-                        '-', 'TO', '-'])
+            w.writerow(['random noise', (epsilon, delta), '-', 'TO', '-'])
         except Exception:
             if model_name in ['inst_4x4', 'qaoa_20']:
-                w.writerow([model_name, 'c_1', '-', '-', (epsilon, delta),
-                            '-', 'OOM', '-'])
+                w.writerow(['random noise', (epsilon, delta), '-', 'OOM', '-'])
             raise
 
         # c2
+        circuit_type = 'random & {}_{}'.format(noise_type.replace('_', '-'), noise_p)
         try:
             with time_limit():
                 final_k, final_time, final_bias_kernel = calculate_lipschitz(final_cirq_circuit, cirq_qubits)
                 start = time.time()
                 res = 'YES' if verification(final_k, epsilon, delta) else 'NO'
                 final_time += time.time() - start
-                w.writerow([model_name, 'c_2', noise_, noise_p, (epsilon, delta),
-                            '%.5f' % final_k, '%.2f' % final_time, res])
+                w.writerow([circuit_type, (epsilon, delta), '%.5f' % final_k, '%.2f' % final_time, res])
         except TimeoutException:
             print('Time out!')
-            w.writerow([model_name, 'c_2', noise_, noise_p, (epsilon, delta),
-                        '-', 'TO', '-'])
+            w.writerow([circuit_type, (epsilon, delta), '-', 'TO', '-'])
         except Exception:
-            w.writerow([model_name, 'c_2', noise_, noise_p, (epsilon, delta),
-                        '-', 'OOM', '-'])
+            w.writerow([circuit_type, (epsilon, delta), '-', 'OOM', '-'])
             raise
 else:
     # python qlipschitz.py verify k epsilon delta

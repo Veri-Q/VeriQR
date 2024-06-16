@@ -144,7 +144,7 @@ def get_origin_circuit(qasm_file_, to_save_figure=False):
     if to_save_figure:
         file_name_ = "{}_origin.svg".format(model_name_)
         mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
-        print(file_name_ + " saved successfully! ")
+        print(file_name_ + " was saved successfully! ")
 
     return mq_circuit, cirq_circuit, cirq_qubits
 
@@ -215,7 +215,7 @@ def generate_model_circuit(variables, qubits_num, model_name_, to_save_figure=Fa
     if to_save_figure:
         file_name_ = "{}_origin.svg".format(model_name_)
         mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
-        print(file_name_ + " saved successfully! ")
+        print(file_name_ + " was saved successfully! ")
 
     return mq_circuit, cirq_circuit, cirq_qubits
 
@@ -328,7 +328,7 @@ def generating_circuit_with_random_noise(mq_circ: mindquantum.Circuit, cirq_circ
     if to_save_figure:
         file_name_ = '{}_random.svg'.format(model_name_)
         mq_circ.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
-        print(file_name_ + " saved successfully! ")
+        print(file_name_ + " was saved successfully! ")
     return mq_circ, cirq_circ
 
 
@@ -380,7 +380,7 @@ def generating_circuit_with_specified_noise(mq_circuit: mindquantum.Circuit, cir
     if to_save_figure:
         file_name_ = '{}_{}_{}.svg'.format(model_name_, noise_name_, noise_p_)
         mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
-        print(file_name_ + " saved successfully! ")
+        print(file_name_ + " was saved successfully! ")
     return mq_circuit, cirq_circuit
 
 
@@ -579,4 +579,5 @@ def verification(k, epsilon, delta):
 
     print('This model is not ({}, {})-robust.'.format(epsilon, delta))
     # print('NO')
+    print("============The Global Verification End============")
     return False

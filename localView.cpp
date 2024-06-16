@@ -56,7 +56,8 @@ LocalView::LocalView(QWidget *parent):
 
 void LocalView::on_radioButton_bitflip_clicked()
 {
-    noise_type_ = "bit_flip";
+    noise_type_ = noise_types[0];
+    qDebug() << "Noise type: " << noise_type_;
 
     kraus_file_.fileName().clear();
     ui->lineEdit_custom_noise->clear();
@@ -65,7 +66,8 @@ void LocalView::on_radioButton_bitflip_clicked()
 
 void LocalView::on_radioButton_depolarizing_clicked()
 {
-    noise_type_ = "depolarizing";
+    noise_type_ = noise_types[1];
+    qDebug() << "Noise type: " << noise_type_;
 
     kraus_file_.fileName().clear();
     ui->lineEdit_custom_noise->clear();
@@ -74,7 +76,8 @@ void LocalView::on_radioButton_depolarizing_clicked()
 
 void LocalView::on_radioButton_phaseflip_clicked()
 {
-    noise_type_ = "phase_flip";
+    noise_type_ = noise_types[2];
+    qDebug() << "Noise type: " << noise_type_;
 
     kraus_file_.fileName().clear();
     ui->lineEdit_custom_noise->clear();
@@ -83,7 +86,8 @@ void LocalView::on_radioButton_phaseflip_clicked()
 
 void LocalView::on_radioButton_mixednoise_clicked()
 {
-    noise_type_ = "mixed";
+    noise_type_ = noise_types[3];
+    qDebug() << "Noise type: " << noise_type_;
 
     kraus_file_.fileName().clear();
     ui->lineEdit_custom_noise->clear();
@@ -93,9 +97,12 @@ void LocalView::on_radioButton_mixednoise_clicked()
 void LocalView::on_radioButton_importkraus_clicked()
 {
     noise_type_ = "custom";
+    qDebug() << "Noise type: " << noise_type_;
+
     QString fileName = QFileDialog::getOpenFileName(this, "Open file", localDir+"/kraus");
     QFile file(fileName);
     kraus_file_ = QFileInfo(fileName);
+    qDebug() << "Noise type: " << noise_type_;
 
     // model_name_ = fileName.mid(fileName.lastIndexOf("/")+1, fileName.indexOf(".")-fileName.lastIndexOf("/")-1);
     // qDebug() << "model_name_: " << model_name_;
@@ -117,15 +124,15 @@ void LocalView::on_radioButton_importkraus_clicked()
 
 void LocalView::on_slider_prob_sliderMoved(int pos)
 {
-    noise_prob_ = ui->slider_prob->value() * 0.00001;
+    noise_prob_ = pos * 0.00001;
     ui->doubleSpinBox_prob->setValue(noise_prob_);
     qDebug() << "noise_prob: " << noise_prob_;
 }
 
 void LocalView::on_doubleSpinBox_prob_valueChanged(double pos)
 {
-    noise_prob_ = ui->doubleSpinBox_prob->value();
-    ui->slider_prob->setValue(noise_prob_ / 0.00001);
+    noise_prob_ = pos;
+    ui->slider_prob->setValue(pos / 0.00001);
 }
 
 void LocalView::init()
@@ -220,12 +227,8 @@ void LocalView::clear_output()
     res_model = new QStandardItemModel();
 
     close_circuit_diagram();
-    showed_svg = false;
-    showed_pdf = false;
 
-    delete_all_adversarial_examples();
-    showed_AE_ = false;
-    adv_examples_.clear();
+    close_all_adversarial_examples();
 }
 
 
@@ -300,6 +303,7 @@ void LocalView::reset_all()
     ui->slider_prob->setValue(noise_prob_ / 0.00001);
 
     update();
+    qDebug() << "Reset all settings! ";
 }
 
 /* Open a txt file that records the runtime output. */
@@ -310,8 +314,9 @@ void LocalView::openFile(){
     if (!file.open(QIODevice::ReadOnly |QIODevice::Text)) {
         QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
         return;
-    }else if(QFileInfo(filename).suffix() != "txt") {
-        QMessageBox::warning(this, "Warning", "VeriQR only supports .txt result data files.");
+    }
+    else if(QFileInfo(filename).suffix() != "txt") {
+        QMessageBox::warning(this, "Warning", "VeriQR only supports .txt output information files.");
         return;
     }
 
@@ -424,10 +429,10 @@ void LocalView::openFile(){
     }
     else{
         ui->radioButton_importfile->setChecked(1);
+        QString model_filename = localDir + "/model_and_data/" + model_name_ + ".qasm";
+        model_file_ = QFileInfo(model_filename);
+        ui->lineEdit_modelfile->setText(model_filename);
     }
-    QString model_filename = localDir + "/model_and_data/" + model_name_ + ".qasm";
-    model_file_ = QFileInfo(model_filename);
-    ui->lineEdit_modelfile->setText(model_filename);
 
     QString data_filename = localDir + "/model_and_data/" + model_name_ + "_data.npz";
     data_file_ = QFileInfo(data_filename);
@@ -459,8 +464,7 @@ void LocalView::openFile(){
     ui->spinBox_batchnum->setValue(bacth_num_);
 
     // Results visualization
-    show_result_tables();
-
+    show_result_table();
     get_table_data("openfile");
 }
 
@@ -623,13 +627,13 @@ void LocalView::on_radioButton_mnist_clicked()
 void LocalView::on_radioButton_pure_clicked()
 {
     state_type_ = "pure";
-    qDebug() << state_type_;
+    qDebug() << "Quantum data type: " << state_type_;
 }
 
 void LocalView::on_radioButton_mixed_clicked()
 {
     state_type_ = "mixed";
-    qDebug() << state_type_;
+    qDebug() << "Quantum data type: " << state_type_;
 
     if(ui->checkBox_show_AE->isChecked()){
         ui->checkBox_show_AE->setChecked(0);  // Uncheck
@@ -657,7 +661,7 @@ void LocalView::on_checkBox_show_AE_stateChanged(int state)
     {
         need_to_visualize_AE_ = false;
     }
-    // qDebug() << ui->checkBox->isChecked();
+    qDebug() << "Whether to show adversarial example images: " << need_to_visualize_AE_;
 }
 
 
@@ -671,6 +675,7 @@ void LocalView::on_checkBox_get_newdata_stateChanged(int state)
     {
         need_new_dataset_ = false;
     }
+    qDebug() << "Whether to get new dataset for adversarial training: " << need_new_dataset_;
 }
 
 void LocalView::on_slider_unit_sliderMoved(int pos)
@@ -743,7 +748,7 @@ void LocalView::run_localVeri()
         args << excuteFile << qasmfile << datafile << unit << batch_num << state_type_;
     }
 
-    // model_name be like: 'qubit'
+    // Whether to show pictures of adversarial examples.
     if(model_name_.contains("mnist"))
     {
         if(state_type_ == "pure"){
@@ -760,14 +765,22 @@ void LocalView::run_localVeri()
         args << "false";
     }
 
+    if(ui->checkBox_get_newdata->isChecked())
+    {
+        args << "true";
+    }
+    else{
+        args << "false";
+    }
+
     if(noise_type_ == "mixed")
     {
         args << noise_type_;
         mixed_noises_ = comboBox_mixednoise->current_select_items();
         for(int i = 0; i < mixed_noises_.count(); i++)
         {
-            mixed_noises_[i] = mixed_noises_[i].replace(" ", "_");
-            args << mixed_noises_[i];
+            // mixed_noises_[i] = mixed_noises_[i].replace(" ", "_");
+            args << mixed_noises_[i].replace(" ", "_");
         }
         args << QString::number(noise_prob_);
     }
@@ -776,7 +789,7 @@ void LocalView::run_localVeri()
         QString krausfile = kraus_file_.filePath();
         args << noise_type_ << krausfile << QString::number(noise_prob_);
     }
-    else if(!noise_type_.isEmpty())
+    else if(!noise_type_.isEmpty())  // bit flip or depolarizing or phase flip
     {
         args << noise_type_ << QString::number(noise_prob_);
     }
@@ -784,7 +797,7 @@ void LocalView::run_localVeri()
     paramsList = cmd + " " + args.join(" ");
     qDebug() << paramsList;
 
-    show_result_tables();
+    show_result_table();
 
     process = new QProcess(this);
     process->setReadChannel(QProcess::StandardOutput);
@@ -863,11 +876,12 @@ void LocalView::on_read_output()
         }
 
         // Verification over, show results and adversarial examples.
-        else if(output_line_.contains(".csv was saved!"))
+        else if(output_line_.contains(".csv was saved"))
         {
             csvfile_ = output_line_.mid(0, output_line_.indexOf(".csv was saved")+4);
             filename_ = csvfile_.mid(0, csvfile_.indexOf(".csv"));
             csvfile_ = localDir + "/results/result_tables/" + csvfile_;
+            qDebug() << "filename_: " << filename_;
 
             get_table_data("run");
 
@@ -918,7 +932,7 @@ void LocalView::show_adversarial_examples()
     showed_AE_ = true;
 }
 
-void LocalView::delete_all_adversarial_examples()
+void LocalView::close_all_adversarial_examples()
 {
     // Nothing needs to be done when no adversarial examples are shown.
     if(!showed_AE_) return;
@@ -1017,7 +1031,7 @@ void LocalView::show_circuit_diagram_svg(QString img_file)
     else
     {
         QGroupBox *groupBox_final_circ = new QGroupBox(ui->scrollArea_circ);
-        groupBox_final_circ->setObjectName("groupBox_random_circ");
+        groupBox_final_circ->setObjectName("groupBox_specified_circ");
         groupBox_final_circ->setTitle("Circuit with specified noise");
         groupBox_final_circ->setFont(font);
         ui->verticalLayout_circ->addWidget(groupBox_final_circ, 1);
@@ -1162,17 +1176,17 @@ void LocalView::close_circuit_diagram()
         close_circuit_diagram_svg();
         showed_svg = false;
     }
-    else if(showed_pdf){
+    if(showed_pdf){
         close_circuit_diagram_pdf();
         showed_pdf = false;
     }
 }
 
-void LocalView::show_result_tables(){
-    int columnCount = bacth_num_;
+void LocalView::show_result_table(){
+    int rowCount = bacth_num_;
     res_model = new QStandardItemModel();
     // Set the column header.
-    res_model->setHorizontalHeaderLabels(QStringList() << "epsilon" << "Circuit" <<
+    res_model->setHorizontalHeaderLabels(QStringList() << "Perturbation ε" << "Circuit" <<
                                          "Rough Verif RA(%)" << "Rough Verif VT(s)" <<
                                          "Accurate Verif RA(%)" << "Accurate Verif VT(s)");
 
@@ -1193,7 +1207,7 @@ void LocalView::show_result_tables(){
     ui->table_res->horizontalHeader()->setStyleSheet(header_style);
     ui->table_res->horizontalHeader()->setMinimumHeight(50);
     ui->table_res->setColumnWidth(0, ui->table_res->width()/8*0.8);
-    ui->table_res->setColumnWidth(1, ui->table_res->width()/8*1.8);
+    ui->table_res->setColumnWidth(1, ui->table_res->width()/8*1.9);
     ui->table_res->setColumnWidth(2, ui->table_res->width()/8*1.3);
     ui->table_res->setColumnWidth(3, ui->table_res->width()/8*1.3);
     ui->table_res->setColumnWidth(4, ui->table_res->width()/8*1.4);
@@ -1201,7 +1215,7 @@ void LocalView::show_result_tables(){
 
     QString eps = QString::number(ui->slider_unit->value());
     // Initial table data.
-    for(int row_index = 0; row_index < columnCount; row_index++)
+    for(int row_index = 0; row_index < rowCount; row_index++)
     {
         // Set the row header as epsilon for each validation experiment.
         QString eps_str = QString::number(row_index + 1) + QString::fromLocal8Bit("e-") + eps;
@@ -1218,7 +1232,7 @@ void LocalView::show_result_tables(){
         item->setTextAlignment(Qt::AlignCenter);
         res_model->setItem(row_index * 3 + 2, 0, item);
 
-        ui->table_res->setSpan(row_index * 3, 0, 3, 1);
+        ui->table_res->setSpan(row_index * 3, 0, 3, 1);  // Merge cells
         for(int col_index = 1; col_index < 6; col_index++)
         {
             item = new QStandardItem(QString("-"));

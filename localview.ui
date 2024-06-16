@@ -58,7 +58,7 @@
 }</string>
            </property>
            <property name="title">
-            <string>Model &amp;&amp; Data File</string>
+            <string>Model &amp;&amp; Data</string>
            </property>
            <layout class="QGridLayout" name="gridLayout">
             <property name="verticalSpacing">
@@ -125,7 +125,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>Import Other Model</string>
+                 <string>Import other model</string>
                 </property>
                </widget>
               </item>
@@ -154,7 +154,7 @@
                  </font>
                 </property>
                 <property name="text">
-                 <string>Import Data</string>
+                 <string>Import other dataset</string>
                 </property>
                </widget>
               </item>
@@ -356,7 +356,7 @@
                </font>
               </property>
               <property name="text">
-               <string>Import custom Kraus operators</string>
+               <string>custom Kraus operators</string>
               </property>
              </widget>
             </item>
@@ -399,6 +399,9 @@
               </property>
               <property name="maximum">
                <number>100000</number>
+              </property>
+              <property name="pageStep">
+               <number>1</number>
               </property>
               <property name="value">
                <number>1</number>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1754</width>
-    <height>915</height>
+    <height>929</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,14 +20,14 @@
    <item>
     <widget class="QWidget" name="widget_set" native="true">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,3,2,3,3,2,0">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="3,3,2,2,2,3,2,0">
       <property name="spacing">
-       <number>15</number>
+       <number>7</number>
       </property>
       <item>
        <widget class="QGroupBox" name="groupBox_dataset">
@@ -54,20 +54,8 @@
         <property name="title">
          <string>Model </string>
         </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <widget class="QRadioButton" name="radioButton_fct">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Credit Card Fraud Detection</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
           <widget class="QRadioButton" name="radioButton_aci">
            <property name="font">
             <font>
@@ -75,11 +63,23 @@
             </font>
            </property>
            <property name="text">
-            <string>Adult Income Prediction</string>
+            <string>Adult Income Prediction (aci)</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="2">
+         <item>
+          <widget class="QRadioButton" name="radioButton_fct">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Credit Card Fraud Detection (fct)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QRadioButton" name="radioButton_cr">
            <property name="font">
             <font>
@@ -87,11 +87,11 @@
             </font>
            </property>
            <property name="text">
-            <string>German Credit Risks</string>
+            <string>German Credit Risks (cr)</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0" colspan="3">
+         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_file">
            <property name="spacing">
             <number>8</number>
@@ -104,7 +104,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Import Other Model</string>
+              <string>Import other model</string>
              </property>
             </widget>
            </item>
@@ -141,7 +141,10 @@
         <property name="title">
          <string>Noise Type</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout">
+        <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0,0,0">
+         <property name="verticalSpacing">
+          <number>10</number>
+         </property>
          <item row="0" column="0">
           <widget class="QRadioButton" name="radioButton_bitflip">
            <property name="font">
@@ -201,7 +204,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Import custom Kraus operators</string>
+            <string>custom Kraus operators</string>
            </property>
           </widget>
          </item>
@@ -213,6 +216,12 @@
       </item>
       <item>
        <widget class="QWidget" name="widget_arg" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1">
          <property name="spacing">
           <number>18</number>
@@ -446,6 +455,12 @@
       </item>
       <item>
        <widget class="QWidget" name="widget_threshold" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,1">
          <property name="spacing">
           <number>18</number>
@@ -614,7 +629,7 @@
         <property name="styleSheet">
          <string notr="true">QGroupBox { border: none; }</string>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,2,1">
+        <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,1,1">
          <property name="topMargin">
           <number>0</number>
          </property>
@@ -669,7 +684,7 @@
       <item>
        <widget class="QGroupBox" name="groupBox_runtime">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -702,7 +717,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>738</width>
+              <width>498</width>
               <height>107</height>
              </rect>
             </property>
@@ -732,6 +747,12 @@
    </item>
    <item>
     <widget class="QTabWidget" name="tabWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="styleSheet">
       <string notr="true">QTabWidget::title{font-size: 14px;}
 QTabBar::tab:selected { font-size: 17px; font-weight: bold; }</string>
@@ -739,6 +760,141 @@ QTabBar::tab:selected { font-size: 17px; font-weight: bold; }</string>
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Experimental Results</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,8,1">
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>58</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,5,2">
+         <property name="spacing">
+          <number>50</number>
+         </property>
+         <property name="topMargin">
+          <number>12</number>
+         </property>
+         <property name="bottomMargin">
+          <number>12</number>
+         </property>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_res">
+           <property name="font">
+            <font>
+             <family>Ubuntu</family>
+             <pointsize>13</pointsize>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 13pt &quot;Ubuntu&quot;;
+</string>
+           </property>
+           <property name="title">
+            <string>Global Robustness Verification Result</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QTableView" name="table_res">
+              <property name="font">
+               <font>
+                <family>Ubuntu</family>
+                <pointsize>13</pointsize>
+                <italic>false</italic>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(255, 255, 255);</string>
+              </property>
+              <attribute name="horizontalHeaderMinimumSectionSize">
+               <number>100</number>
+              </attribute>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>100</number>
+              </attribute>
+              <attribute name="verticalHeaderCascadingSectionResizes">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderDefaultSectionSize">
+               <number>100</number>
+              </attribute>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>58</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="tab_circ">
       <property name="accessibleName">
        <string/>
@@ -775,8 +931,8 @@ QTabBar::tab:selected { font-size: 17px; font-weight: bold; }</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>850</width>
-            <height>815</height>
+            <width>1090</width>
+            <height>829</height>
            </rect>
           </property>
           <property name="sizePolicy">
