@@ -25,7 +25,7 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="3,3,2,2,2,3,2,0">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="5,3,2,2,3,2,0">
       <property name="spacing">
        <number>7</number>
       </property>
@@ -192,7 +192,10 @@
             <string>mixed</string>
            </property>
            <property name="checked">
-            <bool>true</bool>
+            <bool>false</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -352,6 +355,9 @@
              <bold>false</bold>
             </font>
            </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(222, 221, 218)</string>
+           </property>
            <property name="text">
             <string>Run</string>
            </property>
@@ -383,6 +389,9 @@
              <pointsize>12</pointsize>
             </font>
            </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(222, 221, 218)</string>
+           </property>
            <property name="text">
             <string>Stop</string>
            </property>
@@ -400,55 +409,6 @@
             </size>
            </property>
           </spacer>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox_output">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">QGroupBox::title{
-	font-size: 14px;
-}</string>
-        </property>
-        <property name="title">
-         <string>Output</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_k">
-           <property name="text">
-            <string>Lipschitz K = </string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="lineEdit_k"/>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_time">
-           <property name="text">
-            <string>      Elapsed time =</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QLineEdit" name="lineEdit_time"/>
          </item>
         </layout>
        </widget>
@@ -472,7 +432,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QGroupBox" name="groupBox_threshold_1">
+          <widget class="QGroupBox" name="groupBox_epsilon">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -498,7 +458,7 @@
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_17" stretch="5,0">
             <item>
-             <widget class="QSlider" name="slider_threshold_1">
+             <widget class="QSlider" name="slider_epsilon">
               <property name="minimum">
                <number>0</number>
               </property>
@@ -514,7 +474,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="doubleSpinBox_threshold_1">
+             <widget class="QDoubleSpinBox" name="doubleSpinBox_epsilon">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -544,7 +504,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_threshold_2">
+          <widget class="QGroupBox" name="groupBox_delta">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -570,7 +530,7 @@
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="5,0">
             <item>
-             <widget class="QSlider" name="slider_threshold_2">
+             <widget class="QSlider" name="slider_delta">
               <property name="minimum">
                <number>0</number>
               </property>
@@ -586,7 +546,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="doubleSpinBox_threshold_2">
+             <widget class="QDoubleSpinBox" name="doubleSpinBox_delta">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -660,6 +620,9 @@
              <bold>false</bold>
             </font>
            </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(192, 191, 188)</string>
+           </property>
            <property name="text">
             <string>Verify</string>
            </property>
@@ -717,8 +680,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>498</width>
-              <height>107</height>
+              <width>515</width>
+              <height>172</height>
              </rect>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_5">

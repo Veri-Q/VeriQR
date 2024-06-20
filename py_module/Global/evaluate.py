@@ -25,10 +25,6 @@ def batch_evaluate(model):
         origin_cirq_circuit_ = cirq.Circuit(origin_cirq_circuit)
         random_mq_circuit, random_cirq_circuit = generating_circuit_with_random_noise(origin_mq_circuit_,
                                                                                       origin_cirq_circuit_, model_name)
-    # no noise
-    origin_k, origin_time, origin_bias_kernel = calculate_lipschitz(origin_cirq_circuit, cirq_qubits)
-    # random noise
-    random_k, random_time, random_bias_kernel = calculate_lipschitz(random_cirq_circuit, cirq_qubits)
 
     epsilons = [0.0001, 0.0003, 0.0005, 0.001, 0.003, 0.005, 0.01, 0.03, 0.05, 0.075]
     deltas = [0.0001, 0.0003, 0.0005, 0.001, 0.003, 0.005, 0.0075]
@@ -39,19 +35,39 @@ def batch_evaluate(model):
         w = csv.writer(csvfile)
         epsilon = random.choice(epsilons)
         delta = random.choice(deltas)
-        # origin_time_ = origin_time
-        start = time.time()
-        res = 'YES' if verification(origin_k, epsilon, delta) else 'NO'
-        origin_time += time.time() - start
-        w.writerow([model_name, 'c_0', '-', '-', (epsilon, delta),
-                    '%.5f' % origin_k, '%.2f' % origin_time, res])
 
-        # random_time_ = random_time
-        start = time.time()
-        res = 'YES' if verification(random_k, epsilon, delta) else 'NO'
-        random_time += time.time() - start
-        w.writerow([model_name, 'c_1', '-', '-', (epsilon, delta),
-                    '%.5f' % random_k, '%.2f' % random_time, res])
+        # c0: noiseless
+        try:
+            with time_limit():
+                origin_k, origin_time, origin_bias_kernel = calculate_lipschitz(origin_cirq_circuit, cirq_qubits)
+                start = time.time()
+                res = 'YES' if verification(origin_k, epsilon, delta) else 'NO'
+                origin_time += time.time() - start
+                w.writerow([model_name, 'c_0', '-', '-', (epsilon, delta),
+                            '%.5f' % origin_k, '%.2f' % origin_time, res])
+        except TimeoutException:
+            print('Time out!')
+            w.writerow([model_name, 'c_0', '-', '-', (epsilon, delta), '-', 'TO', '-'])
+        except Exception:
+            if model_name in OOM_model_list:
+                w.writerow([model_name, 'c_0', '-', '-',  (epsilon, delta), '-', 'OOM', '-'])
+            raise
+
+        # c1: random noise
+        try:
+            with time_limit():
+                random_k, random_time, random_bias_kernel = calculate_lipschitz(random_cirq_circuit, cirq_qubits)
+                start = time.time()
+                res = 'YES' if verification(random_k, epsilon, delta) else 'NO'
+                random_time += time.time() - start
+                w.writerow([model_name, 'c_1', '-', '-', (epsilon, delta), '%.5f' % random_k, '%.2f' % random_time, res])
+        except TimeoutException:
+            print('Time out!')
+            w.writerow([model_name, 'c_1', '-', '-', (epsilon, delta), '-', 'TO', '-'])
+        except Exception:
+            if model_name in OOM_model_list:
+                w.writerow([model_name, 'c_1', '-', '-', (epsilon, delta), '-', 'OOM', '-'])
+            raise
 
         for noise_type in noise_types:
             # for noise_type in ["phase_flip"]:
@@ -60,11 +76,11 @@ def batch_evaluate(model):
                 noise_p = random.choice(probs)
                 random_mq_circuit_ = mindquantum.Circuit(random_mq_circuit)
                 random_cirq_circuit_ = cirq.Circuit(random_cirq_circuit)
-                final_mq_circuit, final_cirq_circuit = generating_circuit_with_specified_noise(
+                final_mq_circuit, final_cirq_circuit, _ = generating_circuit_with_specified_noise(
                     random_mq_circuit_, random_cirq_circuit_, noise_type, noise_list, kraus_file, noise_p, model_name)
 
                 noise_ = noise_type.replace('_', ' ')
-                # Tensor-based
+                # c2: random & specified noise
                 try:
                     with time_limit():
                         final_k, final_time, final_bias_kernel = calculate_lipschitz(final_cirq_circuit, cirq_qubits)
@@ -78,7 +94,7 @@ def batch_evaluate(model):
                     w.writerow([model_name, 'c_2', noise_, noise_p, (epsilon, delta),
                                 '-', 'TO', '-'])
                 except Exception:
-                    if model_name in ['inst_4x4', 'qaoa_20']:
+                    if model_name in OOM_model_list:
                         w.writerow([model_name, 'c_2', noise_, noise_p, (epsilon, delta),
                                     '-', 'OOM', '-'])
                     raise
@@ -129,7 +145,7 @@ def batch_evaluate_for_plot(model):
                 for noisy_p in probs:
                     random_mq_circuit_ = mindquantum.Circuit(random_mq_circuit)
                     random_cirq_circuit_ = cirq.Circuit(random_cirq_circuit)
-                    final_mq_circuit, final_cirq_circuit = generating_circuit_with_specified_noise(
+                    final_mq_circuit, final_cirq_circuit, _ = generating_circuit_with_specified_noise(
                         random_mq_circuit_, random_cirq_circuit_, noise_type, noise_list, kraus_file, noisy_p,
                         model_name)
                     # specified noise

@@ -70,9 +70,9 @@ void MainWindow::init_GUI(){
 /* 打开一个运行时输出信息txt文件 */
 void MainWindow::openFile(){
     if(this->ui->tabWidget->currentIndex() == 0){  // LOCAL
-        this->localView->openFile();
+        this->localView->openTxtfile();
     }else{
-        this->globalView->openFile();
+        this->globalView->openCsvfile();
     }
 }
 
@@ -80,18 +80,18 @@ void MainWindow::openFile(){
 void MainWindow::saveFile()
 {
     if(this->ui->tabWidget->currentIndex() == 0){  // LOCAL
-        this->localView->saveFile();
+        this->localView->saveOutputToTxtfile();
     }else{
-        this->globalView->saveFile();
+        this->globalView->saveTableToCsvfile();
     }
 }
 
 void MainWindow::saveasFile()
 {
     if(this->ui->tabWidget->currentIndex() == 0){  // LOCAL
-        this->localView->saveasFile();
+        this->localView->saveOutputAsTxtfile();
     }else{
-        this->globalView->saveasFile();
+        this->globalView->saveTableAsFile();
     }
 }
 

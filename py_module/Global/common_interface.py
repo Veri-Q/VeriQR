@@ -39,6 +39,8 @@ def time_limit(seconds=3600 * 2):
         signal.alarm(0)
 
 
+OOM_model_list = ['inst_4x4', 'qaoa_20']
+
 noise_op_cirq = {
     "phase_flip": cirq.phase_flip,
     "depolarizing": cirq.depolarize,
@@ -96,9 +98,9 @@ params_fct = [0.11780868, 1.5765338, 4.206496, 0.5947907, 6.0406756, 3.2344778,
               5.2926126, 0.16639477, 5.572203, ]
 
 case_params = {
-    'aci_8': (params_aci, 8),
-    'cr_9': (params_cr, 9),
-    'fct_9': (params_fct, 9),
+    'aci': (params_aci, 8),
+    'cr': (params_cr, 9),
+    'fct': (params_fct, 9),
 }
 
 
@@ -135,7 +137,7 @@ def qasm2cirq_by_qiskit(file):
     return qubits, circuit, qasm_str
 
 
-def get_origin_circuit(qasm_file_, to_save_figure=False):
+def get_origin_circuit(qasm_file_, to_save_figure=False, filedir=None):
     cirq_qubits, cirq_circuit, qasm_str = qasm2cirq_by_qiskit(qasm_file_)
 
     mq_circuit = qasm2mq(qasm_str)
@@ -143,13 +145,16 @@ def get_origin_circuit(qasm_file_, to_save_figure=False):
     model_name_ = qasm_file_[qasm_file_.rfind('/') + 1:-5]
     if to_save_figure:
         file_name_ = "{}_origin.svg".format(model_name_)
-        mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
+        if filedir is not None:
+            mq_circuit.svg().to_file("./results/{}/{}/{}".format(model_name_, filedir, file_name_))
+        else:
+            mq_circuit.svg().to_file("./results/{}/{}".format(model_name_, file_name_))
         print(file_name_ + " was saved successfully! ")
 
     return mq_circuit, cirq_circuit, cirq_qubits
 
 
-def generate_model_circuit(variables, qubits_num, model_name_, to_save_figure=False):
+def generate_model_circuit(variables, qubits_num, model_name_, to_save_figure=False, filedir=None):
     cirq_qubits = cirq.GridQubit.rect(1, qubits_num)
     symbols = iter(variables)
     cirq_circuit = cirq.Circuit()
@@ -214,7 +219,10 @@ def generate_model_circuit(variables, qubits_num, model_name_, to_save_figure=Fa
 
     if to_save_figure:
         file_name_ = "{}_origin.svg".format(model_name_)
-        mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
+        if filedir is not None:
+            mq_circuit.svg().to_file("./results/{}/{}/{}".format(model_name_, filedir, file_name_))
+        else:
+            mq_circuit.svg().to_file("./results/{}/{}".format(model_name_, file_name_))
         print(file_name_ + " was saved successfully! ")
 
     return mq_circuit, cirq_circuit, cirq_qubits
@@ -291,10 +299,10 @@ def random_insert_ops(mq_circuit: mindquantum.Circuit, cirq_circuit: cirq.Circui
     return mq_random_circuit, cirq_random_circuit
 
 
-def generating_circuit_with_random_noise(mq_circ: mindquantum.Circuit, cirq_circ: cirq.Circuit,
-                                         model_name_, to_save_figure=False):
+def generating_circuit_with_random_noise(mq_circuit: mindquantum.Circuit, cirq_circuit: cirq.Circuit,
+                                         model_name_, to_save_figure=False, filedir=None):
     # generate random noise
-    noise_num = mq_circ.n_qubits
+    noise_num = mq_circuit.n_qubits
     print('add {} noise'.format(noise_num))
     mq_ops, cirq_ops = [], []
     left_noise_num = noise_num
@@ -313,28 +321,32 @@ def generating_circuit_with_random_noise(mq_circ: mindquantum.Circuit, cirq_circ
 
     # remove measures
     all_measures = []
-    for gate in mq_circ:
+    for gate in mq_circuit:
         if isinstance(gate, Measure):
             all_measures.append(gate)
-    mq_circ = mq_circ.remove_measure()
+    mq_circuit = mq_circuit.remove_measure()
 
     # insert random noise
-    mq_circ, cirq_circ = random_insert_ops(mq_circ, cirq_circ, mq_ops, cirq_ops)
+    mq_circuit, cirq_circ = random_insert_ops(mq_circuit, cirq_circuit, mq_ops, cirq_ops)
 
     # add measures
     for m in all_measures:
-        mq_circ += m
+        mq_circuit += m
 
     if to_save_figure:
         file_name_ = '{}_random.svg'.format(model_name_)
-        mq_circ.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
+        # mq_circ.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
+        if filedir is not None:
+            mq_circuit.svg().to_file("./results/{}/{}/{}".format(model_name_, filedir, file_name_))
+        else:
+            mq_circuit.svg().to_file("./results/{}/{}".format(model_name_, file_name_))
         print(file_name_ + " was saved successfully! ")
-    return mq_circ, cirq_circ
+    return mq_circuit, cirq_circ
 
 
 def generating_circuit_with_specified_noise(mq_circuit: mindquantum.Circuit, cirq_circuit: cirq.Circuit,
                                             noise_type_, noise_list_, kraus_file_, noise_p_,
-                                            model_name_, to_save_figure=False):
+                                            model_name_, to_save_figure=False, filedir=None):
     all_measures = []
     for gate in mq_circuit:
         # print(type(gate))
@@ -358,12 +370,12 @@ def generating_circuit_with_specified_noise(mq_circuit: mindquantum.Circuit, cir
                         mq_circuit += noise_op_mq[noise_list_[i]](noise_p_).on(q + i)
             noise_list_ = [noise_op_mq[i].__name__ for i in noise_list_]
             noise_list_ = [i[0: i.index("Channel")] for i in noise_list_]
-            noise_name_ = "mixed_{}".format('_'.join(noise_list_))
+            noise_ = "mixed_{}_{}".format('_'.join(noise_list_), noise_p_)
         elif noise_type_ == "custom":
             # TODO
             data = load(kraus_file_)
             noisy_kraus = data['kraus']
-            noise_name_ = "custom_{}".format(kraus_file_[kraus_file_.rfind('/') + 1:-4])
+            noise_ = "custom_{}_{}".format(kraus_file_[kraus_file_.rfind('/') + 1:-4], noise_p_)
         else:
             # noise = noise_op_cirq[noise_type]
             cirq_circuit += noise_op_cirq[noise_type_](noise_p_).on_each(*qubits)
@@ -371,17 +383,21 @@ def generating_circuit_with_specified_noise(mq_circuit: mindquantum.Circuit, cir
                 mq_circuit += noise_op_mq[noise_type_](noise_p_).on(q)
             noise_ = noise_op_mq[noise_type_].__name__
             noise_ = noise_[0: noise_.index("Channel")]
-            noise_name_ = noise_
+            noise_ = "{}_{}".format(noise_, noise_p_)
 
     print("add {} with probability {}".format(noise_type_, noise_p_))
     for m in all_measures:
         mq_circuit += m
 
     if to_save_figure:
-        file_name_ = '{}_{}_{}.svg'.format(model_name_, noise_name_, noise_p_)
-        mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))  # qasm_file chop '.qasm'
+        file_name_ = '{}_{}.svg'.format(model_name_, noise_)
+        # mq_circuit.svg().to_file("./figures/{}/{}".format(model_name_, file_name_))
+        if filedir is not None:
+            mq_circuit.svg().to_file("./results/{}/{}/{}".format(model_name_, filedir, file_name_))
+        else:
+            mq_circuit.svg().to_file("./results/{}/{}".format(model_name_, file_name_))
         print(file_name_ + " was saved successfully! ")
-    return mq_circuit, cirq_circuit
+    return mq_circuit, cirq_circuit, noise_
 
 
 def circuit_to_tensor(circuit, all_qubits, measurement):
@@ -561,7 +577,6 @@ def calculate_lipschitz(cirq_circuit: cirq.Circuit, cirq_qubits):
     start_time = time.time()
     k, bias_kernel = lipschitz(cirq_circuit, cirq_qubits, measurement)
     total_time = time.time() - start_time
-
     # print('Circuit: %s' % file)
     # print('Noise configuration: {}, {}'.format(noise_type, p))
     print('Lipschitz K =', k)

@@ -344,7 +344,10 @@
                <string>mixed</string>
               </property>
               <property name="checked">
-               <bool>true</bool>
+               <bool>false</bool>
+              </property>
+              <property name="autoExclusive">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -615,6 +618,9 @@
                 <bold>false</bold>
                </font>
               </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(222, 221, 218)</string>
+              </property>
               <property name="text">
                <string>Run</string>
               </property>
@@ -645,6 +651,9 @@
                <font>
                 <pointsize>12</pointsize>
                </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">background-color: rgb(222, 221, 218)</string>
               </property>
               <property name="text">
                <string>Stop</string>

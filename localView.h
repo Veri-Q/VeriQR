@@ -31,20 +31,21 @@ public:
 
     void init();
     void resizeEvent(QResizeEvent *) override;
-    void openFile();
-    void saveFile();
-    void saveasFile();
-    void show_result_table();
-    void get_table_data(QString op);
-    void show_circuit_diagram_svg(QString filename);
-    void close_circuit_diagram_svg();
-    void show_circuit_diagram_pdf();
-    void close_circuit_diagram_pdf();
-    void close_circuit_diagram();
-    void show_adversarial_examples();
-    void close_all_adversarial_examples();
-    void clear_output();
-    void reset_all();
+    void openTxtfile();
+    void saveOutputToTxtfile();
+    void saveOutputAsTxtfile();
+    void showResultTable();
+    void getTableData(QString op);
+    void showCircuitDiagramSvg(QString filename);
+    void closeCircuitDiagramSvg();
+    void showCircuitDiagramPdf();
+    void closeCircuitDiagramPdf();
+    void closeCircuitDiagram();
+    void showAdversarialExamples();
+    void closeAdversarialExamples();
+    void clearOutput();
+    void resetAll();
+    void importModel();
 
 public slots:
     void on_radioButton_qubit_clicked();
@@ -52,8 +53,7 @@ public slots:
     void on_radioButton_excitation_clicked();
     void on_radioButton_mnist_clicked();
     void on_radioButton_importfile_clicked();
-    void importModel();
-    void importData();
+    void import_data();
     void on_radioButton_pure_clicked();
     void on_radioButton_mixed_clicked();
     void on_checkBox_show_AE_stateChanged(int state);
@@ -72,7 +72,7 @@ public slots:
     void run_localVeri();
     void on_process_stateChanged(QProcess::ProcessState state);
     void on_read_output();
-    void stopProcess();
+    void stop_process();
 
 private:
     QString localDir;
@@ -93,34 +93,35 @@ private:
     double robustness_unit_ = 1e-5;
     int bacth_num_ = 5;
 
-    QString noise_types[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
     QString noise_type_;
     double noise_prob_;
-    std::map<QString, QString> noise_name_map = {
+    QString noise_types_[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
+    QMap<QString, QString> noise_name_map_ = {
                                                  {"BitFlip", "bit_flip"},
                                                  {"Depolarizing", "depolarizing"},
                                                  {"PhaseFlip", "phase_flip"},
                                                  };
     QStringList mixed_noises_;
-    MultiSelectComboBox *comboBox_mixednoise;
+    MultiSelectComboBox *comboBox_mixednoise_;
     QFileInfo kraus_file_;  // The currently selected Kraus operators file
 
     /* Variables about verification program */
     QProcess *process;
+    QString pyfile_ = "local_verif.py";
 
     /* Variables about visualization */
     QString output_;
     QString output_line_;
 
     QString csvfile_;     // e.g. localDir/results/result_tables/mnist_0.001×5_pure_Depolarizing_0.001.csv
-    QStandardItemModel *res_model;
+    QStandardItemModel *res_model_;
     // QStandardItem *item;
 
     PdfView *pdfView;
     // SvgWidget *svgWidget;
     // Used to indicate whether the image was displayed
-    bool showed_svg = false;
-    bool showed_pdf = false;
+    bool showed_svg_ = false;
+    bool showed_pdf_ = false;
     bool showed_AE_ = false;
     QStringList adv_examples_;
 };

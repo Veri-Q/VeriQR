@@ -1,0 +1,4 @@
+Circuit,(ε δ),K*,VT (s),robust
+noiseless,(0.001, 0.001),0.99999887,10.9564s,YES
+random noise,(0.001, 0.001),0.9459591,10.6179s,YES
+random & mixed_0.025,(0.001, 0.001),0.8635425,64.7550s,YES

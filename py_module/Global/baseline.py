@@ -415,7 +415,7 @@ def batch_evaluate(model):
                 noise_p, epsilon, delta = args[i][0], args[i][1], args[i][2]
             origin_mq_circuit_ = mindquantum.Circuit(origin_mq_circuit)
             origin_cirq_circuit_ = cirq.Circuit(origin_cirq_circuit)
-            final_mq_circuit, final_cirq_circuit = generating_circuit_with_specified_noise(
+            final_mq_circuit, final_cirq_circuit, _ = generating_circuit_with_specified_noise(
                 origin_mq_circuit_, origin_cirq_circuit_, noise_type, noise_list, kraus_file, noise_p, model_name)
 
             noise_ = noise_type.replace('_', ' ')
