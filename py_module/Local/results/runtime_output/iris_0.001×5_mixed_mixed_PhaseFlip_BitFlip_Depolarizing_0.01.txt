@@ -1,10 +1,11 @@
 iris_origin.svg was saved successfully!
-add 4 noise: [[1, PFC(p=0.0591)], [3, DC(p=0.1631)]]
-random_kraus.shape = (32, 16, 16)
+add 4 noise: [[3, BFC(p=0.0995)], [1, PFC(p=0.1281)]]
+random_kraus.shape = (16, 16, 16)
 iris_random.svg was saved successfully!
-The noise type is: depolarizing
-add depolarizing with probability 0.01038
-iris_Depolarizing_0.01038.svg was saved successfully!
+noise_list: ['phase_flip', 'bit_flip', 'depolarizing']
+The noise type is: mixed
+add mixed with probability 0.01
+iris_mixed_PhaseFlip_BitFlip_Depolarizing_0.01.svg was saved successfully!
 final_kraus.shape = (512, 16, 16)
 
 =============================================
@@ -59,60 +60,60 @@ Robust accuracy: 100.00%, Verification time: 0.14s
 Starting Robustness Verifier...
 ---------------------------------------------
 Checking 0.002-robustness
-Filted by robust bound, 1 states left for SDP method
+Filted by robust bound, 2 states left for SDP method
 Starting state robustness verifier...
-1/1 states checked: 0 unrobust state 1/1 states checked: 0 unrobust state
+1/2 states checked: 0 unrobust state 2/2 states checked: 0 unrobust state 2/2 states checked: 0 unrobust state
 ---------------------------------------------
 Verification over
-Robust accuracy: 100.00%, Verification time: 0.15s
+Robust accuracy: 100.00%, Verification time: 0.30s
 =============================================
 
 =============================================
 Starting Robustness Verifier...
 ---------------------------------------------
 Checking 0.002-robustness
-Filted by robust bound, 1 states left for SDP method
-Starting state robustness verifier...
-1/1 states checked: 0 unrobust state 1/1 states checked: 0 unrobust state
----------------------------------------------
-Verification over
-Robust accuracy: 100.00%, Verification time: 0.16s
-=============================================
-
-=============================================
-Starting Robustness Verifier...
----------------------------------------------
-Checking 0.003-robustness
-Filted by robust bound, 1 states left for SDP method
-Starting state robustness verifier...
-1/1 states checked: 0 unrobust state 1/1 states checked: 0 unrobust state
----------------------------------------------
-Verification over
-Robust accuracy: 100.00%, Verification time: 0.14s
-=============================================
-
-=============================================
-Starting Robustness Verifier...
----------------------------------------------
-Checking 0.003-robustness
 Filted by robust bound, 2 states left for SDP method
 Starting state robustness verifier...
 1/2 states checked: 0 unrobust state 2/2 states checked: 0 unrobust state 2/2 states checked: 0 unrobust state
 ---------------------------------------------
 Verification over
-Robust accuracy: 100.00%, Verification time: 0.29s
+Robust accuracy: 100.00%, Verification time: 0.27s
 =============================================
 
 =============================================
 Starting Robustness Verifier...
 ---------------------------------------------
 Checking 0.003-robustness
-Filted by robust bound, 2 states left for SDP method
+Filted by robust bound, 1 states left for SDP method
 Starting state robustness verifier...
-1/2 states checked: 0 unrobust state 2/2 states checked: 0 unrobust state 2/2 states checked: 0 unrobust state
+1/1 states checked: 0 unrobust state 1/1 states checked: 0 unrobust state
 ---------------------------------------------
 Verification over
-Robust accuracy: 100.00%, Verification time: 0.29s
+Robust accuracy: 100.00%, Verification time: 0.14s
+=============================================
+
+=============================================
+Starting Robustness Verifier...
+---------------------------------------------
+Checking 0.003-robustness
+Filted by robust bound, 6 states left for SDP method
+Starting state robustness verifier...
+1/6 states checked: 0 unrobust state 2/6 states checked: 0 unrobust state 3/6 states checked: 0 unrobust state 4/6 states checked: 0 unrobust state 5/6 states checked: 0 unrobust state 6/6 states checked: 0 unrobust state 6/6 states checked: 0 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 100.00%, Verification time: 1.24s
+=============================================
+
+=============================================
+Starting Robustness Verifier...
+---------------------------------------------
+Checking 0.003-robustness
+Filted by robust bound, 6 states left for SDP method
+Starting state robustness verifier...
+1/6 states checked: 0 unrobust state 2/6 states checked: 0 unrobust state 3/6 states checked: 0 unrobust state 4/6 states checked: 0 unrobust state 5/6 states checked: 0 unrobust state 6/6 states checked: 0 unrobust state 6/6 states checked: 0 unrobust state
+---------------------------------------------
+Verification over
+Robust accuracy: 100.00%, Verification time: 1.16s
 =============================================
 
 =============================================
@@ -131,24 +132,24 @@ Robust accuracy: 100.00%, Verification time: 0.14s
 Starting Robustness Verifier...
 ---------------------------------------------
 Checking 0.004-robustness
-Filted by robust bound, 3 states left for SDP method
+Filted by robust bound, 8 states left for SDP method
 Starting state robustness verifier...
-1/3 states checked: 0 unrobust state 2/3 states checked: 0 unrobust state 3/3 states checked: 0 unrobust state 3/3 states checked: 0 unrobust state
+1/8 states checked: 0 unrobust state 2/8 states checked: 0 unrobust state 3/8 states checked: 0 unrobust state 4/8 states checked: 0 unrobust state 5/8 states checked: 0 unrobust state 6/8 states checked: 0 unrobust state 7/8 states checked: 0 unrobust state 8/8 states checked: 0 unrobust state 8/8 states checked: 0 unrobust state
 ---------------------------------------------
 Verification over
-Robust accuracy: 100.00%, Verification time: 2.84s
+Robust accuracy: 100.00%, Verification time: 1.62s
 =============================================
 
 =============================================
 Starting Robustness Verifier...
 ---------------------------------------------
 Checking 0.004-robustness
-Filted by robust bound, 4 states left for SDP method
+Filted by robust bound, 8 states left for SDP method
 Starting state robustness verifier...
-1/4 states checked: 0 unrobust state 2/4 states checked: 0 unrobust state 3/4 states checked: 0 unrobust state 4/4 states checked: 0 unrobust state 4/4 states checked: 0 unrobust state
+1/8 states checked: 0 unrobust state 2/8 states checked: 0 unrobust state 3/8 states checked: 0 unrobust state 4/8 states checked: 0 unrobust state 5/8 states checked: 0 unrobust state 6/8 states checked: 0 unrobust state 7/8 states checked: 0 unrobust state 8/8 states checked: 0 unrobust state 8/8 states checked: 0 unrobust state
 ---------------------------------------------
 Verification over
-Robust accuracy: 100.00%, Verification time: 2.98s
+Robust accuracy: 100.00%, Verification time: 1.55s
 =============================================
 
 =============================================
@@ -167,44 +168,45 @@ Robust accuracy: 100.00%, Verification time: 0.14s
 Starting Robustness Verifier...
 ---------------------------------------------
 Checking 0.005-robustness
-Filted by robust bound, 6 states left for SDP method
+Filted by robust bound, 14 states left for SDP method
 Starting state robustness verifier...
-1/6 states checked: 0 unrobust state 2/6 states checked: 0 unrobust state 3/6 states checked: 0 unrobust state 4/6 states checked: 0 unrobust state 5/6 states checked: 0 unrobust state 6/6 states checked: 0 unrobust state 6/6 states checked: 0 unrobust state
+1/14 states checked: 0 unrobust state 2/14 states checked: 0 unrobust state 3/14 states checked: 0 unrobust state 4/14 states checked: 0 unrobust state 5/14 states checked: 0 unrobust state 6/14 states checked: 0 unrobust state 7/14 states checked: 0 unrobust state 8/14 states checked: 0 unrobust state 9/14 states checked: 0 unrobust state 10/14 states checked: 0 unrobust state
+11/14 states checked: 0 unrobust state 12/14 states checked: 0 unrobust state 13/14 states checked: 0 unrobust state 14/14 states checked: 0 unrobust state 14/14 states checked: 0 unrobust state
 ---------------------------------------------
 Verification over
-Robust accuracy: 100.00%, Verification time: 7.06s
+Robust accuracy: 100.00%, Verification time: 12.74s
 =============================================
 
 =============================================
 Starting Robustness Verifier...
 ---------------------------------------------
 Checking 0.005-robustness
-Filted by robust bound, 6 states left for SDP method
+Filted by robust bound, 15 states left for SDP method
 Starting state robustness verifier...
-1/6 states checked: 0 unrobust state 2/6 states checked: 0 unrobust state 3/6 states checked: 0 unrobust state 4/6 states checked: 0 unrobust state 5/6 states checked: 0 unrobust state 6/6 states checked: 0 unrobust state 6/6 states checked: 0 unrobust state
+1/15 states checked: 0 unrobust state 2/15 states checked: 0 unrobust state 3/15 states checked: 0 unrobust state 4/15 states checked: 0 unrobust state 5/15 states checked: 0 unrobust state 6/15 states checked: 0 unrobust state 7/15 states checked: 0 unrobust state 8/15 states checked: 0 unrobust state 9/15 states checked: 0 unrobust state 10/15 states checked: 0 unrobust state 11/15 states checked: 0 unrobust state 12/15 states checked: 0 unrobust state 13/15 states checked: 0 unrobust state 14/15 states checked: 0 unrobust state 15/15 states checked: 0 unrobust state 15/15 states checked: 0 unrobust state
 ---------------------------------------------
 Verification over
-Robust accuracy: 100.00%, Verification time: 7.10s
+Robust accuracy: 100.00%, Verification time: 20.95s
 =============================================
 
 Got the result table:
-+--------------+--------------------------+-------------------+-------------------+----------------------+----------------------+
++--------------+---------------------+-------------------+-------------------+----------------------+----------------------+
 | epsilon | Circuit | Rough Verif RA(%) | Rough Verif VT(s) | Accurate Verif RA(%) | Accurate Verif VT(s) |
-+--------------+--------------------------+-------------------+-------------------+----------------------+----------------------+
-| 1.000000e-03 | noiseless | 98.75 | 0.0005 | 100.00 | 0.1646 |
-| 1.000000e-03 | random noise | 98.75 | 0.0006 | 100.00 | 0.1524 |
-| 1.000000e-03 | random & specified noise | 98.75 | 0.0036 | 100.00 | 0.1564 |
-| 2.000000e-03 | noiseless | 98.75 | 0.0005 | 100.00 | 0.1406 |
-| 2.000000e-03 | random noise | 98.75 | 0.0006 | 100.00 | 0.1534 |
-| 2.000000e-03 | random & specified noise | 98.75 | 0.0037 | 100.00 | 0.1551 |
-| 3.000000e-03 | noiseless | 98.75 | 0.0005 | 100.00 | 0.1427 |
-| 3.000000e-03 | random noise | 97.50 | 0.0007 | 100.00 | 0.2928 |
-| 3.000000e-03 | random & specified noise | 97.50 | 0.0037 | 100.00 | 0.2949 |
-| 4.000000e-03 | noiseless | 98.75 | 0.0005 | 100.00 | 0.1411 |
-| 4.000000e-03 | random noise | 96.25 | 0.0007 | 100.00 | 2.8377 |
-| 4.000000e-03 | random & specified noise | 95.00 | 0.0036 | 100.00 | 2.9825 |
-| 5.000000e-03 | noiseless | 98.75 | 0.0005 | 100.00 | 0.1404 |
-| 5.000000e-03 | random noise | 92.50 | 0.0007 | 100.00 | 7.0609 |
-| 5.000000e-03 | random & specified noise | 92.50 | 0.0037 | 100.00 | 7.0952 |
-+--------------+--------------------------+-------------------+-------------------+----------------------+----------------------+
-iris_0.001×5_mixed_Depolarizing_0.01038.csv was saved successfully!
++--------------+---------------------+-------------------+-------------------+----------------------+----------------------+
+| 1.000000e-03 | noiseless | 98.75 | 0.0020 | 100.00 | 0.1559 |
+| 1.000000e-03 | random noise | 98.75 | 0.0005 | 100.00 | 0.1549 |
+| 1.000000e-03 | random & mixed_0.01 | 98.75 | 0.0036 | 100.00 | 0.1602 |
+| 2.000000e-03 | noiseless | 98.75 | 0.0004 | 100.00 | 0.1398 |
+| 2.000000e-03 | random noise | 97.50 | 0.0006 | 100.00 | 0.3039 |
+| 2.000000e-03 | random & mixed_0.01 | 97.50 | 0.0035 | 100.00 | 0.2672 |
+| 3.000000e-03 | noiseless | 98.75 | 0.0005 | 100.00 | 0.1436 |
+| 3.000000e-03 | random noise | 92.50 | 0.0006 | 100.00 | 1.2413 |
+| 3.000000e-03 | random & mixed_0.01 | 92.50 | 0.0036 | 100.00 | 1.1577 |
+| 4.000000e-03 | noiseless | 98.75 | 0.0006 | 100.00 | 0.1430 |
+| 4.000000e-03 | random noise | 90.00 | 0.0005 | 100.00 | 1.6150 |
+| 4.000000e-03 | random & mixed_0.01 | 90.00 | 0.0037 | 100.00 | 1.5527 |
+| 5.000000e-03 | noiseless | 98.75 | 0.0005 | 100.00 | 0.1395 |
+| 5.000000e-03 | random noise | 82.50 | 0.0006 | 100.00 | 12.7360 |
+| 5.000000e-03 | random & mixed_0.01 | 81.25 | 0.0121 | 100.00 | 20.9529 |
++--------------+---------------------+-------------------+-------------------+----------------------+----------------------+
+iris_0.001×5_mixed_mixed_PhaseFlip_BitFlip_Depolarizing_0.01.csv was saved successfully!

@@ -1,0 +1,4 @@
+epsilon,Circuit,Rough Verif RA(%),Rough Verif VT(s),Accurate Verif RA(%),Accurate Verif VT(s)
+1.000000e-03,noiseless,88.12,0.0030,90.00,0.6696
+1.000000e-03,random noise,87.62,0.0018,90.00,0.7339
+1.000000e-03,random & depolarizing_0.001,87.50,0.0017,90.00,0.7473

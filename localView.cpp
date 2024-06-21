@@ -274,7 +274,7 @@ void LocalView::resetAll()
     robustness_unit_ = 1e-5;
     ui->spinBox_unit->setValue(5);
     ui->slider_unit->setValue(5);
-    bacth_num_ = 5;
+    bacth_num_ = 1;
     ui->spinBox_batchnum->setValue(bacth_num_);
     ui->slider_batchnum->setValue(bacth_num_);
 
@@ -328,8 +328,7 @@ void LocalView::openTxtfile(){
 
     filename_ = QFileInfo(file).fileName();
     filename_.chop(4);
-    qDebug() << filename_;
-    // "qubit_0.001×5_mixed" or "fashion8_0.001×3_mixed_0.1_PhaseFlip"
+    qDebug() << filename_; // "qubit_0.001×5_mixed" or "fashion8_0.001×3_mixed_0.1_PhaseFlip"
 
     csvfile_ = localDir + "/results/result_tables/" + filename_ + ".csv";
 
@@ -338,11 +337,12 @@ void LocalView::openTxtfile(){
     model_name_ = args[0];
     QString unit = args[1].mid(0, args[1].indexOf("×"));
     robustness_unit_ = unit.toDouble();
-    bacth_num_ = args[1].mid(args[1].indexOf("×")+1).toInt();
+    bacth_num_ = args[1].mid(args[1].indexOf("×") + 1).toInt();
     state_type_ = args[2];
     qDebug() << "model_name_: " << model_name_;
 
-    if(case_list_.indexOf(model_name_) != -1)  // three original case
+    bool is_in_case_models = (case_list_.indexOf(model_name_) != -1 && model_name_ != "qubit");
+    if(is_in_case_models)  // three original case
     {
         // show_circuit_diagram_pdf(localDir + "/figures/" + model_name_ + "_model.pdf");
         showCircuitDiagramPdf();
@@ -464,7 +464,7 @@ void LocalView::openTxtfile(){
     ui->spinBox_batchnum->setValue(bacth_num_);
 
     // Results visualization
-    showResultTable();
+    showResultTable(is_in_case_models);
     getTableData("openfile");
 }
 
@@ -512,12 +512,9 @@ void LocalView::saveOutputAsTxtfile()
 /* Import an OpenQASM format file, representing the quantum circuit for a model. */
 void LocalView::importModel()
 {
-    QString filename = QFileDialog::getOpenFileName(this, "Open file", localDir+"/model_and_data");
-    QFile file(filename);
-    model_file_ = QFileInfo(filename);
-
-    model_name_ = filename.mid(filename.lastIndexOf("/")+1, filename.indexOf(".qasm"));
-    qDebug() << "model_name_: " << model_name_;
+    QString fileName = QFileDialog::getOpenFileName(this, "Open file", localDir+"/model_and_data");
+    QFile file(fileName);
+    model_file_ = QFileInfo(fileName);
 
     if (!file.open(QIODevice::ReadOnly)) {
         QMessageBox::warning(this, "Warning", "Unable to open the file: " + file.errorString());
@@ -528,6 +525,10 @@ void LocalView::importModel()
     }
 
     ui->lineEdit_modelfile->setText(model_file_.filePath());
+
+    model_name_ = fileName.mid(fileName.lastIndexOf("/")+1);
+    model_name_.chop(5);
+    qDebug() << "model_name_: " << model_name_;
 
     file.close();
 }
@@ -567,8 +568,9 @@ void LocalView::import_data(){
 void LocalView::on_radioButton_qubit_clicked()
 {
     npzfile_ = "qubit.npz";
-    model_name_ = npzfile_.mid(0, npzfile_.indexOf(".npz"));
-    qDebug() << npzfile_;
+    model_name_ = npzfile_;
+    model_name_.chop(4);
+    qDebug() << "model_name_: " << model_name_;
 
     model_file_.fileName().clear();
     data_file_.fileName().clear();
@@ -576,15 +578,16 @@ void LocalView::on_radioButton_qubit_clicked()
     ui->lineEdit_datafile->clear();
 
     if(ui->checkBox_show_AE->isChecked()){
-        ui->checkBox_show_AE->setChecked(0);  // 取消选中
+        ui->checkBox_show_AE->setChecked(0);  // Uncheck
     }
 }
 
 void LocalView::on_radioButton_phaseRecog_clicked()
 {
     npzfile_ = "phaseRecog.npz";
-    model_name_ = npzfile_.mid(0, npzfile_.indexOf(".npz"));
-    qDebug() << npzfile_;
+    model_name_ = npzfile_;
+    model_name_.chop(4);
+    qDebug() << "model_name_: " << model_name_;
 
     model_file_.fileName().clear();
     data_file_.fileName().clear();
@@ -592,15 +595,16 @@ void LocalView::on_radioButton_phaseRecog_clicked()
     ui->lineEdit_datafile->clear();
 
     if(ui->checkBox_show_AE->isChecked()){
-        ui->checkBox_show_AE->setChecked(0);  // 取消选中
+        ui->checkBox_show_AE->setChecked(0);  // Uncheck
     }
 }
 
 void LocalView::on_radioButton_excitation_clicked()
 {
     npzfile_ = "excitation.npz";
-    model_name_ = npzfile_.mid(0, npzfile_.indexOf(".npz"));
-    qDebug() << npzfile_;
+    model_name_ = npzfile_;
+    model_name_.chop(4);
+    qDebug() << "model_name_: " << model_name_;
 
     model_file_.fileName().clear();
     data_file_.fileName().clear();
@@ -746,21 +750,27 @@ void LocalView::run_localVeri()
         args << pyfile_ << qasmfile << datafile << unit << batch_num << state_type_;
     }
 
+    bool is_in_case_models = (case_list_.indexOf(model_name_) != -1 && model_name_ != "qubit");
+    showResultTable(is_in_case_models);
+
     // Whether to show pictures of adversarial examples.
-    if(model_name_.contains("mnist"))
+    if(!is_in_case_models && model_name_ != "qubit")
     {
-        if(state_type_ == "pure"){
-            ui->checkBox_show_AE->setChecked(1);
-            args << "true";
+        if(model_name_.contains("mnist"))
+        {
+            if(state_type_ == "pure"){
+                ui->checkBox_show_AE->setChecked(1);
+                args << "true";
+            }
+            else{
+                ui->checkBox_show_AE->setChecked(0);
+                args << "false";
+            }
         }
-        else{
-            ui->checkBox_show_AE->setChecked(0);
+        else
+        {
             args << "false";
         }
-    }
-    else
-    {
-        args << "false";
     }
 
     if(ui->checkBox_get_newdata->isChecked())
@@ -794,8 +804,6 @@ void LocalView::run_localVeri()
 
     // QString paramsList = args.join(" ");
     qDebug() << cmd + " " + args.join(" ");
-
-    showResultTable();
 
     process = new QProcess(this);
     process->setReadChannel(QProcess::StandardOutput);
@@ -1180,13 +1188,16 @@ void LocalView::closeCircuitDiagram()
     }
 }
 
-void LocalView::showResultTable(){
+void LocalView::insertDataToTable(int row_index, int col_index, QString data)
+{
+    QStandardItem *item = new QStandardItem(data);
+    item->setTextAlignment(Qt::AlignCenter);
+    res_model_->setItem(row_index, col_index, item);
+}
+
+void LocalView::showResultTable(bool is_in_three_case){
     int rowCount = bacth_num_;
     res_model_ = new QStandardItemModel();
-    // Set the column header.
-    res_model_->setHorizontalHeaderLabels(QStringList() << "Perturbation ε" << "Circuit (noise_p)" <<
-                                         "Rough Verif RA(%)" << "Rough Verif VT(s)" <<
-                                         "Accurate Verif RA(%)" << "Accurate Verif VT(s)");
 
     // Add QStandardItemModel to QTableView.
     ui->table_res->setModel(res_model_);
@@ -1204,38 +1215,52 @@ void LocalView::showResultTable(){
     ui->table_res->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     ui->table_res->horizontalHeader()->setStyleSheet(header_style);
     ui->table_res->horizontalHeader()->setMinimumHeight(50);
-    ui->table_res->setColumnWidth(0, ui->table_res->width()/8*1.2);
-    ui->table_res->setColumnWidth(1, ui->table_res->width()/8*2.2);
-    ui->table_res->setColumnWidth(2, ui->table_res->width()/8*1.3);
-    ui->table_res->setColumnWidth(3, ui->table_res->width()/8*1.3);
-    ui->table_res->setColumnWidth(4, ui->table_res->width()/8*1.4);
-    ui->table_res->setColumnWidth(5, ui->table_res->width()/8*1.4);
+
+    // Set the column header.
+    if(!is_in_three_case)
+    {
+        res_model_->setHorizontalHeaderLabels(QStringList() << "Perturbation ε" << "Circuit (noise_p)" <<
+                                              "Rough Verif RA(%)" << "Rough Verif VT(s)" <<
+                                              "Accurate Verif RA(%)" << "Accurate Verif VT(s)");
+        ui->table_res->setColumnWidth(0, ui->table_res->width()/8*1.2);
+        ui->table_res->setColumnWidth(1, ui->table_res->width()/8*2.2);
+        ui->table_res->setColumnWidth(2, ui->table_res->width()/8*1.3);
+        ui->table_res->setColumnWidth(3, ui->table_res->width()/8*1.3);
+        ui->table_res->setColumnWidth(4, ui->table_res->width()/8*1.4);
+        ui->table_res->setColumnWidth(5, ui->table_res->width()/8*1.4);
+    }
+    else
+    {
+        res_model_->setHorizontalHeaderLabels(QStringList() << "Perturbation ε" <<
+                                              "Rough Verif RA(%)" << "Rough Verif VT(s)" <<
+                                              "Accurate Verif RA(%)" << "Accurate Verif VT(s)");
+        ui->table_res->setColumnWidth(0, ui->table_res->width()/5);
+        ui->table_res->setColumnWidth(1, ui->table_res->width()/5);
+        ui->table_res->setColumnWidth(2, ui->table_res->width()/5);
+        ui->table_res->setColumnWidth(3, ui->table_res->width()/5);
+        ui->table_res->setColumnWidth(4, ui->table_res->width()/5);
+    }
 
     QString eps = QString::number(ui->slider_unit->value());
     // Initial table data.
     for(int row_index = 0; row_index < rowCount; row_index++)
     {
         // Set the row header as epsilon for each validation experiment.
-        QString eps_str = QString::number(row_index + 1) + QString::fromLocal8Bit("e-") + eps;
-        // For original circuit
-        QStandardItem *item = new QStandardItem(eps_str);
-        item->setTextAlignment(Qt::AlignCenter);
-        res_model_->setItem(row_index * 3, 0, item);
-        // For circuit with random noise
-        item = new QStandardItem(eps_str);
-        item->setTextAlignment(Qt::AlignCenter);
-        res_model_->setItem(row_index * 3 + 1, 0, item);
-        // For circuit with specified noise
-        item = new QStandardItem(eps_str);
-        item->setTextAlignment(Qt::AlignCenter);
-        res_model_->setItem(row_index * 3 + 2, 0, item);
-        // Merge cells
-        ui->table_res->setSpan(row_index * 3, 0, 3, 1);
-        for(int col_index = 1; col_index < 6; col_index++)
+        QString eps_str = QString::number(row_index + 1) + QString("e-") + eps;
+        if(!is_in_three_case)
         {
-            item = new QStandardItem(QString("-"));
-            item->setTextAlignment(Qt::AlignCenter);
-            res_model_->setItem(row_index, col_index, item);
+            insertDataToTable(row_index * 3, 0, eps_str);     // for origin circuit
+            insertDataToTable(row_index * 3 + 1, 0, eps_str); // for circuit with random noise
+            insertDataToTable(row_index * 3 + 2, 0, eps_str); // for circuit with specified noise
+            ui->table_res->setSpan(row_index * 3, 0, 3, 1);  // Merge cells
+        }
+        else  // for three case models: 'qubit', 'excitation' and 'phaseRecog'
+        {
+            insertDataToTable(row_index, 0, eps_str);
+        }
+        for(int col_index = 1; col_index < res_model_->columnCount(); col_index++)
+        {
+            insertDataToTable(row_index, col_index, "-");
         }
     }
 }
@@ -1265,21 +1290,10 @@ void LocalView::getTableData(QString op)
         QString line = in.readLine();
         if(row_index > 0){
             QStringList res_fields = line.split(",");
-            QStandardItem *circuit_item = new QStandardItem(QString(res_fields[1]));
-            QStandardItem *RA_1_item = new QStandardItem(QString(res_fields[2]));
-            QStandardItem *VT_1_item = new QStandardItem(QString(res_fields[3]));
-            QStandardItem *RA_2_item = new QStandardItem(QString(res_fields[4]));
-            QStandardItem *VT_2_item = new QStandardItem(QString(res_fields[5]));
-            circuit_item->setTextAlignment(Qt::AlignCenter);
-            RA_1_item->setTextAlignment(Qt::AlignCenter);
-            VT_1_item->setTextAlignment(Qt::AlignCenter);
-            RA_2_item->setTextAlignment(Qt::AlignCenter);
-            VT_2_item->setTextAlignment(Qt::AlignCenter);
-            res_model_->setItem(row_index-1, 1, circuit_item);
-            res_model_->setItem(row_index-1, 2, RA_1_item);
-            res_model_->setItem(row_index-1, 3, VT_1_item);
-            res_model_->setItem(row_index-1, 4, RA_2_item);
-            res_model_->setItem(row_index-1, 5, VT_2_item);
+            for(int col_index = 1; col_index < res_fields.size(); col_index++)
+            {
+                insertDataToTable(row_index-1, col_index, QString(res_fields[col_index]));
+            }
         }
         row_index++;
     }

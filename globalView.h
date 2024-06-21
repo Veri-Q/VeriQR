@@ -77,7 +77,7 @@ private:
     QString file_name_;  // Used to specify the name of the resulting file for the current model
                          // e.g. cr_PhaseFlip_0.0001
 
-    QString noise_type_;
+    QString noise_type_ = "bit_flip";
     double noise_prob_;
     QString noise_types_[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
     QMap<QString, QString> noise_name_map_1 = {
@@ -99,7 +99,7 @@ private:
 
     /* Variables about verification program */
     QProcess* process_cal_;
-    QProcess* process_veri_;  // no need
+    QProcess* process_veri_;
     QString pyfile_ = "global_verif.py";
     QString result_dir_; // e.g. globalDir/results/cr/cr_BitFlip_0.001
     QString csvfile_; // e.g. globalDir/results/cr/cr_BitFlip_0.001/cr_BitFlip_0.001.csv

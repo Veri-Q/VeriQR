@@ -300,7 +300,6 @@ def generating_circuit_with_specified_noise(circ, origin_kraus_, noise, noise_li
                 for i in kraus_:
                     new_kraus.append(np.kron(i, I_matrix))
                 kraus_ = new_kraus
-
         else:
             for q in qubits:
                 circ += noise_op(noise_p_).on(q)

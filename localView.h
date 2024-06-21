@@ -34,7 +34,8 @@ public:
     void openTxtfile();
     void saveOutputToTxtfile();
     void saveOutputAsTxtfile();
-    void showResultTable();
+    void showResultTable(bool is_in_three_case);
+    void insertDataToTable(int row_index, int col_index, QString data);
     void getTableData(QString op);
     void showCircuitDiagramSvg(QString filename);
     void closeCircuitDiagramSvg();
@@ -91,9 +92,9 @@ private:
     bool need_to_visualize_AE_ = false;
     bool need_new_dataset_ = false;
     double robustness_unit_ = 1e-5;
-    int bacth_num_ = 5;
+    int bacth_num_ = 1;
 
-    QString noise_type_;
+    QString noise_type_ = "bit_flip";
     double noise_prob_;
     QString noise_types_[4] = {"bit_flip", "depolarizing", "phase_flip", "mixed"};
     QMap<QString, QString> noise_name_map_ = {

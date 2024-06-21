@@ -31,11 +31,11 @@ void PdfView::wheelEvent(QWheelEvent *e)
 
     if(e->angleDelta().y() > 0){
         // 对图片的长、宽值进行放大
-        this->setZoomMode(QPdfView::ZoomMode::Custom);
+        // this->setZoomMode(QPdfView::ZoomMode::Custom);
         this->setZoomFactor(this->zoomFactor()* (1+diff));
     }else{
         // 对图片的长、宽值进行缩小
-        this->setZoomMode(QPdfView::ZoomMode::Custom);
+        // this->setZoomMode(QPdfView::ZoomMode::Custom);
         this->setZoomFactor(this->zoomFactor()* (1-diff));
     }
     // qDebug() << this->zoomFactor();

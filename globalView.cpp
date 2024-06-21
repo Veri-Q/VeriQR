@@ -105,9 +105,10 @@ void GlobalView::clearOutput()
     output_.clear();
     ui->textBrowser_output->clear();
 
-    calc_count_ = 0;
     res_model_ = new QStandardItemModel();
     got_result_ = false;
+    calc_count_ = 0;
+    verif_count_ = 0;
 
     origin_lipschitz_ = 0.0;
     random_lipschitz_ = 0.0;
@@ -722,26 +723,29 @@ void GlobalView::importModel()
        QMessageBox::warning(this, "Warning", "VeriQR only supports .qasm model files.");
        return;
    }
+
    ui->lineEdit_modelfile->setText(model_file_.filePath());
-   model_name_ = model_file_.fileName();   // Remove '.qasm' in 'ehc_6.qasm'
+
+   model_name_ = fileName.mid(fileName.lastIndexOf("/")+1);
    model_name_.chop(5);
+   qDebug() << "model_name_: " << model_name_;
 
    file.close();
 }
 
-void GlobalView::on_radioButton_phaseflip_clicked()
+void GlobalView::on_radioButton_bitflip_clicked()
 {
     noise_type_ = noise_types_[0];
     qDebug() << noise_type_;
 }
 
-void GlobalView::on_radioButton_bitflip_clicked()
+void GlobalView::on_radioButton_depolarizing_clicked()
 {
     noise_type_ = noise_types_[1];
     qDebug() << noise_type_;
 }
 
-void GlobalView::on_radioButton_depolarizing_clicked()
+void GlobalView::on_radioButton_phaseflip_clicked()
 {
     noise_type_ = noise_types_[2];
     qDebug() << noise_type_;
@@ -783,22 +787,17 @@ void GlobalView::run_calculate_k()
     noise_prob_ = ui->doubleSpinBox_prob->value();
 
     QString cmd = "python";
-    QString model_name;
-    if (model_file_.fileName().isEmpty())  // has not selected a .qasm file
+    QString model_file_name = model_name_;  // ehc_6
+    if(!model_file_.fileName().isEmpty())  // has selected a .qasm file
     {
-        model_name = model_name_;
+        model_file_name = model_file_.filePath();
     }
-    else  // has selected a .qasm file
-    {
-        model_name_ = model_file_.fileName();   // Remove '.qasm' in 'ehc_6.qasm'
-        model_name_.chop(5);
-        model_name = model_file_.filePath();
-    }
-    qDebug() << "model_name: " << model_name_;
+    qDebug() << "model_name_: " << model_name_;
+    qDebug() << "model_file_name: " << model_file_name;
 
     // python global_verif.py ehc_6.qasreadLipschitzFromCsvfilem phase_flip 0.0001
     QStringList args;
-    args << model_name;
+    args << model_file_name;
     if(noise_type_ == "mixed")
     {
         args << noise_type_;
@@ -821,11 +820,12 @@ void GlobalView::run_calculate_k()
     }
 
     file_name_ = args.join("_");
+    qDebug() << "file_name_: " << file_name_;
     for(auto it=noise_name_map_2.begin(); it!=noise_name_map_2.end(); it++)
     {
         file_name_.replace(it.key(), it.value());
     }
-    qDebug() << "file_name_: " << file_name_;
+    qDebug() << "file_name_: " << file_name_.replace(model_file_name, model_name_);
 
     args.insert(0, pyfile_);
     qDebug() << args.join(" ");
@@ -876,9 +876,11 @@ void GlobalView::run_calculate_k()
             readLipschitzFromTable();
             showCircuitDiagram(result_dir_ + "/" + model_name_ + "_origin.svg");
             showCircuitDiagram(result_dir_ + "/" + model_name_ + "_random.svg");
-            showCircuitDiagram(result_dir_ + "/" + file_name_ + ".svg");
+            showCircuitDiagram(result_dir_ + "/" + model_name_ + ".svg");
         }
         else{
+            // Initial table data.
+            showResultTable();
             execCalculation(cmd, args);
         }
     }
@@ -901,6 +903,8 @@ void GlobalView::run_calculate_k()
                 dir.mkdir(result_dir_);
             }
         }
+        // Initial table data.
+        showResultTable();
         execCalculation(cmd, args);
     }
 }
@@ -972,18 +976,12 @@ void GlobalView::on_read_from_terminal_calc()
             calc_count_++;
             if(calc_count_ % 3 == 0)
             {
-                origin_lipschitz_ = res_model_->index(calc_count_-1, 2).data().toString().toDouble();
-                random_lipschitz_ = res_model_->index(calc_count_-2, 2).data().toString().toDouble();
-                specified_lipschitz_ = res_model_->index(calc_count_-3, 2).data().toString().toDouble();
-                origin_VT_ = res_model_->index(calc_count_-1, 3).data().toString().toDouble();
-                random_VT_ = res_model_->index(calc_count_-2, 3).data().toString().toDouble();
-                specified_VT_ = res_model_->index(calc_count_-3, 3).data().toString().toDouble();
-                got_result_ = true;
+                readLipschitzFromTable();
                 qDebug() << "origin_lipschitz_： " << origin_lipschitz_;
                 qDebug() << "random_lipschitz_ " << random_lipschitz_;
                 qDebug() << "specified_lipschitz_ " << specified_lipschitz_;
+                break;
             }
-            break;
         }
     }
 }
@@ -1110,13 +1108,18 @@ void GlobalView::closeCircuitDiagram()
         return;
     }
 
-    QWidget *svgwidget = ui->verticalLayout_circ->itemAt(0)->widget();
-    svgwidget->setParent (NULL);
-    qDebug() << "delete " << svgwidget->objectName() << "!";
-
-    this->ui->verticalLayout_circ->removeWidget(svgwidget);
-    delete svgwidget;
-
+    QLayoutItem *child;
+    int i = 0;
+    while((child = ui->verticalLayout_circ->takeAt(i)) !=nullptr)
+    {
+        if(child->widget())
+        {
+            child->widget()->setParent(nullptr);
+            qDebug() << "delete " << child->widget()->objectName() << "!";
+            ui->verticalLayout_circ->removeWidget(child->widget());
+            delete child->widget();
+        }
+    }
     showed_svg_ = false;
 }
 

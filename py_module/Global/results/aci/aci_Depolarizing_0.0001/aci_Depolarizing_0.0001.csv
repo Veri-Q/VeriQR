@@ -1,0 +1,4 @@
+Circuit(ε δ)K*VT (s)robust
+noiseless,(0.003, 0.0001),1.0000001,2.3299s,NO
+random noise,(0.003, 0.0001),0.70560354,47.1343s,NO
+random & depolarizing_0.0001,(0.003, 0.0001),0.70535374,47.1182s,NO

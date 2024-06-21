@@ -33,8 +33,6 @@ if '.npz' in str(argv[1]):
     label = DATA['label']
     origin_dataset_size = label.shape[0]
     type = 'npz'
-    # default filename
-    result_file_name = '{}_{}×{}_{}.csv'.format(model_name, epsilon, batch_num, state_type)
 
     if model_name == 'qubit':
         n_qubits = 1
@@ -48,12 +46,16 @@ if '.npz' in str(argv[1]):
         np.savez('./model_and_data/qubit_random.npz', O=O, data=data, label=label, kraus=random_kraus)
 
         arg_num = len(argv)
-        if arg_num > 5:
-            p = float(argv[arg_num - 1])
-            noise_type = argv[5]
+        if arg_num > 6:
+            noise_p = float(argv[arg_num - 1])
+            noise_type = argv[6]
             if noise_type == 'mixed':
                 # noise_list = [i for i in argv[6: arg_num - 1]]
-                E = noise_op_map[random.choice(noise_ops)](p).matrix()
+                # E = noise_op_map[random.choice(noise_ops)](noise_p).matrix()
+                noise_op = noise_op_map[random.choice(noise_ops)]
+                noise_name = noise_op.__name__
+                noise_name = noise_name[0: noise_name.index("Channel")]
+                E = noise_op(noise_p).matrix()
             elif noise_type == 'custom':
                 kraus_file = argv[6]
                 custom_kraus = load(kraus_file)['kraus']
@@ -63,8 +65,13 @@ if '.npz' in str(argv[1]):
                         raise RuntimeError("The dimension of the kraus operator is {}, not consistent with "
                                            "the circuit's ({}, {})! ".format(custom_kraus[i].shape, dim, dim))
                 E = custom_kraus[0]
+                noise_name = "custom_{}".format(kraus_file[kraus_file.rfind('/') + 1:-4])
             else:
-                E = noise_op_map[noise_type](p).matrix()
+                # E = noise_op_map[noise_type](noise_p).matrix()
+                noise_op = noise_op_map[noise_type]
+                noise_name = noise_op.__name__
+                noise_name = noise_name[0: noise_name.index("Channel")]
+                E = noise_op(noise_p).matrix()
             # print(E)
             new_kraus = []
             for k in random_kraus:
@@ -72,9 +79,13 @@ if '.npz' in str(argv[1]):
                     new_kraus.append(e @ k)
             final_kraus = np.array(new_kraus)
             print('new kraus.shape', final_kraus.shape)
-            np.savez('./model_and_data/qubit_{}_{}.npz'.format(noise_type, p),
+            np.savez('./model_and_data/qubit_{}_{}.npz'.format(noise_type, noise_p),
                      O=O, data=data, label=label, kraus=final_kraus)
-
+            result_file_name = '{}_{}×{}_{}_{}_{}.csv'.format(model_name, epsilon, batch_num, state_type,
+                                                              noise_name, noise_p)
+    else:
+        # default filename
+        result_file_name = '{}_{}×{}_{}.csv'.format(model_name, epsilon, batch_num, state_type)
 elif '.qasm' in str(argv[1]):
     # for example:
     # python local_verif.py ./model_and_data/mnist01.qasm ./model_and_data/mnist01_data.npz 0.001 1 pure true true (argv[7])
